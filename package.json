@@ -1,0 +1,56 @@
+{
+  "name": "editor4",
+  "version": "0.1.0",
+  "homepage": "/am4editor/",
+  "private": true,
+  "dependencies": {
+    "@amcharts/amcharts4": "^4.7.12",
+    "@amcharts/amcharts4-geodata": "^4.1.9",
+    "@blueprintjs/core": "^3.17.1",
+    "@blueprintjs/table": "^3.4.1",
+    "@types/jest": "^24.0.11",
+    "@types/js-beautify": "^1.8.1",
+    "@types/react": "^16.8.7",
+    "@types/react-dom": "^16.8.2",
+    "@types/react-router-dom": "^4.3.1",
+    "codemirror": "^5.48.0",
+    "js-beautify": "^1.10.1",
+    "mobx": "^5.9.0",
+    "mobx-react": "^5.0.0",
+    "normalize.css": "^8.0.1",
+    "react": "^16.8.4",
+    "react-codemirror2": "^6.0.0",
+    "react-dom": "^16.8.4",
+    "react-router-dom": "^5.0.1",
+    "react-scripts": "^3.1.1",
+    "typescript": "~3.5.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "build:deploy": "react-scripts build && mkdir deploy && mkdir deploy/am4editor && cp -r build/* deploy/am4editor",
+    "lint": "eslint \"./src/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint --fix \"./src/**/*.{ts,tsx}\"",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "@types/node": "^12.6.8",
+    "@typescript-eslint/eslint-plugin": "^2.2.0",
+    "@typescript-eslint/parser": "^2.2.0",
+    "eslint": "^6.2.1",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-config-react": "^1.1.7",
+    "eslint-config-react-app": "^5.0.1",
+    "eslint-plugin-prettier": "^3.0.1",
+    "mobx-react-devtools": "^6.1.1",
+    "prettier": "^1.17.0",
+    "ts-node": "^8.0.3"
+  }
+}

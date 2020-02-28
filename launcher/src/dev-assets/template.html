@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>amCharts Editor Launcher experiments</title>
+
+  <script src="//www.amcharts.com/lib/4/core.js"></script>
+  <script src="//www.amcharts.com/lib/4/charts.js"></script>
+  <script src="//www.amcharts.com/lib/4/maps.js"></script>
+
+  <script src="//www.amcharts.com/lib/4/themes/animated.js"></script>
+  <script src="//www.amcharts.com/lib/4/themes/dark.js"></script>
+
+  <script src="launcher-experiments.js"></script>
+
+  <style>
+    html, body {
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 0px;
+      margin: 0px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .configBar {
+      background-color: #333333;
+      color: #eeeeee;
+      display: flex;
+      padding: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .configBar h3 {
+      padding: 0px;
+      margin: 0px;
+      font-size: 1.1em;
+      color: cornflowerblue;
+    }
+    .actionButtonCell button {
+      background-color: gold;
+      font-size: 1.3em;
+    }
+
+    .chartdiv {
+      background-color: #eeeeee;
+      flex-grow: 2;
+    }
+
+    .editordiv {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.75);
+      z-index: 100;
+      display: flex;
+    }
+
+    .editordiv iframe {
+      margin: 30px;
+      border: 0px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="editordiv" id="editordiv" style="display: none;">
+  </div>
+  <div class="configBar">
+    <div class="modules">
+      <h3>Enabled editor modules (none == all)</h3>
+      <label><input type="checkbox" name="editorModule" value="home" />home</label>
+      <label><input type="checkbox" name="editorModule" value="design" />design</label>
+      <label><input type="checkbox" name="editorModule" value="data" />data</label>
+      <label><input type="checkbox" name="editorModule" value="code" />code</label>
+    </div>
+    <div class="editorSettings">
+        <h3>Editor settings</h3>
+        <label><input type="checkbox" id="inIFrame" checked="true" />show in frame?</label>
+      <label><input type="checkbox" id="passTemplates" checked="true" />pass custom templates?</label>
+    </div>
+    <div class="actionButtonCell">
+      <button onclick="createChart();">create chart</button>
+      <button id="editChartButton" onclick="editChart();" disabled="true">edit chart</button>
+    </div>
+  </div>
+  <div class="chartdiv" id="chartdiv">
+      &nbsp;
+  </div>
+</body>
+</html>

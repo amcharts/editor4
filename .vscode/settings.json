@@ -1,0 +1,17 @@
+{
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.enable": true,
+  "eslint.workingDirectories": [
+    "./src",
+    "./launcher/src",
+    "./samples/vue/am4editor-vue-sample/src",
+  ],
+  "files.associations": {
+    "propertyDefaultValues.ts": "plaintext"
+  }
+}
