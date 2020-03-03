@@ -5,8 +5,9 @@
   "main": "editor-launcher.umd.js",
   "module": "editor-launcher.esm.js",
   "types": "editor-launcher.d.ts",
-  "author": "amCharts",
-  "license": "MIT",
+  "author": "amCharts <contact@amcharts.com> (https://www.amcharts.com/)",
+  "homepage": "https://www.amcharts.com/",
+  "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "build": "rollup --config rollup.config.prod.js",
     "build-tester": "rollup --config rollup.config.prod-tester.js",
