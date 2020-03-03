@@ -1,7 +1,7 @@
 {
-  "name": "@amcharts/am4editor",
-  "version": "0.1.0",
-  "description": "Launcher library for amCharts 4 Editor",
+  "name": "@amcharts/editor4",
+  "version": "4.0.0-alpha.1",
+  "description": "amCharts 4 Editor",
   "main": "editor-launcher.umd.js",
   "module": "editor-launcher.esm.js",
   "types": "editor-launcher.d.ts",
