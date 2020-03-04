@@ -33,7 +33,7 @@ import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 import am4themes_dark from '@amcharts/amcharts4/themes/dark';
 
 // import Editor Launcher
-import { EditorLauncher, ILauncherConfig } from '@amcharts/am4editor';
+import { EditorLauncher, ILauncherConfig } from '@amcharts/editor4';
 
 @Component
 export default class NewChart extends Vue {

@@ -65,7 +65,7 @@ import EditChart from './components/EditChart.vue';
 import NewChartFromData from './components/NewChartFromData.vue';
 import EditChartType from './components/EditChartType.vue';
 import Settings from './components/Settings.vue';
-import { ILauncherConfig, ModuleType, IThemeInfo } from '@amcharts/am4editor';
+import { ILauncherConfig, ModuleType, IThemeInfo } from '@amcharts/editor4';
 
 type PageType = 'home' | 'new-chart' | 'edit-chart' | 'new-from-data' | 'edit-type';
 

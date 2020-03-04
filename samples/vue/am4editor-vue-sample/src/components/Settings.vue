@@ -48,7 +48,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 // import Editor Launcher
-import { ILauncherConfig, ModuleType, IThemeInfo } from '@amcharts/am4editor';
+import { ILauncherConfig, ModuleType, IThemeInfo } from '@amcharts/editor4';
 
 @Component
 export default class Settings extends Vue {

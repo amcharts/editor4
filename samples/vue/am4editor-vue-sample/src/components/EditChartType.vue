@@ -38,7 +38,7 @@ import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 import am4themes_dark from '@amcharts/amcharts4/themes/dark';
 
 // import Editor Launcher
-import { EditorLauncher, ILauncherConfig, ITemplateGroup } from '@amcharts/am4editor';
+import { EditorLauncher, ILauncherConfig, ITemplateGroup } from '@amcharts/editor4';
 
 let chartConfig: object = {
     "type": "XYChart",

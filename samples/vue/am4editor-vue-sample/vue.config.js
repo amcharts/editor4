@@ -8,7 +8,7 @@ module.exports = {
       .plugin('copy')
       .tap(args => {
         args[0].push({
-          from: 'node_modules/@amcharts/am4editor/am4editor',
+          from: 'node_modules/@amcharts/editor4/am4editor',
           to: 'am4editor',
           toType: 'dir'
         });
