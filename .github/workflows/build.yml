@@ -19,3 +19,15 @@ jobs:
       run: yarn
     - name: Build
       run: yarn build
+    - name: Replace .gitignore
+      run: mv withbuild.gitignore .gitignore
+    - name: Commit files
+      run: |
+        git config --local user.email "alan@amcharts.com"
+        git config --local user.name "Alan (GitHub Action)"
+        git commit -m "add build" -a
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: with-build
