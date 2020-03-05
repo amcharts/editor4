@@ -25,7 +25,7 @@ jobs:
         git config --local user.email "alan@amcharts.com"
         git config --local user.name "Alan (GitHub Action)"
         git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-        git merge master
+        git merge origin/master
 #    - name: Install dependencies
 #      run: yarn
 #    - name: Build
