@@ -14,8 +14,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '10.x'
-    - name: Checkout master
-      uses: actions/checkout@v2
+#    - name: Checkout master
+#      uses: actions/checkout@v2
     - name: Checkout with-build
       uses: actions/checkout@v2
       with:
