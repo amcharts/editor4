@@ -32,12 +32,10 @@ jobs:
       run: |
         git config --local user.email "alan@amcharts.com"
         git config --local user.name "Alan (GitHub Action)"
-#        git merge master
-#        git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-#    - name: Install dependencies
-#      run: yarn
-#    - name: Build
-#      run: yarn build
+    - name: Install dependencies
+      run: yarn
+    - name: Build
+      run: yarn build
     - name: Replace .gitignore
       run: mv withbuild.gitignore .gitignore
     - name: Commit files
