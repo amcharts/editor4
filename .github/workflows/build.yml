@@ -16,15 +16,15 @@ jobs:
         node-version: '10.x'
     - name: Checkout master
       uses: actions/checkout@v2
-    - name: Checkout with-build
-      uses: actions/checkout@v2
-      with:
-        ref: 'with-build'
+#    - name: Checkout with-build
+#      uses: actions/checkout@v2
+#      with:
+#        ref: 'with-build'
     - name: Setup git and merge master
       run: |
         git config --local user.email "alan@amcharts.com"
         git config --local user.name "Alan (GitHub Action)"
-        git merge master
+        git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
 #    - name: Install dependencies
 #      run: yarn
 #    - name: Build
