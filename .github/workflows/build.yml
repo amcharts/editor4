@@ -36,8 +36,8 @@ jobs:
       run: yarn
     - name: Build
       run: yarn build
-    - name: Replace .gitignore
-      run: mv withbuild.gitignore .gitignore
+#    - name: Replace .gitignore
+#      run: mv withbuild.gitignore .gitignore
     - name: Commit files
       run: git commit -m "add build" -a
     - name: Push changes
