@@ -10,13 +10,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        ref: 'with-build'
     - name: Setup Node
       uses: actions/setup-node@v1
       with:
         node-version: '10.x'
+    - name: Checkout master
+      uses: actions/checkout@v2
+    - name: Checkout with-build
+      uses: actions/checkout@v2
+      with:
+        ref: 'with-build'
     - name: Setup git and merge master
       run: |
         git config --local user.email "alan@amcharts.com"
