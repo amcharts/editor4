@@ -39,7 +39,9 @@ jobs:
 #    - name: Replace .gitignore
 #      run: mv withbuild.gitignore .gitignore
     - name: Commit files
-      run: git commit -m "add build" -a
+      run: |
+        git add .
+        git commit -m "add build" -a
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
