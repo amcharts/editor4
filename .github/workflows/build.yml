@@ -11,21 +11,25 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: 'with-build'
     - name: Setup Node
       uses: actions/setup-node@v1
       with:
         node-version: '10.x'
-    - name: Install dependencies
-      run: yarn
-    - name: Build
-      run: yarn build
-    - name: Replace .gitignore
-      run: mv withbuild.gitignore .gitignore
-    - name: Commit files
+    - name: Setup git and merge master
       run: |
         git config --local user.email "alan@amcharts.com"
         git config --local user.name "Alan (GitHub Action)"
-        git commit -m "add build" -a
+        git merge master
+#    - name: Install dependencies
+#      run: yarn
+#    - name: Build
+#      run: yarn build
+    - name: Replace .gitignore
+      run: mv withbuild.gitignore .gitignore
+    - name: Commit files
+      run: git commit -m "add build" -a
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
