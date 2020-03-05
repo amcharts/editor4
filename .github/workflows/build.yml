@@ -16,29 +16,34 @@ jobs:
         node-version: '10.x'
     - name: Checkout master
       uses: actions/checkout@v2
+    - name: Merge to with-build branch
+      uses: devmasx/merge-branch@v1.1.0
       with:
-        fetch-depth: 0
-    - name: Checkout with-build
-      uses: actions/checkout@v2
-      with:
-        ref: 'with-build'
-        fetch-depth: 0
-    - name: Setup git and merge master
-      run: |
-        git config --local user.email "alan@amcharts.com"
-        git config --local user.name "Alan (GitHub Action)"
-        git merge master
+        type: now
+        target_branch: 'with-build'
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+#    - name: Checkout with-build
+#      uses: actions/checkout@v2
+#      with:
+#        ref: 'with-build'
+#        fetch-depth: 0
+#    - name: Setup git and merge master
+#      run: |
+#        git config --local user.email "alan@amcharts.com"
+#        git config --local user.name "Alan (GitHub Action)"
+#        git merge master
 #        git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
 #    - name: Install dependencies
 #      run: yarn
 #    - name: Build
 #      run: yarn build
-    - name: Replace .gitignore
-      run: mv withbuild.gitignore .gitignore
-    - name: Commit files
-      run: git commit -m "add build" -a
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: with-build
+#    - name: Replace .gitignore
+#      run: mv withbuild.gitignore .gitignore
+#    - name: Commit files
+#      run: git commit -m "add build" -a
+#    - name: Push changes
+#      uses: ad-m/github-push-action@master
+#      with:
+#        github_token: ${{ secrets.GITHUB_TOKEN }}
+#        branch: with-build
