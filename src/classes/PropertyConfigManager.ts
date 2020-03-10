@@ -240,7 +240,10 @@ export default class PropertyConfigManager {
                 const templateProperty = p.properties.find(
                   tp => tp.name === 'template'
                 );
-                if (templateProperty !== undefined) {
+                if (
+                  templateProperty !== undefined &&
+                  templateProperty.value !== undefined
+                ) {
                   result[
                     p.name
                   ].template = PropertyConfigManager.propertyToConfig(
@@ -657,7 +660,10 @@ export default class PropertyConfigManager {
 
       const helperChart = am4core.createFromConfig(renderConfigCopy, helperDiv);
       helperChart.events.on('ready', () => {
-        const result = PropertyConfigManager.chartPartToProperty(helperChart);
+        const result = PropertyConfigManager.chartPartToProperty(
+          helperChart,
+          config
+        );
 
         // clean-up helper chart
         helperChart.dispose();
@@ -699,6 +705,7 @@ export default class PropertyConfigManager {
    */
   private static chartPartToProperty(
     chartPart: am4core.Sprite,
+    subConfig: object,
     defaultClassName?: string
   ): Property | undefined {
     let property: Property | undefined;
@@ -710,12 +717,19 @@ export default class PropertyConfigManager {
       : '';
     const propDefaults = defaults.getDefaults(className);
 
-    if (propDefaults !== undefined) {
+    if (propDefaults !== undefined && subConfig !== null) {
       property = new Property(propDefaults);
 
       if (property && property.properties) {
         property.properties.forEach(p => {
           const chartPropValue: any = (chartPart as any)[p.name];
+          // values in config (if present)
+          const propIndex =
+            subConfig !== undefined
+              ? Object.keys(subConfig).indexOf(p.name)
+              : -1;
+          const configPropValue =
+            propIndex > -1 ? Object.values(subConfig)[propIndex] : undefined;
 
           if (p.name === 'states') {
             // special case for states
@@ -729,34 +743,47 @@ export default class PropertyConfigManager {
               }
 
               Object.keys(chartPropValue._dictionary).forEach(st => {
-                const subProp = PropertyConfigManager.chartPartToProperty(
-                  chartPropValue._dictionary[st]
-                );
-                if (subProp !== undefined && subProp.properties !== undefined) {
-                  const propertiesProperty = subProp.properties.find(
-                    pp => pp.name === 'properties'
+                const stateConfig =
+                  (subConfig as any).states !== undefined &&
+                  (subConfig as any).states[st] !== undefined
+                    ? (subConfig as any).states[st].properties
+                    : undefined;
+
+                if (stateConfig !== undefined) {
+                  const subProp = PropertyConfigManager.chartPartToProperty(
+                    chartPropValue._dictionary[st],
+                    stateConfig
                   );
-                  if (propertiesProperty !== undefined) {
-                    propertiesProperty.editorType = 'object';
-                    if (
-                      p.valueTypes &&
-                      p.valueTypes.length > 0 &&
-                      p.valueTypes[0].subTypes &&
-                      p.valueTypes[0].subTypes.length > 1 &&
-                      p.valueTypes[0].subTypes[1].subTypes &&
-                      p.valueTypes[0].subTypes[1].subTypes.length > 0
-                    ) {
-                      propertiesProperty.valueTypes = [
-                        p.valueTypes[0].subTypes[1].subTypes[0]
-                      ];
-                      propertiesProperty.value = PropertyConfigManager.chartPartToProperty(
-                        chartPropValue._dictionary[st].properties,
-                        propertiesProperty.valueTypes[0].name
-                      );
+                  if (
+                    subProp !== undefined &&
+                    subProp.properties !== undefined
+                  ) {
+                    const propertiesProperty = subProp.properties.find(
+                      pp => pp.name === 'properties'
+                    );
+                    if (propertiesProperty !== undefined) {
+                      propertiesProperty.editorType = 'object';
+                      if (
+                        p.valueTypes &&
+                        p.valueTypes.length > 0 &&
+                        p.valueTypes[0].subTypes &&
+                        p.valueTypes[0].subTypes.length > 1 &&
+                        p.valueTypes[0].subTypes[1].subTypes &&
+                        p.valueTypes[0].subTypes[1].subTypes.length > 0
+                      ) {
+                        propertiesProperty.valueTypes = [
+                          p.valueTypes[0].subTypes[1].subTypes[0]
+                        ];
+                        propertiesProperty.value = PropertyConfigManager.chartPartToProperty(
+                          chartPropValue._dictionary[st].properties,
+                          stateConfig,
+                          propertiesProperty.valueTypes[0].name
+                        );
+                      }
                     }
                   }
+                  p.value.push(subProp);
                 }
-                p.value.push(subProp);
               });
             }
           } else if (
@@ -773,33 +800,45 @@ export default class PropertyConfigManager {
                 p.valueTypes &&
                 p.valueTypes[0].name !== 'DictionaryTemplate'
               ) {
-                const valuesObject = (chartPropValue as any)['values'];
-                valuesObject.forEach((subPart: am4core.Sprite) => {
-                  const subProp = PropertyConfigManager.chartPartToProperty(
-                    subPart
-                  );
-                  if (subProp !== undefined) {
-                    p.value.push(subProp);
-                  }
-                });
-              } else {
-                const vo = (chartPropValue as any)['_dictionary'];
-                const dictionaryKeys = Object.keys(vo);
-                dictionaryKeys.forEach(dKey => {
-                  const subPart = (vo as any)[dKey];
-                  const subProp = PropertyConfigManager.chartPartToProperty(
-                    subPart
-                  );
-                  if (subProp !== undefined) {
-                    const subPropNameProp = subProp.properties
-                      ? subProp.properties.find(sp => sp.name === 'name')
-                      : undefined;
-                    if (subPropNameProp !== undefined) {
-                      subPropNameProp.value = dKey;
+                // don't go any deeper if property not in the config
+                if (propIndex > -1) {
+                  const valuesObject = (chartPropValue as any)['values'];
+                  valuesObject.forEach(
+                    (subPart: am4core.Sprite, index: number) => {
+                      const subProp = PropertyConfigManager.chartPartToProperty(
+                        subPart,
+                        configPropValue && configPropValue[index]
+                          ? configPropValue[index]
+                          : {}
+                      );
+                      if (subProp !== undefined) {
+                        p.value.push(subProp);
+                      }
                     }
-                    p.value.push(subProp);
-                  }
-                });
+                  );
+                }
+              } else {
+                // don't go any deeper if property not in the config
+                if (propIndex > -1) {
+                  const vo = (chartPropValue as any)['_dictionary'];
+                  const dictionaryKeys = Object.keys(vo);
+                  dictionaryKeys.forEach(dKey => {
+                    const subPart = (vo as any)[dKey];
+                    const subProp = PropertyConfigManager.chartPartToProperty(
+                      subPart,
+                      configPropValue[dKey]
+                    );
+                    if (subProp !== undefined) {
+                      const subPropNameProp = subProp.properties
+                        ? subProp.properties.find(sp => sp.name === 'name')
+                        : undefined;
+                      if (subPropNameProp !== undefined) {
+                        subPropNameProp.value = dKey;
+                      }
+                      p.value.push(subProp);
+                    }
+                  });
+                }
               }
 
               if (
@@ -816,10 +855,16 @@ export default class PropertyConfigManager {
                 });
                 p.properties.push(templateProperty);
 
-                const templatePropertyValue = PropertyConfigManager.chartPartToProperty(
-                  (chartPropValue as any)['template']
-                );
-                templateProperty.value = templatePropertyValue;
+                // don't go any deeper if property not in the config
+                if (propIndex > -1) {
+                  const templatePropertyValue = PropertyConfigManager.chartPartToProperty(
+                    (chartPropValue as any)['template'],
+                    configPropValue['template'] !== undefined
+                      ? configPropValue['template']
+                      : configPropValue
+                  );
+                  templateProperty.value = templatePropertyValue;
+                }
               }
             }
           } else if (
@@ -842,10 +887,14 @@ export default class PropertyConfigManager {
             PropertyConfigManager.getPropertyTypeFamily(p) === 'object'
           ) {
             // reference type
-            p.value = PropertyConfigManager.chartPartToProperty(
-              chartPropValue,
-              p.valueTypes ? p.valueTypes[0].name : ''
-            );
+            // don't go any deeper if property not in the config
+            if (propIndex > -1) {
+              p.value = PropertyConfigManager.chartPartToProperty(
+                chartPropValue,
+                configPropValue,
+                p.valueTypes ? p.valueTypes[0].name : ''
+              );
+            }
           } else if (
             PropertyConfigManager.getPropertyTypeFamily(p) === 'array'
           ) {
