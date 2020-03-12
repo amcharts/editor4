@@ -353,14 +353,27 @@ class App extends Component {
         }
       }
       if (forTemplate) {
-        const templateProperty = property.properties
+        let templateProperty = property.properties
           ? property.properties.find(tp => tp.name === 'template')
           : undefined;
-        if (templateProperty !== undefined) {
-          property.isUserSet = true;
-          templateProperty.isUserSet = true;
-          templateProperty.value = new Property(newItem);
+        if (templateProperty === undefined) {
+          // create new template
+          if (property.properties === undefined) {
+            property.properties = new Array<Property>();
+            property.value = new Array<Property>();
+          }
+          templateProperty = new Property({
+            name: 'template',
+            editorType: 'object',
+            valueTypes: property.valueTypes
+              ? property.valueTypes[0].subTypes
+              : undefined
+          });
+          property.properties.push(templateProperty);
         }
+        property.isUserSet = true;
+        templateProperty.isUserSet = true;
+        templateProperty.value = new Property(newItem);
       } else {
         if (property.value === undefined) {
           property.value = new Array<Property>();
