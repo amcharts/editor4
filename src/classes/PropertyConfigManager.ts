@@ -800,8 +800,8 @@ export default class PropertyConfigManager {
                 p.valueTypes &&
                 p.valueTypes[0].name !== 'DictionaryTemplate'
               ) {
-                // don't go any deeper if property not in the config
-                if (propIndex > -1) {
+                // don't iterate values if property not in the config or editorType is Template (values don't matter)
+                if (propIndex > -1 && p.editorType !== 'Template') {
                   const valuesObject = (chartPropValue as any)['values'];
                   valuesObject.forEach(
                     (subPart: am4core.Sprite, index: number) => {
