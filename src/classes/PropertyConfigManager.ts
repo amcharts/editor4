@@ -506,7 +506,10 @@ export default class PropertyConfigManager {
                 const templateProperty = p.properties.find(
                   tp => tp.name === 'template'
                 );
-                if (templateProperty !== undefined) {
+                if (
+                  templateProperty !== undefined &&
+                  templateProperty.value !== undefined
+                ) {
                   result += PropertyConfigManager.propertyToJs(
                     templateProperty.value,
                     undefined,
