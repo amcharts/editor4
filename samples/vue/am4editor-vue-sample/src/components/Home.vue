@@ -9,7 +9,11 @@
       <li><b>Edit chart type</b> &mdash; users can apply different templates to a previously created chart.</li>
       <li><b>Settings</b> &mdash; shows how to modify some of the Editor configuration settings.</li>
     </ol>
-   </div>
+    <h2>Setting up your own app</h2>
+    <p>Note that in addition to using the code in these demos you also need to setup your 
+      build process to copy the Editor application files into your output destination.</p>
+    <p>Check <code>vue.config.js</code> for a config setup to copy <code>am4editor</code> directory into the output of this demo.</p>
+  </div>
 </template>
 
 <script lang="ts">

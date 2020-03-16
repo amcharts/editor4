@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <header>
-      <div class="logo">
-        amCharts 4 Editor Demo
+      <div class="logo" @click.stop="menuSwitch('home')">
+        <a href="#" @click.stop="menuSwitch('home')">amCharts 4 Editor Demo</a>
       </div>
     </header>
 
@@ -264,5 +264,9 @@ main {
 }
 code {
   background-color: #efefef;
+}
+
+.logo a {
+  color: white;
 }
 </style>
