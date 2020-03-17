@@ -11,7 +11,8 @@
   "scripts": {
     "build": "rollup --config rollup.config.prod.js",
     "build-tester": "rollup --config rollup.config.prod-tester.js",
-    "dev": "rollup --config rollup.config.dev.js -w"
+    "dev": "rollup --config rollup.config.dev.js -w",
+    "docs": "typedoc --json docs/docs.json --excludeExternals --excludeNotExported --excludePrivate --excludeProtected src"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.0.0",
@@ -30,6 +31,7 @@
     "rollup-plugin-static-site": "^0.1.0",
     "rollup-plugin-terser": "^5.1.1",
     "rollup-plugin-typescript2": "^0.22.1",
+    "typedoc": "0.16.10",
     "typescript": "^3.5.3"
   }
 }
