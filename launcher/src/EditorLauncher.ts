@@ -1,5 +1,11 @@
 import { ILauncherConfig, ILauncherTarget } from './config/ILauncherConfig';
 
+/**
+ * Main class to control amCharts 4 Editor in a bigger solution.
+ *
+ * @export
+ * @class EditorLauncher
+ */
 export class EditorLauncher {
   private config: ILauncherConfig;
   private editorWindow: Window;
@@ -7,6 +13,11 @@ export class EditorLauncher {
   private editorHostDiv: HTMLDivElement;
   private target: ILauncherTarget;
 
+  /**
+   * Launches amCharts 4 Editor with specified configuration.
+   *
+   * @param config Editor configuration
+   */
   public launch = (config: ILauncherConfig) => {
     this.config = config;
 
@@ -114,6 +125,9 @@ export class EditorLauncher {
     }
   };
 
+  /**
+   * Closes Editor windows and cleans up if needed
+   */
   public close = () => {
     if (this.target && this.target.type && this.target.type === 'window') {
       if (this.editorWindow) {
