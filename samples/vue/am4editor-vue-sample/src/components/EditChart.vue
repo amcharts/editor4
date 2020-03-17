@@ -154,7 +154,6 @@ export default class EditChart extends Vue {
       config.editorConfig.engineConfig.availableThemes = [];
     }
     config.editorConfig.chartConfig = chartConfig;
-    console.log(config.editorConfig.chartConfig);
     config.okCallback = this.okClicked;
     config.cancelCallback = () => { 
       if (this.launcher) {

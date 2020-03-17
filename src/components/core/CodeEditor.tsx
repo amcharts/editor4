@@ -53,7 +53,11 @@ class CodeEditor extends Component<ICodeEditorProps> {
           lineNumbers: true
         }}
         onBeforeChange={(editor, data, value) => {
-          this.handleCodeChanged(value);
+          try {
+            this.handleCodeChanged(value);
+          } catch {
+            data.cancel();
+          }
         }}
         onBlur={() => this.handleBlur()}
       />
