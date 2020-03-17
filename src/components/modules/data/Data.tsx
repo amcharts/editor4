@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 
-import { column, stretch } from '../../../utils/Prefixes';
-import { StyleClass, css } from '../../../utils/Style';
+import { stretch } from '../../../utils/Prefixes';
+import { StyleClass, css, StyleSelector } from '../../../utils/Style';
 
 import IBaseProps from '../../core/IBaseProps';
 import { IChartData } from '../../core/IChartData';
@@ -10,7 +10,14 @@ import EditorState from '../../core/EditorState';
 import { observable, computed, action, keys } from 'mobx';
 import { RouteComponentProps } from 'react-router-dom';
 
-import { Button, InputGroup, FileInput } from '@blueprintjs/core';
+import {
+  Button,
+  InputGroup,
+  FileInput,
+  Tabs,
+  Tab,
+  Classes
+} from '@blueprintjs/core';
 import { Menu, MenuItem, Navbar, Alignment } from '@blueprintjs/core';
 import {
   Column,
@@ -19,6 +26,8 @@ import {
   EditableName,
   ColumnHeaderCell
 } from '@blueprintjs/table';
+import CodeEditor from '../../core/CodeEditor';
+import jsbeautifier from 'js-beautify';
 
 // TODO move to a utility file
 function readFile(file: File): Promise<string> {
@@ -145,13 +154,32 @@ class ColumnHeader extends Component<IHeaderProps> {
   }
 }
 
-const dataStyle = new StyleClass(
-  column,
-  stretch,
+const dataStyle = new StyleClass(css`
+  display: flex;
+  flex-grow: 2;
+  padding: 10px;
+`);
+
+const dataTabsStyle = new StyleClass(css`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 2;
+  overflow: hidden;
+`);
+
+const dataTabStyle = new StyleClass(css`
+  display: flex;
+  overflow: hidden;
+`);
+
+new StyleSelector(
+  `.${Classes.TAB_PANEL}.${dataTabStyle.className}`,
   css`
-    margin: 15px;
+    flex-grow: 2;
   `
 );
+
+const dataPanelStyle = new StyleClass(css``);
 
 const toolbarStyle = new StyleClass(css`
   margin-bottom: 15px;
@@ -179,6 +207,7 @@ interface IDataProps extends IBaseProps, RouteComponentProps {}
 class Data extends Component<IDataProps> {
   @observable newColumnName = '';
   @observable loadingError: string | null = null;
+  @observable jsonDataString = '';
 
   @computed get columns(): Array<string> {
     const columns: Array<string> = [];
@@ -211,6 +240,19 @@ class Data extends Component<IDataProps> {
     return columns;
   }
 
+  @computed private get beautifiedJsonData(): string {
+    return jsbeautifier.js_beautify(this.jsonDataString);
+  }
+
+  public componentDidMount() {
+    this.setJsonDataString();
+  }
+
+  @action.bound
+  setJsonDataString() {
+    this.jsonDataString = JSON.stringify(this.props.editorState.chartData);
+  }
+
   @action.bound
   setNewColumnName(event: React.ChangeEvent<HTMLInputElement>): void {
     this.newColumnName = event.target.value;
@@ -229,6 +271,7 @@ class Data extends Component<IDataProps> {
     });
 
     this.props.editorState.chartData.push(obj);
+    this.setJsonDataString();
   }
 
   @action.bound
@@ -254,38 +297,45 @@ class Data extends Component<IDataProps> {
       }
 
       this.props.editorState.chartData[0][name] = undefined;
+      this.setJsonDataString();
     }
   }
 
   @action.bound
   setData(json: string): void {
-    const data = JSON.parse(json);
+    try {
+      const data = JSON.parse(json);
 
-    if (Array.isArray(data)) {
-      this.loadingError = null;
+      if (Array.isArray(data)) {
+        this.loadingError = null;
 
-      const columns: Array<string> = [];
+        const columns: Array<string> = [];
 
-      data.forEach(x => {
-        Object.keys(x).forEach(key => {
-          // TODO use Set ?
-          if (columns.indexOf(key) === -1) {
-            columns.push(key);
-          }
+        data.forEach(x => {
+          Object.keys(x).forEach(key => {
+            // TODO use Set ?
+            if (columns.indexOf(key) === -1) {
+              columns.push(key);
+            }
+          });
         });
-      });
 
-      data.forEach(x => {
-        columns.forEach(key => {
-          if (!(key in x)) {
-            x[key] = undefined;
-          }
+        data.forEach(x => {
+          columns.forEach(key => {
+            if (!(key in x)) {
+              x[key] = undefined;
+            }
+          });
         });
-      });
 
-      this.props.editorState.chartData = data;
-    } else {
-      this.loadingError = 'JSON data must be an array';
+        this.props.editorState.chartData = data;
+        this.setJsonDataString();
+      } else {
+        this.loadingError = 'JSON data must be an array';
+      }
+    } catch {
+      this.loadingError = 'Malformed JSON';
+      // throw new SyntaxError('Malformed JSON');
     }
   }
 
@@ -324,6 +374,7 @@ class Data extends Component<IDataProps> {
         object[name] = value;
       }
     }
+    this.setJsonDataString();
   }
 
   renderCell = (index: number, column: number) => {
@@ -351,6 +402,7 @@ class Data extends Component<IDataProps> {
       this.props.editorState.chartData = this.props.editorState.chartData
         .slice()
         .sort(f);
+      this.setJsonDataString();
     }
   }
 
@@ -414,7 +466,18 @@ class Data extends Component<IDataProps> {
       const oldData = this.props.editorState.chartData[oldIndex];
       this.props.editorState.chartData.splice(oldIndex, 1);
       this.props.editorState.chartData.splice(newIndex, 0, oldData);
+      this.setJsonDataString();
     }
+  }
+
+  @action.bound
+  private handleCodeChanged(newCode: string) {
+    this.jsonDataString = newCode;
+  }
+
+  @action.bound
+  private handleEditorBlur() {
+    this.setData(this.jsonDataString);
   }
 
   public render() {
@@ -454,55 +517,94 @@ class Data extends Component<IDataProps> {
     */
     return (
       <div className={dataStyle.className}>
-        <Navbar className={toolbarStyle.className}>
-          <Navbar.Group align={Alignment.LEFT}>
-            <FileInput text="Import JSON..." onInputChange={this.importJson} />
+        <Tabs
+          large={true}
+          defaultSelectedTabId="table1"
+          className={dataTabsStyle.className}
+          renderActiveTabPanelOnly={true}
+        >
+          <Tab
+            id="table1"
+            title="Table"
+            className="dataTabStyle"
+            panel={
+              <div className={dataPanelStyle.className}>
+                <Navbar className={toolbarStyle.className}>
+                  <Navbar.Group align={Alignment.LEFT}>
+                    <FileInput
+                      text="Import JSON..."
+                      onInputChange={this.importJson}
+                    />
 
-            <InputGroup
-              className={newColumnButton.className}
-              placeholder="New column name..."
-              value={this.newColumnName}
-              onChange={this.setNewColumnName}
-              onKeyUp={this.newColumnKeyUp}
-              rightElement={<Button icon="add" onClick={this.addColumn} />}
-            />
+                    <InputGroup
+                      className={newColumnButton.className}
+                      placeholder="New column name..."
+                      value={this.newColumnName}
+                      onChange={this.setNewColumnName}
+                      onKeyUp={this.newColumnKeyUp}
+                      rightElement={
+                        <Button icon="add" onClick={this.addColumn} />
+                      }
+                    />
 
-            <Button
-              className={newRowButton.className}
-              icon="add"
-              text="New row"
-              onClick={this.addRow}
-            />
-          </Navbar.Group>
-        </Navbar>
+                    <Button
+                      className={newRowButton.className}
+                      icon="add"
+                      text="New row"
+                      onClick={this.addRow}
+                    />
+                  </Navbar.Group>
+                </Navbar>
 
-        <div className={dataModuleStyle.className}>
-          {this.loadingError != null ? <div>{this.loadingError}</div> : null}
+                <div className={dataModuleStyle.className}>
+                  {this.loadingError != null ? (
+                    <div>{this.loadingError}</div>
+                  ) : null}
 
-          <Table
-            numRows={
-              this.props.editorState.chartData
-                ? this.props.editorState.chartData.length
-                : 0
+                  <Table
+                    numRows={
+                      this.props.editorState.chartData
+                        ? this.props.editorState.chartData.length
+                        : 0
+                    }
+                    enableRowHeader={true}
+                    enableRowReordering={true}
+                    enableMultipleSelection={true}
+                    onRowsReordered={this.handleRowsReordered}
+                  >
+                    {this.columns.map(name => {
+                      return (
+                        <Column
+                          id={name}
+                          name={name}
+                          key={name}
+                          cellRenderer={this.renderCell}
+                          columnHeaderCellRenderer={this.renderColumnHeader}
+                        />
+                      );
+                    })}
+                  </Table>
+                </div>
+              </div>
             }
-            enableRowHeader={true}
-            enableRowReordering={true}
-            enableMultipleSelection={true}
-            onRowsReordered={this.handleRowsReordered}
-          >
-            {this.columns.map(name => {
-              return (
-                <Column
-                  id={name}
-                  name={name}
-                  key={name}
-                  cellRenderer={this.renderCell}
-                  columnHeaderCellRenderer={this.renderColumnHeader}
-                />
-              );
-            })}
-          </Table>
-        </div>
+          />
+          <Tabs.Expander />
+          <Tab
+            id="json"
+            title="JSON"
+            className={dataTabStyle.className}
+            panel={
+              <CodeEditor
+                value={this.beautifiedJsonData}
+                mode="javascript"
+                onValueChange={newValue => {
+                  this.handleCodeChanged(newValue);
+                }}
+                onBlur={this.handleEditorBlur}
+              />
+            }
+          />
+        </Tabs>
       </div>
     );
   }
