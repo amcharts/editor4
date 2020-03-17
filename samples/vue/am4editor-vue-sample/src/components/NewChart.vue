@@ -47,7 +47,7 @@ export default class NewChart extends Vue {
     this.launcher = new EditorLauncher();
 
     // create a copy of global launcherSettings so we don't modify them
-    const config = JSON.parse(JSON.stringify(this.launcherSettings));
+    const config: ILauncherConfig = JSON.parse(JSON.stringify(this.launcherSettings));
     config.editorConfig.allowDefaultTemplates = true;
     config.okCallback = this.renderChart;
     config.cancelCallback = () => { 
