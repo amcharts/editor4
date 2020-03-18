@@ -9,7 +9,7 @@ import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 import am4themes_dark from '@amcharts/amcharts4/themes/dark';
 
 // import Editor Launcher
-import { EditorLauncher } from '@amcharts/editor4';
+import * as am4editor from '@amcharts/editor4';
 
 let chartConfig = {
   "type": "XYChart",
@@ -433,7 +433,7 @@ class EditChartType extends Component {
   }
 
   launchEditor() {
-    this.launcher = new EditorLauncher();
+    this.launcher = new am4editor.EditorLauncher();
 
     // create a copy of global launcherSettings so we don't modify them
     const config = JSON.parse(JSON.stringify(this.props.launcherSettings));
