@@ -23,7 +23,7 @@ commoncfg[0].plugins.push(
 
 commoncfg.push({
   input: './dts/launcher/src/index.d.ts',
-  output: [{ file: 'dist/editor-launcher.d.ts', format: 'es' }],
+  output: [{ file: 'dist/editor.d.ts', format: 'es' }],
   plugins: [dts()]
 });
 

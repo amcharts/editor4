@@ -34,6 +34,7 @@ export default [
       {
         file: outputDir + pkg.module,
         format: 'es',
+        sourcemap: true,
         banner: banner
       },
       {
