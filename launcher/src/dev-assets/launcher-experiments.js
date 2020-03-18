@@ -799,6 +799,8 @@ function launchEditor(editMode) {
   launcher = new am4editor.EditorLauncher();
   const inIFrame = document.getElementById('inIFrame').checked;
   const config = {
+    editorUrl: 'http://localhost:3000/',
+    
     target: {
       type: inIFrame ? 'inline' : 'window',
       // target: inIFrame ? 'editordiv' : '_blank',

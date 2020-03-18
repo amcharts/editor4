@@ -38,11 +38,7 @@ export class EditorLauncher {
     //this.config.target = target;
 
     const editorUrl =
-      config.editorUrl !== undefined
-        ? config.editorUrl
-        : window.location.hostname === 'localhost'
-        ? 'http://localhost:3000/'
-        : '//live4test.amcharts.com/';
+      config.editorUrl !== undefined ? config.editorUrl : '/am4editor/';
 
     switch (this.target.type) {
       case 'inline': {
