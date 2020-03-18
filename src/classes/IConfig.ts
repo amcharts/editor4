@@ -39,6 +39,10 @@ export default interface IConfig {
    * Configuration for amCharts 4 engine (am4core).
    */
   engineConfig?: IEngineConfig;
+  /**
+   * Editor license key
+   */
+  editorLicense?: string;
 }
 
 /**

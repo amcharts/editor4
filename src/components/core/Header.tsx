@@ -28,11 +28,13 @@ const headingStyle = new StyleClass(
 );
 
 const logoStyle = new StyleClass(css`
+  width: 86px;
   max-width: 86px;
 `);
 
 interface IHeaderProps {
   actionButtonsEnabled: boolean;
+  showLogo: boolean;
   handleActionButtonClick: (isOK: boolean) => void;
 }
 
@@ -40,7 +42,19 @@ class Header extends Component<IHeaderProps> {
   public render() {
     return (
       <div className={`${headerStyle.className}`}>
-        <img src={logo} alt="amCharts editor" className={logoStyle.className} />
+        {this.props.showLogo && (
+          <a
+            href="https://amcharts.com"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <img
+              src={logo}
+              alt="amCharts editor"
+              className={logoStyle.className}
+            />
+          </a>
+        )}
         <h2 className={headingStyle.className}>Chart Editor</h2>
         {this.props.actionButtonsEnabled && (
           <div className={editorTheme.uiLibThemeClassName}>
