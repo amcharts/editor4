@@ -1,17 +1,18 @@
 {
   "name": "@amcharts/editor4",
-  "version": "4.0.0-alpha.3",
+  "version": "4.0.0-alpha.4",
   "description": "amCharts 4 Editor",
-  "main": "editor-launcher.umd.js",
-  "module": "editor-launcher.esm.js",
-  "types": "editor-launcher.d.ts",
+  "main": "editor.js",
+  "module": "editor.esm.js",
+  "types": "editor.d.ts",
   "author": "amCharts <contact@amcharts.com> (https://www.amcharts.com/)",
   "homepage": "https://www.amcharts.com/",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "build": "rollup --config rollup.config.prod.js",
     "build-tester": "rollup --config rollup.config.prod-tester.js",
-    "dev": "rollup --config rollup.config.dev.js -w"
+    "dev": "rollup --config rollup.config.dev.js -w",
+    "docs": "typedoc --json docs/docs.json --module system --mode file --target es5 --ignoreCompilerErrors --excludeNotExported --excludePrivate --excludeProtected src"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.0.0",
@@ -30,6 +31,7 @@
     "rollup-plugin-static-site": "^0.1.0",
     "rollup-plugin-terser": "^5.1.1",
     "rollup-plugin-typescript2": "^0.22.1",
+    "typedoc": "0.16.8",
     "typescript": "^3.5.3"
   }
 }
