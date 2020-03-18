@@ -38,7 +38,7 @@ import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 import am4themes_dark from '@amcharts/amcharts4/themes/dark';
 
 // import Editor Launcher
-import { EditorLauncher, ILauncherConfig } from '@amcharts/editor4';
+import * as am4editor from '@amcharts/editor4';
 
 let chartConfig: object = {
     "type": "XYChart",
@@ -134,20 +134,20 @@ let chartConfig: object = {
 @Component
 export default class EditChart extends Vue {
   chart?: am4core.Sprite;
-  launcher?: EditorLauncher;
+  launcher?: am4editor.EditorLauncher;
   previewBackgroundColor = 'white';
 
-  @Prop() launcherSettings!: ILauncherConfig;
+  @Prop() launcherSettings!: am4editor.ILauncherConfig;
 
   mounted() {
     this.renderChart(chartConfig);
   }
 
   launchEditor() {
-    this.launcher = new EditorLauncher();
+    this.launcher = new am4editor.EditorLauncher();
 
     // create a copy of global launcherSettings so we don't modify them
-    const config = JSON.parse(JSON.stringify(this.launcherSettings)) as ILauncherConfig;
+    const config: am4editor.ILauncherConfig = JSON.parse(JSON.stringify(this.launcherSettings));
     config.editorConfig.enabledModules = ['design', 'data'];
     if (config.editorConfig.engineConfig) {
       // remove themes as we are not allowning and not reacting to theme changes

@@ -48,13 +48,13 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 // import Editor Launcher
-import { ILauncherConfig, ModuleType, IThemeInfo } from '@amcharts/editor4';
+import * as am4editor from '@amcharts/editor4';
 
 @Component
 export default class Settings extends Vue {
-  @Prop() allModules!: ModuleType[];
-  @Prop() allThemes!: IThemeInfo[];
-  @Prop() launcherSettings!: ILauncherConfig;
+  @Prop() allModules!: am4editor.ModuleType[];
+  @Prop() allThemes!: am4editor.IThemeInfo[];
+  @Prop() launcherSettings!: am4editor.ILauncherConfig;
 
   private toggleModule(name: string, isEnabled: boolean) {
     this.$emit('toggle-module', name, isEnabled);

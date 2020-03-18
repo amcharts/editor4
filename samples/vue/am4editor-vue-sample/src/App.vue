@@ -65,7 +65,7 @@ import EditChart from './components/EditChart.vue';
 import NewChartFromData from './components/NewChartFromData.vue';
 import EditChartType from './components/EditChartType.vue';
 import Settings from './components/Settings.vue';
-import { ILauncherConfig, ModuleType, IThemeInfo } from '@amcharts/editor4';
+import * as am4editor from '@amcharts/editor4';
 
 type PageType = 'home' | 'new-chart' | 'edit-chart' | 'new-from-data' | 'edit-type';
 
@@ -75,8 +75,8 @@ type PageType = 'home' | 'new-chart' | 'edit-chart' | 'new-from-data' | 'edit-ty
   },
 })
 export default class App extends Vue {
-  private readonly allModules: ModuleType[] = ['home', 'design', 'data', 'code'];
-  private readonly allThemes: IThemeInfo[] = [
+  private readonly allModules: am4editor.ModuleType[] = ['home', 'design', 'data', 'code'];
+  private readonly allThemes: am4editor.IThemeInfo[] = [
     {
       name: 'am4themes_animated',
       label: 'Animated'
@@ -87,7 +87,7 @@ export default class App extends Vue {
     }
   ];
 
-  private launcherSettings: ILauncherConfig = {
+  private launcherSettings: am4editor.ILauncherConfig = {
     editorUrl: '/am4editor/',
     target: { type: 'inline' },
     editorConfig: {
@@ -111,7 +111,7 @@ export default class App extends Vue {
     this.activePage = newPage;
   }
 
-  private toggleModules(name: ModuleType, isEnabled: boolean) {
+  private toggleModules(name: am4editor.ModuleType, isEnabled: boolean) {
     const modules = this.launcherSettings.editorConfig.enabledModules;
     if (modules) {
       if (!isEnabled && modules.indexOf(name) > -1) {
