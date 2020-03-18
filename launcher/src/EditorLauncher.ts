@@ -2,9 +2,7 @@ import { ILauncherConfig, ILauncherTarget } from './config/ILauncherConfig';
 
 /**
  * Main class to control amCharts 4 Editor in a bigger solution.
- *
- * @export
- * @class EditorLauncher
+ * @important
  */
 export class EditorLauncher {
   private config: ILauncherConfig;
