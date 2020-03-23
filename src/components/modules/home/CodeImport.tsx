@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import CodeEditor from '../../core/CodeEditor';
-import { Button } from '@blueprintjs/core';
+import { Button, Callout } from '@blueprintjs/core';
 import { StyleClass, css } from '../../../utils/Style';
 
 const codeImportStyle = new StyleClass(css`
@@ -27,6 +27,7 @@ interface ICodeImportProps {
 @observer
 class CodeImport extends Component<ICodeImportProps> {
   @observable private codeToImport = '';
+  @observable private importErrorMessage = '';
 
   public constructor(props: Readonly<ICodeImportProps>) {
     super(props);
@@ -47,11 +48,17 @@ class CodeImport extends Component<ICodeImportProps> {
           readOnly={false}
           onValueChange={newVale => (this.codeToImport = newVale)}
         />
+        {this.importErrorMessage !== '' && (
+          <Callout intent="danger" icon="error" title="Error importing">
+            {this.importErrorMessage}
+          </Callout>
+        )}
         <div className={importButtoRowStyle.className}>
           <Button
             icon="import"
             text="Import..."
             onClick={this.handleImportClick}
+            disabled={this.codeToImport === ''}
           />
         </div>
       </div>
@@ -60,12 +67,13 @@ class CodeImport extends Component<ICodeImportProps> {
 
   private async handleImportClick() {
     // @todo: import from object-style code special tag
+    this.importErrorMessage = '';
     if (this.codeToImport !== '') {
       let jsonConfig: object | undefined = undefined;
       try {
         jsonConfig = JSON.parse(this.codeToImport);
-      } catch {
-        // @todo: handle error
+      } catch (error) {
+        this.importErrorMessage = error.message;
       }
       if (jsonConfig !== undefined && this.props.onChartImport) {
         this.props.onChartImport(jsonConfig);
