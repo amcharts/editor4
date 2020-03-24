@@ -760,15 +760,15 @@ function closeEditor() {
   launcher.close();
 }
 
-function showChart(config, themes, licenses) {
-  chartConfig = config;
-  appliedThemes = themes;
-  licenseNumbers = licenses;
+function showChart(event) {
+  chartConfig = event.chartConfig;
+  appliedThemes = event.appliedThemes;
+  licenseNumbers = event.appliedLicenses;
 
   am4core.unuseAllThemes();
 
-  if (themes) {
-    themes.forEach(t => {
+  if (appliedThemes) {
+    appliedThemes.forEach(t => {
       switch (t) {
         case 'am4themes_animated': {
           am4core.useTheme(am4themes_animated);
@@ -784,8 +784,8 @@ function showChart(config, themes, licenses) {
     });
   }
 
-  if (licenses) {
-    licenses.forEach(l => {
+  if (licenseNumbers) {
+    licenseNumbers.forEach(l => {
       am4core.addLicense(l);
     });
   }
@@ -797,6 +797,10 @@ function showChart(config, themes, licenses) {
 
 function launchEditor(editMode) {
   launcher = new am4editor.EditorLauncher();
+
+  launcher.addEventListener('save', showChart);
+  launcher.addEventListener('close', closeEditor);
+
   const inIFrame = document.getElementById('inIFrame').checked;
   const config = {
     editorUrl: 'http://localhost:3000/',
@@ -829,8 +833,8 @@ function launchEditor(editMode) {
       //   ])
       // }
     },
-    okCallback: showChart,
-    cancelCallback: closeEditor
+    // okCallback: showChart,
+    // cancelCallback: closeEditor
   };
   if (editMode && chartConfig) {
     config.editorConfig.chartConfig = chartConfig;

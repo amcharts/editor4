@@ -22,6 +22,34 @@ export interface ILauncherTarget {
 }
 
 /**
+ * Support Launcher event types
+ */
+export type LauncherEventType = 'save' | 'close';
+
+/**
+ * Event argument type for Launcher event handlers.
+ */
+export interface ILauncherEventArguments {
+  /**
+   * Chart created or edited in the Editor.
+   */
+  chartConfig: object;
+
+  /**
+   * Themes selected in the Editor.
+   */
+  appliedThemes?: string[];
+
+  /** License infromation entered in the Editor. */
+  appliedLicenses?: string[];
+}
+
+/**
+ * Launcher event handler type.
+ */
+export type LauncherEventHandler = (event?: ILauncherEventArguments) => void;
+
+/**
  * amCharts 4 Editor launcher configuration settings.
  */
 export interface ILauncherConfig {
@@ -38,20 +66,4 @@ export interface ILauncherConfig {
    * @default /am4editor/
    */
   editorUrl?: string;
-  /**
-   * Callback to call when user presses OK/save button in the editor.
-   *
-   * @param chartConfig Chart created or edited in the Editor.
-   * @param appliedThemes Themes selected in the Editor.
-   * @param appliedLicenses License infromation entered in the Editor.
-   */
-  okCallback?: (
-    chartConfig: object,
-    appliedThemes?: string[],
-    appliedLicenses?: string[]
-  ) => void;
-  /**
-   * Callback to call when the user closes the Editor without saving.
-   */
-  cancelCallback?: () => void;
 }
