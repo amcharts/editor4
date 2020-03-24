@@ -140,11 +140,17 @@ export default class EditChart extends Vue {
   @Prop() launcherSettings!: am4editor.ILauncherConfig;
 
   mounted() {
-    this.renderChart(chartConfig);
+    this.renderChart({ chartConfig: chartConfig });
   }
 
   launchEditor() {
     this.launcher = new am4editor.EditorLauncher();
+    this.launcher.addEventListener('save', this.okClicked);
+    this.launcher.addEventListener('close', () => { 
+      if (this.launcher) {
+        this.launcher.close(); 
+      }
+    });
 
     // create a copy of global launcherSettings so we don't modify them
     const config: am4editor.ILauncherConfig = JSON.parse(JSON.stringify(this.launcherSettings));
@@ -154,38 +160,36 @@ export default class EditChart extends Vue {
       config.editorConfig.engineConfig.availableThemes = [];
     }
     config.editorConfig.chartConfig = chartConfig;
-    config.okCallback = this.okClicked;
-    config.cancelCallback = () => { 
-      if (this.launcher) {
-        this.launcher.close(); 
-      }
-    };
 
     this.launcher.launch(config);
   }
 
-  okClicked(config: object) {
-    chartConfig = config;
-    this.renderChart(config);
+  okClicked(event?: am4editor.ILauncherEventArguments) {
+    if (event) {
+      chartConfig = event.chartConfig;
+      this.renderChart(event);
+    }
   }
 
-  renderChart(config: object, appliedThemes?: string[]) {
-    if (this.launcher) {
-      this.launcher.close();
-    }
+  renderChart(event?: am4editor.ILauncherEventArguments) {
+    if (event) {
+      if (this.launcher) {
+        this.launcher.close();
+      }
 
-    if (appliedThemes) {
-      this.applyChartThemes(appliedThemes);
-    }
+      if (event.appliedThemes) {
+        this.applyChartThemes(event.appliedThemes);
+      }
 
-    if (this.chart !== undefined) {
-      this.chart.dispose();
-    }
+      if (this.chart !== undefined) {
+        this.chart.dispose();
+      }
 
-    this.chart = am4core.createFromConfig(
-      // have to create a copy of config cause createFromConfig will mutate it
-      JSON.parse(JSON.stringify(config)), 
-      this.$refs.chartdiv as HTMLElement);
+      this.chart = am4core.createFromConfig(
+        // have to create a copy of config cause createFromConfig will mutate it
+        JSON.parse(JSON.stringify(event.chartConfig)), 
+        this.$refs.chartdiv as HTMLElement);
+    }
   }
 
   applyChartThemes(themes: string[]) {

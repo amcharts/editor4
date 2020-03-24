@@ -459,6 +459,13 @@ export default class EditChartType extends Vue {
   launchEditor() {
     this.launcher = new am4editor.EditorLauncher();
 
+    this.launcher.addEventListener('save', this.okClicked);
+    this.launcher.addEventListener('close', () => { 
+      if (this.launcher) {
+        this.launcher.close(); 
+      }
+    });
+
     // create a copy of global launcherSettings so we don't modify them
     const config: am4editor.ILauncherConfig = JSON.parse(JSON.stringify(this.launcherSettings));
     config.editorConfig.enabledModules = ['design', 'home'];
@@ -509,19 +516,15 @@ export default class EditChartType extends Vue {
       config.editorConfig.engineConfig.availableThemes = [];
     }
     config.editorConfig.chartConfig = chartConfig;
-    config.okCallback = this.okClicked;
-    config.cancelCallback = () => { 
-      if (this.launcher) {
-        this.launcher.close(); 
-      }
-    };
 
     this.launcher.launch(config);
   }
 
-  okClicked(config: object) {
-    chartConfig = config;
-    this.renderChart(config);
+  okClicked(event?: am4editor.ILauncherEventArguments) {
+    if (event) {
+      chartConfig = event.chartConfig;
+      this.renderChart(event.chartConfig, event.appliedThemes);
+    }
   }
 
   renderChart(config: object, appliedThemes?: string[]) {
