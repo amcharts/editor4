@@ -1,4 +1,10 @@
-import { ILauncherConfig, ILauncherTarget } from './config/ILauncherConfig';
+import {
+  ILauncherConfig,
+  ILauncherTarget,
+  LauncherEventType,
+  ILauncherEventArguments,
+  LauncherEventHandler
+} from './config/ILauncherConfig';
 
 /**
  * Main class to control amCharts 4 Editor in a bigger solution.
@@ -10,6 +16,10 @@ export class EditorLauncher {
   private editorIFrame: HTMLIFrameElement;
   private editorHostDiv: HTMLDivElement;
   private target: ILauncherTarget;
+  private eventHanlders: Map<
+    LauncherEventType,
+    LauncherEventHandler[]
+  > = new Map([['save', []], ['close', []]]);
 
   /**
    * Launches amCharts 4 Editor with specified configuration.
@@ -38,11 +48,7 @@ export class EditorLauncher {
     //this.config.target = target;
 
     const editorUrl =
-      config.editorUrl !== undefined
-        ? config.editorUrl
-        : window.location.hostname === 'localhost'
-        ? 'http://localhost:3000/'
-        : '//live4test.amcharts.com/';
+      config.editorUrl !== undefined ? config.editorUrl : '/am4editor/';
 
     switch (this.target.type) {
       case 'inline': {
@@ -105,20 +111,14 @@ export class EditorLauncher {
           },
           '*'
         );
-      } else if (
-        event.data.messageType === 'amcharts4-editor-result' &&
-        this.config.okCallback !== undefined
-      ) {
-        this.config.okCallback(
-          event.data.config,
-          event.data.appliedThemes,
-          event.data.licenseNumbers
-        );
-      } else if (
-        event.data.messageType === 'amcharts4-editor-cancel' &&
-        this.config.cancelCallback !== undefined
-      ) {
-        this.config.cancelCallback();
+      } else if (event.data.messageType === 'amcharts4-editor-result') {
+        this.handleEvent('save', {
+          chartConfig: event.data.config,
+          appliedThemes: event.data.appliedThemes,
+          appliedLicenses: event.data.licenseNumbers
+        });
+      } else if (event.data.messageType === 'amcharts4-editor-cancel') {
+        this.handleEvent('close');
       }
     }
   };
@@ -147,5 +147,39 @@ export class EditorLauncher {
     }
 
     window.removeEventListener('message', this.editorMessageHandler, false);
+  };
+
+  /**
+   * Add event listener for Launcher events ('save' or 'close')
+   */
+  public addEventListener = (
+    eventType: LauncherEventType,
+    listener: LauncherEventHandler
+  ) => {
+    this.eventHanlders.get(eventType).push(listener);
+  };
+
+  /**
+   * Remove event listener for Launcher events
+   */
+  public removeEventListener = (
+    eventType: LauncherEventType,
+    listener: LauncherEventHandler
+  ) => {
+    const listeners = this.eventHanlders.get(eventType);
+    const index = listeners.findIndex(l => l === listener);
+    if (index > -1) {
+      listeners.splice(index, 1);
+    }
+  };
+
+  private handleEvent = (
+    eventType: LauncherEventType,
+    event?: ILauncherEventArguments
+  ) => {
+    const listeners = this.eventHanlders.get(eventType);
+    if (listeners !== undefined) {
+      listeners.forEach(l => l(event));
+    }
   };
 }

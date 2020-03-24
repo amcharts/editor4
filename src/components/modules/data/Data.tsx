@@ -28,6 +28,7 @@ import {
 } from '@blueprintjs/table';
 import CodeEditor from '../../core/CodeEditor';
 import jsbeautifier from 'js-beautify';
+import CsvImport from './CsvImport';
 
 // TODO move to a utility file
 function readFile(file: File): Promise<string> {
@@ -185,11 +186,7 @@ const toolbarStyle = new StyleClass(css`
   margin-bottom: 15px;
 `);
 
-const newColumnButton = new StyleClass(css`
-  margin-left: 10px;
-`);
-
-const newRowButton = new StyleClass(css`
+const toolbarButtonStyle = new StyleClass(css`
   margin-left: 10px;
 `);
 
@@ -208,6 +205,7 @@ class Data extends Component<IDataProps> {
   @observable newColumnName = '';
   @observable loadingError: string | null = null;
   @observable jsonDataString = '';
+  @observable importCsvOpen = false;
 
   @computed get columns(): Array<string> {
     const columns: Array<string> = [];
@@ -360,6 +358,20 @@ class Data extends Component<IDataProps> {
   }
 
   @action.bound
+  importCsv(event: React.FormEvent<HTMLElement>): void {
+    this.importCsvOpen = true;
+  }
+
+  @action.bound
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  handleCsvImport(data: any[]): void {
+    if (data.length > 0) {
+      this.setData(JSON.stringify(data));
+    }
+    this.importCsvOpen = false;
+  }
+
+  @action.bound
   changeCell(object: IChartData, name: string, value: string): void {
     const match = /^ *"([0-9]+(?:\.[0-9]+)?)" *$/.exec(value);
 
@@ -481,40 +493,6 @@ class Data extends Component<IDataProps> {
   }
 
   public render() {
-    /*
-    <Tabs
-          large={true}
-          defaultSelectedTabId="json"
-          className={tabsStyle.className}
-        >
-          <Tab
-            id="table1"
-            title="Table1"
-            panelClassName={tabPanelStyle.className}
-            panel={<div>Not implemented</div>}
-          />
-          <Tab
-            id="table2"
-            title="Table2"
-            panelClassName={tabPanelStyle.className}
-            panel={<div>Not implemented</div>}
-          />
-          <Tabs.Expander />
-          <Tab
-            id="json"
-            title="JSON"
-            panelClassName={tabPanelStyle.className}
-            panel={
-              <CodeEditor
-                value={this.dataString}
-                onValueChange={newValue => {
-                  this.handleDataChanged(newValue);
-                }}
-              />
-            }
-          />
-        </Tabs>
-    */
     return (
       <div className={dataStyle.className}>
         <Tabs
@@ -536,8 +514,23 @@ class Data extends Component<IDataProps> {
                       onInputChange={this.importJson}
                     />
 
+                    <Button
+                      icon="import"
+                      text="Import CSV"
+                      className={toolbarButtonStyle.className}
+                      onClick={this.importCsv}
+                    />
+
+                    <CsvImport
+                      isOpen={this.importCsvOpen}
+                      onCsvImport={this.handleCsvImport}
+                      onImportCancel={() => {
+                        this.importCsvOpen = false;
+                      }}
+                    />
+
                     <InputGroup
-                      className={newColumnButton.className}
+                      className={toolbarButtonStyle.className}
                       placeholder="New column name..."
                       value={this.newColumnName}
                       onChange={this.setNewColumnName}
@@ -548,7 +541,7 @@ class Data extends Component<IDataProps> {
                     />
 
                     <Button
-                      className={newRowButton.className}
+                      className={toolbarButtonStyle.className}
                       icon="add"
                       text="New row"
                       onClick={this.addRow}

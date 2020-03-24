@@ -1,6 +1,12 @@
 /* eslint-disable import/first */
 export { EditorLauncher } from './EditorLauncher';
-export { ILauncherTarget, ILauncherConfig } from './config/ILauncherConfig';
+export {
+  ILauncherTarget,
+  ILauncherConfig,
+  ILauncherEventArguments,
+  LauncherEventHandler,
+  LauncherEventType
+} from './config/ILauncherConfig';
 export { IEngineConfig, IThemeInfo } from './../../src/classes/IEngineConfig';
 export { default as ITemplate } from './../../src/classes/ITemplate';
 export { default as ITemplateGroup } from './../../src/classes/ITemplateGroup';

@@ -27,6 +27,7 @@ import IdHelper from './classes/IdHelper';
 import EditorState from './components/core/EditorState';
 import SpinnerView from './components/core/SpinnerView';
 import ConfigManager from './classes/ConfigManager';
+import { computed } from 'mobx';
 
 const appStyle = new StyleClass(
   row,
@@ -99,6 +100,10 @@ class App extends Component {
         }
       }
 
+      if (config.editorLicense) {
+        this.editorState.editorConfig.editorLicense = config.editorLicense;
+      }
+
       if (config.presetData) {
         this.editorState.presetData = config.presetData;
       }
@@ -119,6 +124,13 @@ class App extends Component {
     //     ['value1', 'val']
     //   ])
     // };
+  }
+
+  @computed private get hasLicense(): boolean {
+    return (
+      this.editorState.editorConfig.editorLicense !== undefined &&
+      this.editorState.editorConfig.editorLicense.match(/^ED.{5,}/i) !== null
+    );
   }
 
   public render() {
@@ -146,6 +158,7 @@ class App extends Component {
                   ? window.opener !== null
                   : window.parent !== window
               }
+              showLogo={!this.hasLicense}
               handleActionButtonClick={this.handleActionButtonClick}
             />
 
