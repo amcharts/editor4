@@ -48,7 +48,7 @@ class Settings extends Component {
         {this.props.allModules.map((module, index) => (
           <label key={`module-${index}`}>
             <input type="checkbox" value={module}
-              checked={this.props.launcherSettings.editorConfig.enabledModules.indexOf(module) > -1}
+              checked={this.props.editorConfig.enabledModules.indexOf(module) > -1}
               onChange={(event) => this.toggleModule(event.target.value, event.target.checked)}
               />
             {module}
@@ -59,7 +59,7 @@ class Settings extends Component {
         {this.props.allThemes.map((theme, index) => (
           <label key={`theme-${index}`}>
             <input type="checkbox" value={theme.name} 
-              checked={this.props.launcherSettings.editorConfig.engineConfig.availableThemes.find(t => t.name === theme.name) !== undefined}
+              checked={this.props.editorConfig.engineConfig.availableThemes.find(t => t.name === theme.name) !== undefined}
               onChange={(event) => this.toggleTheme(event.target.value, event.target.checked)}
               />
             {theme.label}

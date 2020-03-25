@@ -28,21 +28,21 @@ class App extends Component {
       currentPage: 'home',
       launcherSettings: {
         editorUrl: '/am4editor/',
-        target: { type: 'inline' },
-        editorConfig: {
-          enabledModules: ['home', 'design', 'data', 'code'],
-          engineConfig: {
-            availableThemes: [
-              {
-                name: 'am4themes_animated',
-                label: 'Animated'
-              },
-              {
-                name: 'am4themes_dark',
-                label: 'Dark'
-              }
-            ]
-          }
+        target: { type: 'inline' }
+      },
+      editorConfig: {
+        enabledModules: ['home', 'design', 'data', 'code'],
+        engineConfig: {
+          availableThemes: [
+            {
+              name: 'am4themes_animated',
+              label: 'Animated'
+            },
+            {
+              name: 'am4themes_dark',
+              label: 'Dark'
+            }
+          ]
         }
       }
     }
@@ -65,8 +65,8 @@ class App extends Component {
   }
 
   toggleModule(name, isEnabled) {
-    const newState = Object.assign({}, this.state.launcherSettings);
-    const modules = newState.editorConfig.enabledModules;
+    const newState = Object.assign({}, this.state.editorConfig);
+    const modules = newState.enabledModules;
     if (modules) {
       if (!isEnabled && modules.indexOf(name) > -1) {
         modules.splice(modules.indexOf(name), 1);
@@ -74,12 +74,12 @@ class App extends Component {
         modules.push(name);
       }
     }
-    this.setState( { launcherSettings: newState } );
+    this.setState( { editorConfig: newState } );
   }
 
   toggleTheme(name, isEnabled) {
-    const newState = Object.assign({}, this.state.launcherSettings);
-    const themes = newState.editorConfig.engineConfig.availableThemes;
+    const newState = Object.assign({}, this.state.editorConfig);
+    const themes = newState.engineConfig.availableThemes;
     if (themes) {
       if (!isEnabled && themes.findIndex(t => t.name === name) > -1) {
         themes.splice(themes.findIndex(t => t.name === name), 1);
@@ -90,7 +90,7 @@ class App extends Component {
         }
       }
     }
-    this.setState( { launcherSettings: newState } );
+    this.setState( { editorConfig: newState } );
   }
 
   render() {
@@ -141,26 +141,31 @@ class App extends Component {
           {this.state.currentPage === 'new-chart' && 
             <NewChart 
               launcherSettings={this.state.launcherSettings} 
+              editorConfig={this.state.editorConfig}
             />
           }
           {this.state.currentPage === 'edit-chart' && 
             <EditChart 
               launcherSettings={this.state.launcherSettings} 
+              editorConfig={this.state.editorConfig}
             />
           }
           {this.state.currentPage === 'new-chart-from-data' && 
             <NewChartFromData 
               launcherSettings={this.state.launcherSettings} 
+              editorConfig={this.state.editorConfig}
             />
           }
           {this.state.currentPage === 'edit-chart-type' && 
             <EditChartType
               launcherSettings={this.state.launcherSettings} 
+              editorConfig={this.state.editorConfig}
             />
           }
           {this.state.currentPage === 'settings' && 
             <Settings 
               launcherSettings={this.state.launcherSettings} 
+              editorConfig={this.state.editorConfig}
               allModules={this.allModules} 
               allThemes={this.allThemes} 
               onTargetChanged={this.setTargetType}

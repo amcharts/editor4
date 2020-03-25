@@ -24,28 +24,31 @@ class NewChart extends Component {
   }
 
   launchEditor() {
-    this.launcher = new am4editor.EditorLauncher();
+    this.launcher = new am4editor.EditorLauncher(this.props.launcherSettings);
 
-    // create a copy of global launcherSettings so we don't modify them
-    const config = JSON.parse(JSON.stringify(this.props.launcherSettings));
-    config.editorConfig.allowDefaultTemplates = true;
-    config.okCallback = this.renderChart;
-    config.cancelCallback = () => { 
+    this.launcher.addEventListener('save', this.renderChart);
+    this.launcher.addEventListener('close', () => { 
       if (this.launcher) {
         this.launcher.close(); 
       }
-    };
+    });
 
-    this.launcher.launch(config);
+    // create a copy of global editor config so we don't modify it
+    const editorConfig = JSON.parse(JSON.stringify(this.props.editorConfig));
+    editorConfig.allowDefaultTemplates = true;
+
+    this.launcher.editorConfig = editorConfig;
+
+    this.launcher.launch();
   }
 
-  renderChart(chartConfig, appliedThemes) {
+  renderChart(event) {
     if (this.launcher) {
       this.launcher.close();
     }
 
-    if (appliedThemes) {
-      this.applyChartThemes(appliedThemes);
+    if (event.appliedThemes) {
+      this.applyChartThemes(event.appliedThemes);
     }
 
     if (this.chart !== undefined) {
@@ -53,7 +56,7 @@ class NewChart extends Component {
     }
 
     this.chart = am4core.createFromConfig(
-      chartConfig, 
+      event.chartConfig, 
       document.getElementById("chartdiv")
     );
   }

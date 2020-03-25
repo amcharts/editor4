@@ -121,29 +121,31 @@ class EditChart extends Component {
   }
 
   launchEditor() {
-    this.launcher = new am4editor.EditorLauncher();
+    this.launcher = new am4editor.EditorLauncher(this.props.launcherSettings);
 
-    // create a copy of global launcherSettings so we don't modify them
-    const config = JSON.parse(JSON.stringify(this.props.launcherSettings));
-    config.editorConfig.enabledModules = ['design', 'data'];
-    if (config.editorConfig.engineConfig) {
-      // remove themes as we are not allowning and not reacting to theme changes
-      config.editorConfig.engineConfig.availableThemes = [];
-    }
-    config.editorConfig.chartConfig = chartConfig;
-    config.okCallback = this.okClicked;
-    config.cancelCallback = () => { 
+    this.launcher.addEventListener('save', this.okClicked);
+    this.launcher.addEventListener('close', () => { 
       if (this.launcher) {
         this.launcher.close(); 
       }
-    };
+    });
 
-    this.launcher.launch(config);
+    // create a copy of global editor config so we don't modify it
+    const editorConfig = JSON.parse(JSON.stringify(this.props.editorConfig));
+    editorConfig.enabledModules = ['design', 'data'];
+    if (editorConfig.engineConfig) {
+      // remove themes as we are not allowning and not reacting to theme changes
+      editorConfig.engineConfig.availableThemes = [];
+    }
+
+    this.launcher.editorConfig = editorConfig;
+
+    this.launcher.launch(chartConfig);
   }
 
-  okClicked(config) {
-    chartConfig = config;
-    this.renderChart(config);
+  okClicked(event) {
+    chartConfig = event.chartConfig;
+    this.renderChart(event.chartConfig);
   }
 
   renderChart(config, appliedThemes) {
