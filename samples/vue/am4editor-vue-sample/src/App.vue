@@ -33,19 +33,24 @@
     <main>
       <Home v-if="activePage === 'home'" />
       <NewChart v-else-if="activePage === 'new-chart'" 
-        :launcher-settings = "launcherSettings"
+        :launcher-settings="launcherSettings"
+        :editor-config="editorConfig"
         />
       <EditChart v-else-if="activePage === 'edit-chart'" 
-        :launcher-settings = "launcherSettings"
+        :launcher-settings="launcherSettings"
+        :editor-config="editorConfig"
         />
       <NewChartFromData v-else-if="activePage === 'new-chart-from-data'" 
-        :launcher-settings = "launcherSettings"
+        :launcher-settings="launcherSettings"
+        :editor-config="editorConfig"
         />
       <EditChartType v-else-if="activePage === 'edit-chart-type'" 
-        :launcher-settings = "launcherSettings"
+        :launcher-settings="launcherSettings"
+        :editor-config="editorConfig"
         />
       <Settings v-else-if="activePage === 'settings'" 
         :launcher-settings="launcherSettings" 
+        :editor-config="editorConfig"
         :all-modules="allModules"
         :all-themes="allThemes"
         @toggle-module="toggleModules"
@@ -89,30 +94,31 @@ export default class App extends Vue {
 
   private launcherSettings: am4editor.ILauncherConfig = {
     editorUrl: '/am4editor/',
-    target: { type: 'inline' },
-    editorConfig: {
-      enabledModules: ['home', 'design', 'data', 'code'],
-      engineConfig: {
-        availableThemes: [
-          {
-            name: 'am4themes_animated',
-            label: 'Animated'
-          },
-          {
-            name: 'am4themes_dark',
-            label: 'Dark'
-          }
-        ]
-      }
+    target: { type: 'inline' }
+  };
+  private editorConfig: am4editor.IConfig = {
+    enabledModules: ['home', 'design', 'data', 'code'],
+    engineConfig: {
+      availableThemes: [
+        {
+          name: 'am4themes_animated',
+          label: 'Animated'
+        },
+        {
+          name: 'am4themes_dark',
+          label: 'Dark'
+        }
+      ]
     }
   };
+
   private activePage: PageType = 'home';
   private menuSwitch(newPage: PageType) {
     this.activePage = newPage;
   }
 
   private toggleModules(name: am4editor.ModuleType, isEnabled: boolean) {
-    const modules = this.launcherSettings.editorConfig.enabledModules;
+    const modules = this.editorConfig.enabledModules;
     if (modules) {
       if (!isEnabled && modules.indexOf(name) > -1) {
         modules.splice(modules.indexOf(name), 1);
@@ -124,7 +130,7 @@ export default class App extends Vue {
 
   private toggleThemes(name: string, isEnabled: boolean) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const themes = this.launcherSettings.editorConfig!.engineConfig!.availableThemes;
+    const themes = this.editorConfig!.engineConfig!.availableThemes;
     if (themes) {
       if (!isEnabled && themes.findIndex(t => t.name === name) > -1) {
         themes.splice(themes.findIndex(t => t.name === name), 1);
