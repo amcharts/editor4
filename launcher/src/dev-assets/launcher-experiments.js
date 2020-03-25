@@ -796,13 +796,9 @@ function showChart(event) {
 }
 
 function launchEditor(editMode) {
-  launcher = new am4editor.EditorLauncher();
-
-  launcher.addEventListener('save', showChart);
-  launcher.addEventListener('close', closeEditor);
-
   const inIFrame = document.getElementById('inIFrame').checked;
-  const config = {
+
+  const launcherConfig = {
     editorUrl: 'http://localhost:3000/',
     
     target: {
@@ -810,8 +806,15 @@ function launchEditor(editMode) {
       // target: inIFrame ? 'editordiv' : '_blank',
       windowFeatures:
         'width=900,height=600,menubar=yes,location=no,resizable=yes,scrollbars=yes,status=yes'
-    },
-    editorConfig: {
+    }
+  };
+
+  launcher = new am4editor.EditorLauncher(launcherConfig);
+
+  launcher.addEventListener('save', showChart);
+  launcher.addEventListener('close', closeEditor);
+
+  launcher.editorConfig = {
       templates: document.getElementById('passTemplates').checked
         ? templates
         : undefined,
@@ -832,19 +835,16 @@ function launchEditor(editMode) {
       //     ['value1', 'val']
       //   ])
       // }
-    },
-    // okCallback: showChart,
-    // cancelCallback: closeEditor
   };
-  if (editMode && chartConfig) {
-    config.editorConfig.chartConfig = chartConfig;
-    config.editorConfig.engineConfig.appliedThemes = appliedThemes;
-    config.editorConfig.engineConfig.licenseNumbers = licenseNumbers;
+
+  if (editMode) {
+    launcher.editorConfig.engineConfig.appliedThemes = appliedThemes;
+    launcher.editorConfig.engineConfig.licenseNumbers = licenseNumbers;
   }
   // if (inIFrame) {
   //   document.getElementById('editordiv').style.display = 'flex';
   // }
-  launcher.launch(config);
+  launcher.launch(chartConfig);
 }
 
 function createChart() {

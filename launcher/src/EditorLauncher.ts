@@ -5,50 +5,99 @@ import {
   ILauncherEventArguments,
   LauncherEventHandler
 } from './config/ILauncherConfig';
+import IConfig from './../../src/classes/IConfig';
 
 /**
  * Main class to control amCharts 4 Editor in a bigger solution.
  * @important
  */
 export class EditorLauncher {
-  private config: ILauncherConfig;
+  private _config: ILauncherConfig = {
+    editorUrl: '/am4editor/',
+    target: {
+      type: 'inline'
+    }
+  };
+
+  /**
+   * Get URI for the editor application
+   */
+  public get editorUrl(): string | undefined {
+    return this._config.editorUrl;
+  }
+  /**
+   * Set URI for the editor application
+   */
+  public set editorUrl(value: string) {
+    this._config.editorUrl = value;
+  }
+
+  /**
+   * Get target settings for how to open the editor window.
+   */
+  public get target(): ILauncherTarget {
+    return this._config.target;
+  }
+  /**
+   * Set target settings for how to open the editor window.
+   */
+  public set target(value: ILauncherTarget) {
+    this._config.target = value;
+  }
+
+  private _editorConfig: IConfig = {};
+  /**
+   * Get editor configuration settings.
+   */
+  public get editorConfig(): IConfig {
+    return this._editorConfig;
+  }
+  /**
+   * Set editor configuration settings.
+   */
+  public set editorConfig(value: IConfig) {
+    this._editorConfig = value;
+  }
+
   private editorWindow: Window;
   private editorIFrame: HTMLIFrameElement;
   private editorHostDiv: HTMLDivElement;
-  private target: ILauncherTarget;
   private eventHanlders: Map<
     LauncherEventType,
     LauncherEventHandler[]
   > = new Map([['save', []], ['close', []]]);
 
   /**
+   * Creates an instance of EditorLauncher.
+   * @param {ILauncherConfig} [launcherConfig] Optional launcher settings.
+   */
+  constructor(launcherConfig?: ILauncherConfig) {
+    if (launcherConfig !== undefined) {
+      this._config = launcherConfig;
+      if (this._config.target === undefined) {
+        this._config.target = {
+          type: 'inline'
+        };
+      }
+      if (this._config.editorUrl === undefined) {
+        this._config.editorUrl = '/am4editor/';
+      }
+    }
+  }
+
+  /**
    * Launches amCharts 4 Editor with specified configuration.
    *
-   * @param config Editor configuration
+   * @param config Chart configuration to edit (if editing).
    */
-  public launch = (config: ILauncherConfig) => {
-    this.config = config;
-
+  public launch = (chartConfig?: object) => {
     window.addEventListener('message', this.editorMessageHandler, false);
 
-    this.target =
-      config.target !== undefined
-        ? config.target
-        : {
-            type: 'window',
-            target: '_blank',
-            windowFeatures:
-              'width=900,height=600,menubar=yes,location=no,resizable=yes,scrollbars=yes,status=yes'
-          };
-    if (this.target.type === undefined) {
-      this.target.type = 'window';
-      this.target.target = '_blank';
+    if (chartConfig !== undefined) {
+      this._editorConfig.chartConfig = chartConfig;
+    } else {
+      this._editorConfig.chartConfig = undefined;
     }
-
-    //this.config.target = target;
-
-    const editorUrl =
-      config.editorUrl !== undefined ? config.editorUrl : '/am4editor/';
 
     switch (this.target.type) {
       case 'inline': {
@@ -80,7 +129,7 @@ export class EditorLauncher {
           this.editorIFrame.style.margin = '30px';
           this.editorIFrame.style.border = '0px';
         }
-        this.editorIFrame.src = editorUrl;
+        this.editorIFrame.src = this._config.editorUrl;
         this.target.target.appendChild(this.editorIFrame);
         this.editorWindow = this.editorIFrame.contentWindow;
         break;
@@ -88,7 +137,7 @@ export class EditorLauncher {
       case 'window':
       default: {
         this.editorWindow = window.open(
-          editorUrl,
+          this._config.editorUrl,
           this.target.target !== undefined
             ? this.target.target.toString()
             : '_blank',
@@ -107,7 +156,7 @@ export class EditorLauncher {
         this.editorWindow.postMessage(
           {
             messageType: 'amcharts4-editor-message',
-            config: this.config.editorConfig
+            config: this.editorConfig
           },
           '*'
         );
