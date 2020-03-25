@@ -1,5 +1,3 @@
-import IConfig from './../../../src/classes/IConfig';
-
 /**
  * Specifies the browser target for the Editor instance.
  */
@@ -53,10 +51,6 @@ export type LauncherEventHandler = (event?: ILauncherEventArguments) => void;
  * amCharts 4 Editor launcher configuration settings.
  */
 export interface ILauncherConfig {
-  /**
-   * Configuration for the Editor instance.
-   */
-  editorConfig: IConfig;
   /**
    * Editor target settings specifying where to open the Editor.
    */

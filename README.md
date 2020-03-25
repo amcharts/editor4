@@ -47,15 +47,17 @@ import * as am4editor from '@amcharts/editor4';
 ```
 
 Then you create an instance of the `EditorLauncher` class and call its `launch()`
-method passing launcher configuration object as its only parameter. Something like this:
+method passing chart configuration object in case you want to edit an existing chart. 
+
+Something like this:
 
 ```javascript
 const launcher = new am4editor.EditorLauncher();
-launcher.launch(launcherConfiguration);
+launcher.launch(chartConfig);
 ```
 
-Refer to [ILauncherConfig reference](https://www.amcharts.com/docs/editor4/reference/ilauncherconfig/) 
-in the documentation to learn about available configuration options.
+Refer to [EditorLauncher reference](https://www.amcharts.com/docs/editor4/reference/editorlauncher/) 
+in the documentation to learn about available properties and configuration options.
 
 ### Samples
 
