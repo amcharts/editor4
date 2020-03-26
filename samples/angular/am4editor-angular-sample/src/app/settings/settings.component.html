@@ -1,0 +1,43 @@
+<div class="settings">
+  <h1>General Launcher/Editor settings</h1>
+  <p>
+    <b>Modify settings used as the basis for all demos.</b>
+  </p>
+  <p>Note: these are just a few of available settings used here for demo purposes.</p>
+
+  <h2>Launch Editor in...</h2>
+  <label>
+    <input type="radio" name="target-type" value="inline"
+      [checked]="launcherSettings.target.type === 'inline'"
+      (change)="setTargetType($event.target.value)"
+    />
+    iframe (inline)
+  </label>
+  <label>
+    <input type="radio" name="target-type" value="window"
+      [checked]="launcherSettings.target.type === 'window'"
+      (change)="setTargetType($event.target.value)"
+    />
+    window
+  </label>
+
+  <h2>Enabled modules</h2>
+  <label *ngFor="let item of allModules">
+    <input type="checkbox"
+      [value]="item"
+      [checked]="isModuleChecked(item)"
+      (change)="toggleModule($event.target.value, $event.target.checked)"
+    />
+    {{ item }}
+  </label>
+
+  <h2>Available themes</h2>
+  <label *ngFor="let theme of allThemes; trackBy: themeKey">
+    <input type="checkbox"
+      [value]="theme.name"
+      [checked]="isThemeChecked(theme.name)"
+      (change)="toggleTheme($event.target.value, $event.target.checked)"
+    />
+    {{ theme.label }}
+  </label>
+</div>

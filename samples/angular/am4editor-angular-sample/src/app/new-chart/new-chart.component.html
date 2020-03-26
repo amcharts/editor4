@@ -1,0 +1,17 @@
+<div class="new-chart">
+  <div class="page-intro">
+    <h1>Create a brand new chart</h1>
+    <p>
+      Create a brand new chart from standard (included) templates.
+    </p>
+  </div>
+  <div class="chartdiv" id="chartdiv-new" [ngStyle]="{ 'background-color': previewBackgroundColor }">
+    <div class="placeholder" (click)="launchEditor()">click here to create a new chart</div>
+  </div>
+  <div class="comments">
+    <h2>Comments</h2>
+    <p>Built-in (bundled) templates are disabled by default so the user doesn't get access
+      to them by simply refreshing the browser window (when used with 'window' target type).
+      To enable built-in (bundled) templates set <code>editorConfig.allowDefaultTemplates = true</code> in the launcher configuration.</p>
+  </div>
+</div>

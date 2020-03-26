@@ -1,0 +1,60 @@
+<div id="app">
+  <header>
+    <div class="logo" (click)="menuSwitch('home')">
+      <a href="#" (click)="menuSwitch('home')">amCharts 4 Editor Demo</a>
+    </div>
+  </header>
+
+  <nav>
+    <ul class="menu menu-primary">
+      <li (click)="menuSwitch('new-chart')">
+        <div class="menu-item-text"><a href="#" (click)="menuSwitch('new-chart')">New chart</a></div>
+      </li>
+      <li (click)="menuSwitch">
+        <div class="menu-item-text"><a href="#" (click)="menuSwitch('edit-chart')">Edit chart</a></div>
+      </li>
+      <li (click)="menuSwitch">
+        <div class="menu-item-text"><a href="#" (click)="menuSwitch('new-chart-from-data')">New chart from data</a></div>
+      </li>
+      <li (click)="menuSwitch">
+        <div class="menu-item-text"><a href="#" (click)="menuSwitch('edit-chart-type')">Edit chart type</a></div>
+      </li>
+
+    </ul>
+
+    <ul class="menu menu-secondary">
+      <li (click)="menuSwitch('settings')">
+        <div class="menu-item-text">Settings</div>
+      </li>
+    </ul>
+  </nav>
+
+  <main [ngSwitch]="activePage">
+    <app-home *ngSwitchCase="'home'"></app-home>
+    <app-new-chart *ngSwitchCase="'new-chart'"
+      [launcherSettings]="launcherSettings"
+      [editorConfig]="editorConfig">
+    </app-new-chart>
+    <app-edit-chart *ngSwitchCase="'edit-chart'"
+      [launcherSettings]="launcherSettings"
+      [editorConfig]="editorConfig">
+    </app-edit-chart>
+    <app-new-chart-from-data *ngSwitchCase="'new-chart-from-data'"
+      [launcherSettings]="launcherSettings"
+      [editorConfig]="editorConfig">
+    </app-new-chart-from-data>
+    <app-edit-chart-type *ngSwitchCase="'edit-chart-type'"
+      [launcherSettings]="launcherSettings"
+      [editorConfig]="editorConfig">
+    </app-edit-chart-type>
+    <app-settings *ngSwitchCase="'settings'"
+      [launcherSettings]="launcherSettings"
+      [editorConfig]="editorConfig"
+      [allModules]="allModules"
+      [allThemes]="allThemes"
+      (onTargetChanged)="setTargetType($event)"
+      (onModuleToggled)="toggleModule($event)"
+      (onThemeToggled)="toggleTheme($event)">
+    </app-settings>
+  </main>
+</div>

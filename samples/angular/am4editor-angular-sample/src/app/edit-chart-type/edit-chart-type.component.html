@@ -1,0 +1,22 @@
+<div class="edit-chart">
+  <div class="page-intro">
+    <h1>Edit chart type</h1>
+    <p>
+      Edit an existing chart properties and/or data or switch template.
+    </p>
+    <p>
+      <button class="launch-editor-button" (click)="launchEditor()">edit chart</button>
+    </p>
+  </div>
+  <div class="chartdiv" id="chartdiv-edit-chart-type" [ngStyle]="{ 'background-color': previewBackgroundColor }">
+  </div>
+  <div class="comments">
+    <h2>Comments</h2>
+    <p>In this sample we edit an already existing chart and allow users to choose a different template.
+      This sample combines "New chart from data" and "Edit chart" demos to allow both modifying chart's properties
+      as well as switching to a different template.
+    </p>
+    <p>Additionally, this demo passes custom templates, so users can only select from a predefined set of
+      approved templates.</p>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<div class="new-chart">
+  <div class="page-intro">
+    <h1>Create a new chart from data</h1>
+    <p>
+      Create a new chart based on the data we supply.
+    </p>
+  </div>
+  <div class="chartdiv" id="chartdiv-new-from-data" [ngStyle]="{ 'background-color': previewBackgroundColor }">
+    <div class="placeholder" (click)="launchEditor()">click here to create a new chart</div>
+  </div>
+  <div class="comments">
+    <h2>Comments</h2>
+    <p>In this demo we let users create a new chart based on the preset data we supply</p>
+    <ul>
+      <li>We override global settings so that only <code>home</code> and <code>design</code> modules are enabled;</li>
+      <li>We supply our data via <code>presetData</code> config property;</li>
+      <li>We configure the mapping between our data structure and standard template data fields (category, value, value1, value2, etc.)</li>
+    </ul>
+
+    <p>Note that our data set may have more or less data/values than some templates expect so it won't fit perfectly in all templates.
+      In a real life scenario you would supply your own templates that match the shape of your data set.
+    </p>
+  </div>
+</div>
