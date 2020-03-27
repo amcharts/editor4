@@ -1,6 +1,6 @@
 {
   "name": "@amcharts/editor4",
-  "version": "4.0.0-alpha.6",
+  "version": "4.0.0-alpha.7",
   "description": "amCharts 4 Editor",
   "main": "editor.js",
   "module": "editor.esm.js",
