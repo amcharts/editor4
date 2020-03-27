@@ -451,13 +451,14 @@ export default class EditChartType extends Vue {
   previewBackgroundColor = 'white';
 
   @Prop() launcherSettings!: am4editor.ILauncherConfig;
+  @Prop() editorConfig!: am4editor.IConfig;
 
   mounted() {
     this.renderChart(chartConfig);
   }
 
   launchEditor() {
-    this.launcher = new am4editor.EditorLauncher();
+    this.launcher = new am4editor.EditorLauncher(this.launcherSettings);
 
     this.launcher.addEventListener('save', this.okClicked);
     this.launcher.addEventListener('close', () => { 
@@ -466,11 +467,11 @@ export default class EditChartType extends Vue {
       }
     });
 
-    // create a copy of global launcherSettings so we don't modify them
-    const config: am4editor.ILauncherConfig = JSON.parse(JSON.stringify(this.launcherSettings));
-    config.editorConfig.enabledModules = ['design', 'home'];
-    config.editorConfig.templates = customTemplates;
-    config.editorConfig.presetData = {
+    // create a copy of global editor config so we don't modify it
+    const editorConfig: am4editor.IConfig = JSON.parse(JSON.stringify(this.editorConfig));
+    editorConfig.enabledModules = ['design', 'home'];
+    editorConfig.templates = customTemplates;
+    editorConfig.presetData = {
       data: [{
             "category": "One",
             "value1": 1124,
@@ -511,13 +512,14 @@ export default class EditChartType extends Vue {
         ['value2', 'value2']
       ])
     };
-    if (config.editorConfig.engineConfig) {
+    if (editorConfig.engineConfig) {
       // remove themes as we are not allowning and not reacting to theme changes
-      config.editorConfig.engineConfig.availableThemes = [];
+      editorConfig.engineConfig.availableThemes = [];
     }
-    config.editorConfig.chartConfig = chartConfig;
 
-    this.launcher.launch(config);
+    this.launcher.editorConfig = editorConfig;
+
+    this.launcher.launch(chartConfig);
   }
 
   okClicked(event?: am4editor.ILauncherEventArguments) {

@@ -24,13 +24,20 @@ class NewChartFromData extends Component {
   }
 
   launchEditor() {
-    this.launcher = new am4editor.EditorLauncher();
+    this.launcher = new am4editor.EditorLauncher(this.props.launcherSettings);
 
-    // create a copy of global launcherSettings so we don't modify them
-    const config = JSON.parse(JSON.stringify(this.props.launcherSettings));
-    config.editorConfig.enabledModules = ['design', 'home'];
-    config.editorConfig.allowDefaultTemplates = true;
-    config.editorConfig.presetData = {
+    this.launcher.addEventListener('save', this.renderChart);
+    this.launcher.addEventListener('close', () => { 
+      if (this.launcher) {
+        this.launcher.close(); 
+      }
+    });
+
+    // create a copy of global editor config so we don't modify it
+    const editorConfig = JSON.parse(JSON.stringify(this.props.editorConfig));
+    editorConfig.enabledModules = ['design', 'home'];
+    editorConfig.allowDefaultTemplates = true;
+    editorConfig.presetData = {
       data: [
         { cat: 'c1', val: 10, val2: 21, },
         { cat: 'c2', val: 20, val2: 10, },
@@ -44,23 +51,18 @@ class NewChartFromData extends Component {
         ['value2', 'val']
       ])
     };
-    config.okCallback = this.renderChart;
-    config.cancelCallback = () => { 
-      if (this.launcher) {
-        this.launcher.close(); 
-      }
-    };
+    this.launcher.editorConfig = editorConfig;
 
-    this.launcher.launch(config);
+    this.launcher.launch();
   }
 
-  renderChart(chartConfig, appliedThemes) {
+  renderChart(event) {
     if (this.launcher) {
       this.launcher.close();
     }
 
-    if (appliedThemes) {
-      this.applyChartThemes(appliedThemes);
+    if (event.appliedThemes) {
+      this.applyChartThemes(event.appliedThemes);
     }
 
     if (this.chart !== undefined) {
@@ -68,7 +70,7 @@ class NewChartFromData extends Component {
     }
 
     this.chart = am4core.createFromConfig(
-      chartConfig, 
+      event.chartConfig, 
       document.getElementById("chartdiv")
     );
   }

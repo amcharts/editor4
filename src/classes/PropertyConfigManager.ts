@@ -812,6 +812,8 @@ export default class PropertyConfigManager {
                         subPart,
                         configPropValue && configPropValue[index]
                           ? configPropValue[index]
+                          : configPropValue && configPropValue['values']
+                          ? configPropValue['values'][index]
                           : {}
                       );
                       if (subProp !== undefined) {

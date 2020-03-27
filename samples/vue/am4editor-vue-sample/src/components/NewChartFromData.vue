@@ -49,9 +49,10 @@ export default class NewChart extends Vue {
   previewBackgroundColor = 'white';
 
   @Prop() launcherSettings!: am4editor.ILauncherConfig;
+  @Prop() editorConfig!: am4editor.IConfig;
 
   launchEditor() {
-    this.launcher = new am4editor.EditorLauncher();
+    this.launcher = new am4editor.EditorLauncher(this.launcherSettings);
     
     this.launcher.addEventListener('save', this.renderChart);
     this.launcher.addEventListener('close', () => { 
@@ -60,11 +61,11 @@ export default class NewChart extends Vue {
       }
     });
 
-    // create a copy of global launcherSettings so we don't modify them
-    const config: am4editor.ILauncherConfig = JSON.parse(JSON.stringify(this.launcherSettings));
-    config.editorConfig.enabledModules = ['design', 'home'];
-    config.editorConfig.allowDefaultTemplates = true;
-    config.editorConfig.presetData = {
+    // create a copy of global editor config so we don't modify it
+    const editorConfig: am4editor.IConfig = JSON.parse(JSON.stringify(this.editorConfig));
+    editorConfig.enabledModules = ['design', 'home'];
+    editorConfig.allowDefaultTemplates = true;
+    editorConfig.presetData = {
       data: [
         { cat: 'c1', val: 10, val2: 21, },
         { cat: 'c2', val: 20, val2: 10, },
@@ -79,7 +80,9 @@ export default class NewChart extends Vue {
       ])
     };
 
-    this.launcher.launch(config);
+    this.launcher.editorConfig = editorConfig;
+
+    this.launcher.launch();
   }
 
   renderChart(event?: am4editor.ILauncherEventArguments) {

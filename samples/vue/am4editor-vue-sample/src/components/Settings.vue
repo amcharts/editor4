@@ -26,7 +26,7 @@
     <label v-for="item in allModules" :key="item">
       <input type="checkbox" 
         :value="item" 
-        :checked="launcherSettings.editorConfig.enabledModules.indexOf(item) > -1"
+        :checked="editorConfig.enabledModules.indexOf(item) > -1"
         @change="toggleModule($event.target.value, $event.target.checked)"
       />
       {{ item }}
@@ -36,7 +36,7 @@
     <label v-for="theme in allThemes" :key="`theme-${theme.name}`">
       <input type="checkbox" 
         :value="theme.name" 
-        :checked="launcherSettings.editorConfig.engineConfig.availableThemes.find(t => t.name === theme.name) !== undefined"
+        :checked="editorConfig.engineConfig.availableThemes.find(t => t.name === theme.name) !== undefined"
         @change="toggleTheme($event.target.value, $event.target.checked)"
       />
       {{ theme.label }}
@@ -55,6 +55,7 @@ export default class Settings extends Vue {
   @Prop() allModules!: am4editor.ModuleType[];
   @Prop() allThemes!: am4editor.IThemeInfo[];
   @Prop() launcherSettings!: am4editor.ILauncherConfig;
+  @Prop() editorConfig!: am4editor.IConfig;
 
   private toggleModule(name: string, isEnabled: boolean) {
     this.$emit('toggle-module', name, isEnabled);

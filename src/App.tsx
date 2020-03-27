@@ -55,6 +55,10 @@ const mainBlockStyle = new StyleClass(
 class App extends Component {
   private editorState = new EditorState();
 
+  private get editorPath(): string {
+    return window.location.pathname;
+  }
+
   public constructor(props: Readonly<{}>) {
     super(props);
 
@@ -135,7 +139,7 @@ class App extends Component {
 
   public render() {
     return (
-      <Router basename="/am4editor">
+      <Router basename={this.editorPath}>
         {this.editorState.isBusy && <SpinnerView />}
         <div className={appStyle.className}>
           <Route

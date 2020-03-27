@@ -1,0 +1,22 @@
+<div class="edit-chart">
+  <div class="page-intro">
+    <h1>Edit chart</h1>
+    <p>
+      Edit an existing chart properties and/or data.
+    </p>
+    <p>
+      <button class="launch-editor-button" (click)="launchEditor()">edit chart</button>
+    </p>
+  </div>
+  <div class="chartdiv" id="chartdiv-edit" [ngStyle]="{ 'background-color': previewBackgroundColor }">
+  </div>
+  <div class="comments">
+    <h2>Comments</h2>
+    <p>In this sample we edit an already existing chart:</p>
+    <ul>
+      <li>We override global settings and make sure that <i>only</i> <code>design</code> and <code>data</code> modules are available;</li>
+      <li>We remove <code>availableThemes</code> as we are not allowing theme changes;</li>
+      <li>And we pass initial chart configuration that we want to edit and then store the resulting config back.</li>
+    </ul>
+  </div>
+</div>
