@@ -438,7 +438,7 @@ export class EditChartTypeComponent {
   launchEditor() {
     this.launcher = new am4editor.EditorLauncher(this.launcherSettings);
 
-    this.launcher.addEventListener('save', this.okClicked);
+    this.launcher.addEventListener('save', (event) => this.okClicked(event));
     this.launcher.addEventListener('close', () => {
       if (this.launcher) {
         this.launcher.close();
