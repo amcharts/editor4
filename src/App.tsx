@@ -9,6 +9,7 @@ import PropertyConfigManager from './classes/PropertyConfigManager';
 import { row, column, stretch } from './utils/Prefixes';
 import { StyleClass, css } from './utils/Style';
 import Property from './classes/Property';
+import Version from './classes/Version';
 
 import Home from './components/modules/home/Home';
 import ModuleBar from './components/core/ModuleBar';
@@ -207,6 +208,9 @@ class App extends Component {
               )}
             />
           </div>
+          <div
+            style={{ display: 'none' }}
+          >{`Editor version ${Version.getVersion()}`}</div>
         </div>
       </Router>
     );
