@@ -85,6 +85,15 @@ export class EditorLauncher {
     }
   }
 
+  private _editorLicense?: string;
+
+  /**
+   * Sets editor license number
+   */
+  public addLicense = (editorLicense: string) => {
+    this._editorLicense = editorLicense;
+  };
+
   /**
    * Launches amCharts 4 Editor with specified configuration.
    *
@@ -148,11 +157,17 @@ export class EditorLauncher {
   };
 
   private editorMessageHandler = (event: MessageEvent) => {
-    // console.log(event);
-    // console.log(this.editorWindow);
     if (event.source === this.editorWindow) {
       if (event.data === 'amcharts4-editor-loaded') {
-        // console.log('editor window message received');
+        // apply license number if applicable
+        if (
+          this._editorLicense !== undefined &&
+          this.editorConfig !== undefined &&
+          this.editorConfig.editorLicense === undefined
+        ) {
+          this.editorConfig.editorLicense = this._editorLicense;
+        }
+
         this.editorWindow.postMessage(
           {
             messageType: 'amcharts4-editor-message',
