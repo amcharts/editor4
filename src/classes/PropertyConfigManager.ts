@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Property from './Property';
-import defaults from './propertyDefaultValues';
+import defaults from './PropertyDefaults';
 
 import * as am4core from '@amcharts/amcharts4/core';
 import '@amcharts/amcharts4/charts';

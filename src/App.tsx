@@ -18,7 +18,7 @@ import Header from './components/core/Header';
 
 import editorTheme from './themes/editor/EditorTheme';
 import IValueType from './classes/IValueType';
-import defaults from './classes/propertyDefaultValues';
+import defaults from './classes/PropertyDefaults';
 import Code from './components/modules/code/Code';
 import Data from './components/modules/data/Data';
 import { observer } from 'mobx-react';
@@ -26,7 +26,7 @@ import IConfig from './classes/IConfig';
 import Loader from './components/modules/loader/Loader';
 import IdHelper from './classes/IdHelper';
 import EditorState from './components/core/EditorState';
-import SpinnerView from './components/core/SpinnerView';
+// import SpinnerView from './components/core/SpinnerView';
 import ConfigManager from './classes/ConfigManager';
 import { computed } from 'mobx';
 
@@ -65,6 +65,21 @@ class App extends Component {
 
     this.setConfig = this.setConfig.bind(this);
     this.handleChartImported = this.handleChartImported.bind(this);
+  }
+
+  async componentDidMount() {
+    this.editorState.isBusy = true;
+    await defaults.init();
+    // window or iframe
+    const launcherWindow = window.opener
+      ? (window.opener as Window)
+      : window.parent !== window
+      ? window.parent
+      : null;
+    if (launcherWindow) {
+      launcherWindow.postMessage('amcharts4-editor-loaded', '*');
+    }
+    this.editorState.isBusy = false;
   }
 
   private setConfig(config: IConfig) {
@@ -141,7 +156,7 @@ class App extends Component {
   public render() {
     return (
       <Router basename={this.editorPath}>
-        {this.editorState.isBusy && <SpinnerView />}
+        {/* <SpinnerView editorState={this.editorState} />} */}
         <div className={appStyle.className}>
           <Route
             path="/"
@@ -228,16 +243,22 @@ class App extends Component {
     setTimeout(() => {
       this.editorState.isBusy = true;
     }, 20);
-    [
-      this.editorState.chartProperties,
-      this.editorState.chartData
-    ] = await PropertyConfigManager.configToProperty(
-      config,
-      this.editorState.presetData
-    );
+    await this.completeChartImport(config);
     setTimeout(() => {
       this.editorState.isBusy = false;
     }, 20);
+  }
+
+  private async completeChartImport(config: object) {
+    if (defaults.defaultsLoaded) {
+      [
+        this.editorState.chartProperties,
+        this.editorState.chartData
+      ] = await PropertyConfigManager.configToProperty(
+        config,
+        this.editorState.presetData
+      );
+    }
   }
 
   /**
@@ -463,9 +484,6 @@ class App extends Component {
       } else {
         payload.messageType = 'amcharts4-editor-cancel';
       }
-
-      // eslint-disable-next-line no-console
-      // console.log(payload);
 
       launcherWindow.postMessage(payload, '*');
     }

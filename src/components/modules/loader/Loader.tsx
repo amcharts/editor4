@@ -7,6 +7,7 @@ import { observer } from 'mobx-react';
 
 import IConfig from '../../../classes/IConfig';
 import ConfigManager from '../../../classes/ConfigManager';
+import defaults from '../../../classes/PropertyDefaults';
 
 const loaderStyle = new StyleClass(css`
   background-color: #fff;
@@ -41,7 +42,8 @@ class Loader extends Component<ILoaderProps> {
       : null;
     if (launcherWindow) {
       window.addEventListener('message', this.receiveLauncherMessage, false);
-      launcherWindow.postMessage('amcharts4-editor-loaded', '*');
+      // post loaded message from App rather than from loader
+      // launcherWindow.postMessage('amcharts4-editor-loaded', '*');
     } else {
       this.loadDefaultConfig();
     }
@@ -80,9 +82,13 @@ class Loader extends Component<ILoaderProps> {
   }
 
   private async handleChartImported(config: IConfig) {
-    if (this.props.onChartImported) {
-      await this.props.onChartImported(config);
-      this.props.history.push('/design');
+    if (defaults.defaultsLoaded) {
+      if (this.props.onChartImported) {
+        await this.props.onChartImported(config);
+        this.props.history.push('/design');
+      }
+    } else {
+      console.log('ERROR: defaults not loaded before import');
     }
   }
 }

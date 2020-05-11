@@ -6,12 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- `launcher.addLicense()` method to simplify adding a license number
-- editor version is now imprinted into code and can be viewed in dev tools
+- `launcher.addLicense()` method to simplify adding a license number.
+- editor version is now imprinted into code and can be viewed in dev tools.
+
+### Changed
+- Property configuration information extracted from the main editor code to
+be fetched on the client for both compilation and runtime performance.
 
 ## [4.0.0-alpha.8] - 2020-04-23
 ### Added
-- Initial public release
+- Initial public release.
 
 [Unreleased]: https://github.com/amcharts/editor4/tree/dev
 [4.0.0-alpha.8]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.8

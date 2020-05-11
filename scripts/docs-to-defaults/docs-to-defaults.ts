@@ -573,80 +573,64 @@ displayedObjectDocs.forEach(cls => {
 // write defaults
 // fs.writeFileSync('./classprops.json', JSON.stringify(classProperties), 'utf8');
 
-const PATHROOT = '../../src/classes/';
-
-const df = fs.openSync(`${PATHROOT}propertyDefaultValues.ts`, 'w');
-fs.writeSync(
-  df,
-  `/* eslint-disable */
-
-import PropertyDefaults from "./PropertyDefaults";
-
-const defaults = new PropertyDefaults();
-
-`
-);
+const CLASSPATHROOT = '../../src/classes/';
+const df = fs.openSync(`${CLASSPATHROOT}PropertyDefaultsChunks.ts`, 'w');
+fs.writeSync(df, `export default [`);
 
 const sortedClassProperties = classProperties.sort((a, b) =>
   a.name.charAt(1).toUpperCase() > b.name.charAt(1).toUpperCase() ? 1 : -1
 );
 
+// @todo append some id to control caching?
 const chunks: string[] = [];
+let comma = '';
 sortedClassProperties.forEach(topLevel => {
   const chunk = topLevel.name.charAt(1).toUpperCase();
   if (chunks.indexOf(chunk) < 0) {
-    fs.writeSync(
-      df,
-      `import('./defaults/propertyDefaultValues_${chunk}').then(v => defaults.defaults["${chunk}"] = v.default );\n`
-    );
+    fs.writeSync(df, `${comma}'${chunk}'`);
     chunks.push(chunk);
+    comma = ',';
   }
 });
 
-fs.writeSync(
-  df,
-  `
-export default defaults;
-`
-);
+fs.writeSync(df, `];\n`);
 fs.closeSync(df);
+
+const PATHROOT = '../../public/defaults/';
 
 chunks.forEach(chunk => {
   const chunkdf = fs.openSync(
-    `${PATHROOT}defaults/propertyDefaultValues_${chunk}.ts`,
+    `${PATHROOT}propertyDefaultValues_${chunk}.js`,
     'w'
   );
   fs.writeSync(
     chunkdf,
-    `/* eslint-disable */
-  
-  import { IPropertyDefaults } from "./../PropertyDefaults";
-  
-  const defaults:IPropertyDefaults = {};
-  
+    `{
   `
   );
 
+  let comma = '';
   sortedClassProperties
     .filter(sp => sp.name.charAt(1).toUpperCase() === chunk)
     .forEach(topLevel => {
       fs.writeSync(
         chunkdf,
-        `defaults["${topLevel.name}"] = ${JSON.stringify(topLevel)};\n`
+        `${comma}"${topLevel.name}": ${JSON.stringify(topLevel)}`
       );
+      comma = `,\n`;
     });
   fs.writeSync(
     chunkdf,
     `
-  export default defaults;
-  `
+  }
+`
   );
   fs.closeSync(chunkdf);
 });
 
 const ltf = fs.openSync('../../src/classes/literalListTypeValues.ts', 'w');
 fs.writeSync(
-  df,
+  ltf,
   `/* eslint-disable */
 
 import LiteralListTypes from "./LiteralListTypes";

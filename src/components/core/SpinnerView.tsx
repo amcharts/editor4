@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { StyleClass, css } from '../../utils/Style';
 
 import { Spinner } from '@blueprintjs/core';
+import IBaseProps from './IBaseProps';
 
 const spinnerStyle = new StyleClass(css`
   margin: 0px;
@@ -20,10 +21,20 @@ const spinnerStyle = new StyleClass(css`
   z-index: 10000;
 `);
 
-class SpinnerView extends Component {
+const spinnerStyleHidden = new StyleClass(css`
+  display: none;
+`);
+
+class SpinnerView extends Component<IBaseProps> {
   public render() {
     return (
-      <div className={`${spinnerStyle.className}`}>
+      <div
+        className={`${
+          this.props.editorState.isBusy
+            ? spinnerStyle.className
+            : spinnerStyleHidden.className
+        }`}
+      >
         <Spinner />
       </div>
     );
