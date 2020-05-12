@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>amCharts 4 Editor sample</title>
+  <link href="index.css" rel="stylesheet">
+
+  <script src="//www.amcharts.com/lib/4/core.js"></script>
+  <script src="//www.amcharts.com/lib/4/charts.js"></script>
+  <script src="//www.amcharts.com/lib/4/themes/animated.js"></script>
+  <script src="//www.amcharts.com/lib/4/themes/dark.js"></script>
+
+  <script src="https://unpkg.com/@amcharts/editor4/editor.js"></script>
+
+  <script src="app.js"></script>
+</head>
+<body>
+  <div class="App">
+    <header>
+      <div class="logo">
+        <a href="#home" id="homeMenu">amCharts 4 Editor Demo</a>
+      </div>
+    </header>
+
+    <nav>
+      <ul class="menu menu-primary">
+        <li id="newChartMenu">
+          <div class="menu-item-text">
+            <a href="#new-chart"
+              >New chart</a>
+          </div>
+        </li>
+        <li id="editChartMenu">
+          <div class="menu-item-text">
+            <a href="#edit-chart"
+              >Edit chart</a></div>
+        </li>
+        <li id="newChartFromDataMenu">
+          <div class="menu-item-text">
+            <a href="#new-chart-from-data"
+            >New chart from data</a></div>
+        </li>
+        <li id="editChartTypeMenu">
+          <div class="menu-item-text">
+            <a href="#edit-chart-type"
+              >Edit chart type</a></div>
+        </li>
+
+      </ul>
+
+      <ul class="menu menu-secondary">
+        <li id="settingsMenu">
+          <div class="menu-item-text">Settings</div>
+        </li>
+      </ul>
+    </nav>
+
+    <main>
+      <div id="home">
+        <h1>amCharts 4 Editor Usage Demos</h1>
+        <p>This sample project demonstrates common scenarios for using amCharts 4 Editor in your CMS:</p>
+        <ol>
+          <li><b>New chart</b> &mdash; allow users to freely create a new chart from templates.</li>
+          <li><b>Edit chart</b> &mdash; users can edit properties of the chart and its data but can't change its type/template.</li>
+          <li><b>New chart from data</b> &mdash; users can create new charts based on supplied preset data.</li>
+          <li><b>Edit chart type</b> &mdash; users can apply different templates to a previously created chart.</li>
+          <li><b>Settings</b> &mdash; shows how to modify some of the Editor configuration settings.</li>
+        </ol>
+        <h2>Setting up your own app</h2>
+        <p>In this sample we use both charts and editor files from amCharts servers.
+          In real-life applications you should probably bundle those with your app.
+        </p>
+      </div>
+
+      <div id="newChart" style="display: none;">
+        <div class="page-intro">
+          <h1>Create a brand new chart</h1>
+          <p>
+            Create a brand new chart from standard (included) templates.
+          </p>
+        </div>
+        <div class="chartdiv" id="newChartChartDiv">
+          <div class="placeholder" id="newChartPlaceholder">click here to create a new chart</div>
+        </div>
+        <div class="comments">
+          <h2>Comments</h2>
+          <p>Built-in (bundled) templates are disabled by default so the user doesn't get access 
+            to them by simply refreshing the browser window (when used with 'window' target type).
+            To enable built-in (bundled) templates set <code>editorConfig.allowDefaultTemplates = true</code> in the launcher configuration.</p>
+        </div>
+      </div>
+
+      <div id="editChart" style="display: none;">
+        <div class="page-intro">
+          <h1>Edit chart</h1>
+          <p>
+            Edit an existing chart properties and/or data.
+          </p>
+          <p>
+            <button class="launch-editor-button" id="editChartButton">edit chart</button>
+          </p>
+        </div>
+        <div class="chartdiv" id="editChartChartDiv">
+        </div>
+        <div class="comments">
+          <h2>Comments</h2>
+          <p>In this sample we edit an already existing chart:</p>
+          <ul>
+            <li>We override global settings and make sure that <i>only</i> <code>design</code> and <code>data</code> modules are available;</li>
+            <li>We remove <code>availableThemes</code> as we are not allowing theme changes;</li>
+            <li>And we pass initial chart configuration that we want to edit and then store the resulting config back.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="newChartFromData" style="display: none;">
+        <div class="page-intro">
+          <h1>Create a new chart from data</h1>
+          <p>
+            Create a new chart based on the data we supply.
+          </p>
+        </div>
+        <div class="chartdiv" id="newChartFromDataChartDiv">
+          <div class="placeholder" id="newChartFromDataPlaceholder">click here to create a new chart</div>
+        </div>
+        <div class="comments">
+          <h2>Comments</h2>
+          <p>In this demo we let users create a new chart based on the preset data we supply</p>
+          <ul>
+            <li>We override global settings so that only <code>home</code> and <code>design</code> modules are enabled;</li>
+            <li>We supply our data via <code>presetData</code> config property;</li>
+            <li>We configure the mapping between our data structure and standard template data fields (category, value, value1, value2, etc.)</li>
+          </ul>
+    
+          <p>Note that our data set may have more or less data/values than some templates expect so it won't fit perfectly in all templates.
+            In a real life scenario you would supply your own templates that match the shape of your data set.
+          </p>
+        </div>
+      </div>
+
+      <div id="editChartType" style="display: none;">
+        <div class="page-intro">
+          <h1>Edit chart type</h1>
+          <p>
+            Edit an existing chart properties and/or data or switch template.
+          </p>
+          <p>
+            <button class="launch-editor-button" id="editChartTypeButton">edit chart</button>
+          </p>
+        </div>
+        <div class="chartdiv" id="editChartTypeChartDiv">
+        </div>
+        <div class="comments">
+          <h2>Comments</h2>
+          <p>In this sample we edit an already existing chart and allow users to choose a different template.
+            This sample combines "New chart from data" and "Edit chart" demos to allow both modifying chart's properties
+            as well as switching to a different template.
+          </p>
+          <p>Additionally, this demo passes custom templates, so users can only select from a predefined set of 
+            approved templates.</p>
+        </div>
+      </div>
+
+      <div id="settings" style="display: none;">
+        <div className="settings">
+          <h1>General Launcher/Editor settings</h1>
+          <p>
+            <b>Modify settings used as the basis for all demos.</b>
+          </p>
+          <p>Note: these are just a few of available settings used here for demo purposes.</p>
+
+          <h2>Launch Editor in...</h2>
+          <label>
+            <input type="radio" name="target-type" checked="true" value="inline" />
+            iframe (inline)
+          </label>
+          <label>
+            <input type="radio" name="target-type" value="window" />
+            window
+          </label>
+
+          <h2>Enabled modules</h2>
+          <label><input type="checkbox" name="enabled-module" checked="true" value="home" />home</label>
+          <label><input type="checkbox" name="enabled-module" checked="true" value="design" />design</label>
+          <label><input type="checkbox" name="enabled-module" checked="true" value="data" />data</label>
+          <label><input type="checkbox" name="enabled-module" checked="true" value="code" />code</label>
+
+          <h2>Available themes</h2>
+          <label><input type="checkbox" name="enabled-theme" checked="true" value="am4themes_animated" />Animated</label>
+          <label><input type="checkbox" name="enabled-theme" checked="true" value="am4themes_dark" />Dark</label>
+        </div>
+      </div>
+    </main>
+
+  </div>
+</body>
+</html>

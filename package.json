@@ -1,6 +1,6 @@
 {
   "name": "editor4",
-  "version": "4.0.0-alpha.7",
+  "version": "4.0.0-alpha.9",
   "homepage": "./",
   "private": true,
   "dependencies": {
@@ -29,7 +29,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:launcher-only": "rimraf launcher/am4editor && mkdirp launcher/am4editor && cpr build launcher/am4editor && cd launcher && yarn build",
-    "build:launcher": "react-scripts build && yarn build:launcher-only",
+    "build:launcher": "yarn build:version && react-scripts build && yarn build:launcher-only",
+    "build:version": "ts-node --project ./scripts/version/tsconfig.json ./scripts/version/imprint-version",
+    "build:zip": "ts-node --project ./scripts/zip-release/tsconfig.json ./scripts/zip-release/zip-release",
     "build:deploy": "react-scripts build && mkdir deploy && mkdir deploy/am4editor && cp -r build/* deploy/am4editor",
     "lint": "eslint \"./src/**/*.{ts,tsx}\"",
     "lint:fix": "eslint --fix \"./src/**/*.{ts,tsx}\"",
@@ -43,9 +45,11 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@types/adm-zip": "^0.4.33",
     "@types/node": "^12.6.8",
     "@typescript-eslint/eslint-plugin": "^2.2.0",
     "@typescript-eslint/parser": "^2.2.0",
+    "adm-zip": "^0.4.14",
     "cpr": "^3.0.1",
     "eslint": "^6.2.1",
     "eslint-config-prettier": "^6.0.0",

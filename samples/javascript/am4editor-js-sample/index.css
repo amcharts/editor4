@@ -1,0 +1,124 @@
+body, html, .App {
+  height: 100%;
+  height: 100vh;
+  padding: 0px;
+  margin: 0px;
+}
+body {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+}
+.App {
+  display: grid;
+  grid-template-columns: [start] fit-content(300px) [contentstart] auto [end];
+  grid-template-rows: [start] 48px [contentstart] auto [end];
+}
+
+header {
+  width: 100%;
+  height: 48px;
+  background-color: #5249a9;
+  grid-column: start / end;
+
+  display: grid;
+  align-items: center;
+}
+
+header .logo {
+  text-align: center;
+  color: #fff;
+}
+
+nav {
+  grid-column: start / contentstart;
+  grid-row: contentstart / end;
+  width: 300px;
+  background-color: #111;
+  color: #ffffff;
+
+  display: grid;
+  grid-template-rows: [startmenu] fit-content() [startad] auto [endad] fit-content() [endmenu];
+}
+
+nav a {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+nav > ul.menu {
+  padding: 0px;
+}
+nav > ul.menu > li {
+  min-height: 48px;
+  cursor: pointer;
+  user-select: none;
+  
+  border-left: 8px solid transparent;
+}
+nav > ul.menu > li:hover {
+  border-left-color: #3cabff;
+  background-color: #333;
+}
+
+nav > ul.menu .menu-item-text {
+  min-height: 48px;
+  display: grid;
+  align-content: center;
+  padding-left: 12px;
+}
+
+nav > ul.menu-primary {
+  grid-row: 1;
+}
+nav> ul.menu-secondary {
+  grid-row: 3;
+  align-self: end;
+  padding-top: 8px;
+  border-top: 1px solid #333;
+}
+
+main {
+  grid-column: contentstart / end;
+  grid-row: contentstart / end;
+  background-color: #fff;
+  overflow-y: scroll;
+  padding: 10px 30px;
+}
+
+.launch-editor-button {
+  background-color: #3cabff;
+  color: white;
+  padding: 5px 10px;
+  font-size: 1.2em;
+  border: 2px solid #3cabff;
+}
+.launch-editor-button:hover {
+  border-color: #5249a9;
+}
+.launch-editor-button:active {
+  border-color: #5249a9;
+  background-color: #5249a9;
+}
+.chartdiv {
+  height: 500px;
+  border: 2px solid #efefef;
+  padding: 20px;
+  display: grid;
+}
+.chartdiv .placeholder {
+  background-color: #efefef;
+  color: #888;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  cursor: pointer;
+}
+code {
+  background-color: #efefef;
+}
+
+.logo a {
+  color: white;
+}

@@ -46,13 +46,13 @@ const mainMenuItems: IMainMenuItem[] = [
     type: 'code',
     icon: 'code',
     path: '/code'
-  },
-  {
-    title: 'Share',
-    type: 'share',
-    icon: 'share',
-    path: '/share'
   }
+  // {
+  //   title: 'Share',
+  //   type: 'share',
+  //   icon: 'share',
+  //   path: '/share'
+  // }
 ];
 
 @observer

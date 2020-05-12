@@ -1,4 +1,5 @@
 import pkg from './package.json';
+import editorPkg from './../package.json';
 import del from 'rollup-plugin-delete';
 import typescript from 'rollup-plugin-typescript2';
 import generatePackageJson from 'rollup-plugin-generate-package-json';
@@ -8,9 +9,10 @@ const outputDir = './dist/';
 const leanPkg = Object.assign({}, pkg);
 leanPkg.scripts = {};
 leanPkg.devDependencies = {};
+leanPkg.version = editorPkg.version;
 
 const banner = `/* **********************************
-amCharts 4 Editor version ${pkg.version}
+amCharts 4 Editor version ${leanPkg.version}
 https://www.amcharts.com
 
 copyright amCharts

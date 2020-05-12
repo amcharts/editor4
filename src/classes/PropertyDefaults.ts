@@ -1,4 +1,5 @@
 import IProperty from './IProperty';
+import chunkList from './PropertyDefaultsChunks';
 
 interface IPropertyDefaultsChunk {
   [key: string]: IPropertyDefaults;
@@ -19,8 +20,13 @@ export interface IPropertyDefaults {
  * @export
  * @class PropertyDefaults
  */
-export default class PropertyDefaults {
+export class PropertyDefaults {
   public defaults: IPropertyDefaultsChunk = {};
+
+  private _defaultsLoaded = false;
+  public get defaultsLoaded() {
+    return this._defaultsLoaded;
+  }
 
   /**
    * Returns Property tree for a class name or undefined if not found.
@@ -33,6 +39,7 @@ export default class PropertyDefaults {
       ? forClass.substr('propertyFields::'.length)
       : forClass;
     const chunk = forClassPart.charAt(1).toUpperCase();
+
     if (this.defaults[chunk] && this.defaults[chunk][forClassPart]) {
       const defaultsCopy = JSON.parse(
         JSON.stringify(this.defaults[chunk][forClassPart])
@@ -54,4 +61,27 @@ export default class PropertyDefaults {
       // throw new Error(`Properties not found for ${forClass}`);
     }
   }
+
+  private async loadChunk(chunk: string) {
+    if (this.defaults[chunk] === undefined) {
+      // load defaults chunk
+      const defaultsChunk = await fetch(
+        `${window.am4EditorPath}defaults/propertyDefaultValues_${chunk}.js`
+      );
+      const defaultsChunkJson = await defaultsChunk.json();
+      this.defaults[chunk] = defaultsChunkJson;
+    }
+  }
+
+  public async init() {
+    const promises: Promise<void>[] = [];
+    chunkList.forEach(chunk => {
+      promises.push(this.loadChunk(chunk));
+    });
+    await Promise.all(promises);
+    this._defaultsLoaded = true;
+  }
 }
+
+const defaults = new PropertyDefaults();
+export default defaults;
