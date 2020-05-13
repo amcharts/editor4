@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Added
+- Added basic support for hierarchical chart types (TreeMap, etc.)
+
 ## [4.0.0-alpha.9] - 2020-05-12
 ### Added
 - `launcher.addLicense()` method to simplify adding a license number.

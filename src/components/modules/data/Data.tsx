@@ -29,6 +29,7 @@ import {
 import CodeEditor from '../../core/CodeEditor';
 import jsbeautifier from 'js-beautify';
 import CsvImport from './CsvImport';
+import PropertyConfigManager from '../../../classes/PropertyConfigManager';
 
 // TODO move to a utility file
 function readFile(file: File): Promise<string> {
@@ -207,6 +208,26 @@ class Data extends Component<IDataProps> {
   @observable jsonDataString = '';
   @observable importCsvOpen = false;
 
+  @computed get isFlat(): boolean {
+    let result = true;
+
+    const chartData = this.props.editorState.chartData;
+    if (chartData && chartData.length > 0) {
+      // flat if none of the items in data have array children
+      result =
+        chartData.find(dataItem => {
+          return (
+            undefined !==
+            Object.keys(dataItem).find(itemPropKey =>
+              Array.isArray(dataItem[itemPropKey])
+            )
+          );
+        }) === undefined;
+    }
+
+    return result;
+  }
+
   @computed get columns(): Array<string> {
     const columns: Array<string> = [];
 
@@ -306,6 +327,8 @@ class Data extends Component<IDataProps> {
 
       if (Array.isArray(data)) {
         this.loadingError = null;
+
+        PropertyConfigManager.sanitizeData(data);
 
         const columns: Array<string> = [];
 
@@ -497,90 +520,92 @@ class Data extends Component<IDataProps> {
       <div className={dataStyle.className}>
         <Tabs
           large={true}
-          defaultSelectedTabId="table1"
+          defaultSelectedTabId={this.isFlat ? 'table1' : 'json'}
           className={dataTabsStyle.className}
           renderActiveTabPanelOnly={true}
         >
-          <Tab
-            id="table1"
-            title="Table"
-            className="dataTabStyle"
-            panel={
-              <div className={dataPanelStyle.className}>
-                <Navbar className={toolbarStyle.className}>
-                  <Navbar.Group align={Alignment.LEFT}>
-                    <FileInput
-                      text="Import JSON..."
-                      onInputChange={this.importJson}
-                    />
+          {this.isFlat && (
+            <Tab
+              id="table1"
+              title="Table"
+              className="dataTabStyle"
+              panel={
+                <div className={dataPanelStyle.className}>
+                  <Navbar className={toolbarStyle.className}>
+                    <Navbar.Group align={Alignment.LEFT}>
+                      <FileInput
+                        text="Import JSON..."
+                        onInputChange={this.importJson}
+                      />
 
-                    <Button
-                      icon="import"
-                      text="Import CSV"
-                      className={toolbarButtonStyle.className}
-                      onClick={this.importCsv}
-                    />
+                      <Button
+                        icon="import"
+                        text="Import CSV"
+                        className={toolbarButtonStyle.className}
+                        onClick={this.importCsv}
+                      />
 
-                    <CsvImport
-                      isOpen={this.importCsvOpen}
-                      onCsvImport={this.handleCsvImport}
-                      onImportCancel={() => {
-                        this.importCsvOpen = false;
-                      }}
-                    />
+                      <CsvImport
+                        isOpen={this.importCsvOpen}
+                        onCsvImport={this.handleCsvImport}
+                        onImportCancel={() => {
+                          this.importCsvOpen = false;
+                        }}
+                      />
 
-                    <InputGroup
-                      className={toolbarButtonStyle.className}
-                      placeholder="New column name..."
-                      value={this.newColumnName}
-                      onChange={this.setNewColumnName}
-                      onKeyUp={this.newColumnKeyUp}
-                      rightElement={
-                        <Button icon="add" onClick={this.addColumn} />
+                      <InputGroup
+                        className={toolbarButtonStyle.className}
+                        placeholder="New column name..."
+                        value={this.newColumnName}
+                        onChange={this.setNewColumnName}
+                        onKeyUp={this.newColumnKeyUp}
+                        rightElement={
+                          <Button icon="add" onClick={this.addColumn} />
+                        }
+                      />
+
+                      <Button
+                        className={toolbarButtonStyle.className}
+                        icon="add"
+                        text="New row"
+                        onClick={this.addRow}
+                      />
+                    </Navbar.Group>
+                  </Navbar>
+
+                  <div className={dataModuleStyle.className}>
+                    {this.loadingError != null ? (
+                      <div>{this.loadingError}</div>
+                    ) : null}
+
+                    <Table
+                      numRows={
+                        this.props.editorState.chartData
+                          ? this.props.editorState.chartData.length
+                          : 0
                       }
-                    />
-
-                    <Button
-                      className={toolbarButtonStyle.className}
-                      icon="add"
-                      text="New row"
-                      onClick={this.addRow}
-                    />
-                  </Navbar.Group>
-                </Navbar>
-
-                <div className={dataModuleStyle.className}>
-                  {this.loadingError != null ? (
-                    <div>{this.loadingError}</div>
-                  ) : null}
-
-                  <Table
-                    numRows={
-                      this.props.editorState.chartData
-                        ? this.props.editorState.chartData.length
-                        : 0
-                    }
-                    enableRowHeader={true}
-                    enableRowReordering={true}
-                    enableMultipleSelection={true}
-                    onRowsReordered={this.handleRowsReordered}
-                  >
-                    {this.columns.map(name => {
-                      return (
-                        <Column
-                          id={name}
-                          name={name}
-                          key={name}
-                          cellRenderer={this.renderCell}
-                          columnHeaderCellRenderer={this.renderColumnHeader}
-                        />
-                      );
-                    })}
-                  </Table>
+                      enableRowHeader={true}
+                      enableRowReordering={true}
+                      enableMultipleSelection={true}
+                      onRowsReordered={this.handleRowsReordered}
+                    >
+                      {this.columns.map(name => {
+                        return (
+                          <Column
+                            id={name}
+                            name={name}
+                            key={name}
+                            cellRenderer={this.renderCell}
+                            columnHeaderCellRenderer={this.renderColumnHeader}
+                          />
+                        );
+                      })}
+                    </Table>
+                  </div>
                 </div>
-              </div>
-            }
-          />
+              }
+            />
+          )}
           <Tabs.Expander />
           <Tab
             id="json"
