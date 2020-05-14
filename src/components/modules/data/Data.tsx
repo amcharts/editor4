@@ -4,20 +4,14 @@ import { observer } from 'mobx-react';
 import { stretch } from '../../../utils/Prefixes';
 import { StyleClass, css, StyleSelector } from '../../../utils/Style';
 
+import editorTheme from './../../../themes/editor/EditorTheme';
 import IBaseProps from '../../core/IBaseProps';
 import { IChartData } from '../../core/IChartData';
 import EditorState from '../../core/EditorState';
 import { observable, computed, action, keys } from 'mobx';
 import { RouteComponentProps } from 'react-router-dom';
 
-import {
-  Button,
-  InputGroup,
-  FileInput,
-  Tabs,
-  Tab,
-  Classes
-} from '@blueprintjs/core';
+import { Button, Tabs, Tab, Classes, ButtonGroup } from '@blueprintjs/core';
 import { Menu, MenuItem, Navbar, Alignment } from '@blueprintjs/core';
 import {
   Column,
@@ -30,27 +24,7 @@ import CodeEditor from '../../core/CodeEditor';
 import jsbeautifier from 'js-beautify';
 import CsvImport from './CsvImport';
 import PropertyConfigManager from '../../../classes/PropertyConfigManager';
-
-// TODO move to a utility file
-function readFile(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onabort = () => {
-      reject(new Error('File reading was aborted'));
-    };
-
-    reader.onerror = () => {
-      reject(reader.error);
-    };
-
-    reader.onload = () => {
-      resolve(reader.result as string);
-    };
-
-    reader.readAsText(file);
-  });
-}
+import FileImport from './FileImport';
 
 type Ordering = -1 | 0 | 1;
 
@@ -184,12 +158,14 @@ new StyleSelector(
 const dataPanelStyle = new StyleClass(css``);
 
 const toolbarStyle = new StyleClass(css`
+  display: flex;
+  align-items: center;
   margin-bottom: 15px;
 `);
 
-const toolbarButtonStyle = new StyleClass(css`
-  margin-left: 10px;
-`);
+// const toolbarButtonStyle = new StyleClass(css`
+//   margin-left: 10px;
+// `);
 
 const dataModuleStyle = new StyleClass(
   stretch,
@@ -203,10 +179,10 @@ interface IDataProps extends IBaseProps, RouteComponentProps {}
 
 @observer
 class Data extends Component<IDataProps> {
-  @observable newColumnName = '';
   @observable loadingError: string | null = null;
   @observable jsonDataString = '';
   @observable importCsvOpen = false;
+  @observable importFileOpen = false;
 
   @computed get isFlat(): boolean {
     let result = true;
@@ -259,6 +235,18 @@ class Data extends Component<IDataProps> {
     return columns;
   }
 
+  @computed get newColumnName(): string {
+    let columnNameIndex = this.columns.length;
+    let name = `column-${columnNameIndex}`;
+
+    while (this.columns.indexOf(name) > -1) {
+      columnNameIndex++;
+      name = `column-${columnNameIndex}`;
+    }
+
+    return name;
+  }
+
   @computed private get beautifiedJsonData(): string {
     return jsbeautifier.js_beautify(this.jsonDataString);
   }
@@ -272,10 +260,10 @@ class Data extends Component<IDataProps> {
     this.jsonDataString = JSON.stringify(this.props.editorState.chartData);
   }
 
-  @action.bound
-  setNewColumnName(event: React.ChangeEvent<HTMLInputElement>): void {
-    this.newColumnName = event.target.value;
-  }
+  // @action.bound
+  // setNewColumnName(event: React.ChangeEvent<HTMLInputElement>): void {
+  //   this.newColumnName = event.target.value;
+  // }
 
   @action.bound
   addRow(): void {
@@ -293,19 +281,19 @@ class Data extends Component<IDataProps> {
     this.setJsonDataString();
   }
 
-  @action.bound
-  newColumnKeyUp(event: React.KeyboardEvent<HTMLInputElement>): void {
-    if (event.key === 'Enter') {
-      this.addColumn();
-    }
-  }
+  // @action.bound
+  // newColumnKeyUp(event: React.KeyboardEvent<HTMLInputElement>): void {
+  //   if (event.key === 'Enter') {
+  //     this.addColumn();
+  //   }
+  // }
 
   @action.bound
   addColumn(): void {
     const name = this.newColumnName.trim();
 
     if (name !== '' && this.columns.indexOf(name) === -1) {
-      this.newColumnName = '';
+      // this.newColumnName = '';
 
       if (!this.props.editorState.chartData) {
         this.props.editorState.chartData = [];
@@ -365,24 +353,29 @@ class Data extends Component<IDataProps> {
     this.loadingError = e.message;
   }
 
-  @action.bound
-  importJson(event: React.FormEvent<HTMLInputElement>): void {
-    const files = (event.target as HTMLInputElement).files;
+  // @action.bound
+  // importJson(event: React.FormEvent<HTMLInputElement>): void {
+  //   const files = (event.target as HTMLInputElement).files;
 
-    if (files == null) {
-      this.loadingError = 'Cannot import nothing';
-    } else if (files.length !== 1) {
-      this.loadingError = 'Cannot import multiple files';
-    } else {
-      readFile(files[0])
-        .then(this.setData)
-        .catch(this.setError);
-    }
-  }
+  //   if (files == null) {
+  //     this.loadingError = 'Cannot import nothing';
+  //   } else if (files.length !== 1) {
+  //     this.loadingError = 'Cannot import multiple files';
+  //   } else {
+  //     readFile(files[0])
+  //       .then(this.setData)
+  //       .catch(this.setError);
+  //   }
+  // }
 
   @action.bound
   importCsv(event: React.FormEvent<HTMLElement>): void {
     this.importCsvOpen = true;
+  }
+
+  @action.bound
+  importFile(event: React.FormEvent<HTMLElement>): void {
+    this.importFileOpen = true;
   }
 
   @action.bound
@@ -392,6 +385,14 @@ class Data extends Component<IDataProps> {
       this.setData(JSON.stringify(data));
     }
     this.importCsvOpen = false;
+  }
+
+  @action.bound
+  handleFileImport(data: string) {
+    if (data.length > 0) {
+      this.setData(data);
+    }
+    this.importFileOpen = false;
   }
 
   @action.bound
@@ -531,17 +532,58 @@ class Data extends Component<IDataProps> {
               className="dataTabStyle"
               panel={
                 <div className={dataPanelStyle.className}>
-                  <Navbar className={toolbarStyle.className}>
+                  <Navbar
+                    className={`${toolbarStyle.className} ${editorTheme.uiLibThemeClassName}`}
+                  >
                     <Navbar.Group align={Alignment.LEFT}>
-                      <FileInput
-                        text="Import JSON..."
-                        onInputChange={this.importJson}
+                      <ButtonGroup minimal={true} large={true}>
+                        <Button
+                          rightIcon="add-column-left"
+                          text="Add"
+                          title="Add column"
+                          onClick={this.addColumn}
+                        />
+                        <Button
+                          icon="add-row-bottom"
+                          title="Add row"
+                          onClick={this.addRow}
+                        />
+                      </ButtonGroup>
+                      <ButtonGroup minimal={true} large={true}>
+                        <Button
+                          rightIcon="remove-column-left"
+                          text="Remove"
+                          title="Remove column(s)"
+                          disabled={true}
+                        />
+                        <Button
+                          icon="remove-row-bottom"
+                          title="Remove row(s)"
+                          disabled={true}
+                        />
+                      </ButtonGroup>
+                    </Navbar.Group>
+                    <Navbar.Divider />
+                    <Navbar.Group align={Alignment.LEFT}>
+                      <Button
+                        icon="import"
+                        text="Import JSON"
+                        minimal={true}
+                        onClick={this.importFile}
+                      />
+
+                      <FileImport
+                        isOpen={this.importFileOpen}
+                        onFileImport={this.handleFileImport}
+                        onImportCancel={() => {
+                          this.importFileOpen = false;
+                        }}
                       />
 
                       <Button
                         icon="import"
                         text="Import CSV"
-                        className={toolbarButtonStyle.className}
+                        minimal={true}
                         onClick={this.importCsv}
                       />
 
@@ -551,24 +593,6 @@ class Data extends Component<IDataProps> {
                         onImportCancel={() => {
                           this.importCsvOpen = false;
                         }}
-                      />
-
-                      <InputGroup
-                        className={toolbarButtonStyle.className}
-                        placeholder="New column name..."
-                        value={this.newColumnName}
-                        onChange={this.setNewColumnName}
-                        onKeyUp={this.newColumnKeyUp}
-                        rightElement={
-                          <Button icon="add" onClick={this.addColumn} />
-                        }
-                      />
-
-                      <Button
-                        className={toolbarButtonStyle.className}
-                        icon="add"
-                        text="New row"
-                        onClick={this.addRow}
                       />
                     </Navbar.Group>
                   </Navbar>
