@@ -308,6 +308,38 @@ class Data extends Component<IDataProps> {
     }
   }
 
+  @action.bound
+  removeColumns() {
+    if (this.selectedRegions.length > 0) {
+      const columnsToRemove: number[] = [];
+      this.selectedRegions.forEach(region => {
+        if (region.cols) {
+          for (let r = region.cols[0]; r <= region.cols[1]; r++) {
+            if (columnsToRemove.indexOf(r) < 0) {
+              columnsToRemove.push(r);
+            }
+          }
+        }
+      });
+
+      if (columnsToRemove.length > 0) {
+        const columnNamesToRemove = this.columns.filter(
+          (name, index) => columnsToRemove.indexOf(index) > -1
+        );
+
+        if (this.props.editorState.chartData) {
+          this.props.editorState.chartData.forEach(dataItem => {
+            columnNamesToRemove.forEach(columnName => {
+              if (Object.keys(dataItem).indexOf(columnName) > -1) {
+                delete dataItem[columnName];
+              }
+            });
+          });
+        }
+      }
+    }
+  }
+
   // @action.bound
   // newColumnKeyUp(event: React.KeyboardEvent<HTMLInputElement>): void {
   //   if (event.key === 'Enter') {
@@ -587,6 +619,7 @@ class Data extends Component<IDataProps> {
                           text="Remove"
                           title="Remove column(s)"
                           disabled={this.selectedRegions.length < 1}
+                          onClick={this.removeColumns}
                         />
                         <Button
                           icon="remove-row-bottom"
