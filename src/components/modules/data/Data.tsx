@@ -18,7 +18,8 @@ import {
   Table,
   EditableCell,
   EditableName,
-  ColumnHeaderCell
+  ColumnHeaderCell,
+  IRegion
 } from '@blueprintjs/table';
 import CodeEditor from '../../core/CodeEditor';
 import jsbeautifier from 'js-beautify';
@@ -183,6 +184,7 @@ class Data extends Component<IDataProps> {
   @observable jsonDataString = '';
   @observable importCsvOpen = false;
   @observable importFileOpen = false;
+  @observable selectedRegions: IRegion[] = [];
 
   @computed get isFlat(): boolean {
     let result = true;
@@ -279,6 +281,31 @@ class Data extends Component<IDataProps> {
 
     this.props.editorState.chartData.push(obj);
     this.setJsonDataString();
+  }
+
+  @action.bound
+  removeRows() {
+    if (this.selectedRegions.length > 0) {
+      const rowsToRemove: number[] = [];
+      this.selectedRegions.forEach(region => {
+        if (region.rows) {
+          for (let r = region.rows[0]; r <= region.rows[1]; r++) {
+            if (rowsToRemove.indexOf(r) < 0) {
+              rowsToRemove.push(r);
+            }
+          }
+        }
+      });
+
+      if (rowsToRemove.length > 0) {
+        rowsToRemove.sort((r1, r2) => r2 - r1);
+        rowsToRemove.forEach(r => {
+          if (this.props.editorState.chartData !== undefined) {
+            this.props.editorState.chartData.splice(r, 1);
+          }
+        });
+      }
+    }
   }
 
   // @action.bound
@@ -507,6 +534,11 @@ class Data extends Component<IDataProps> {
   }
 
   @action.bound
+  handleSelection(selectedRegions: IRegion[]) {
+    this.selectedRegions = selectedRegions;
+  }
+
+  @action.bound
   private handleCodeChanged(newCode: string) {
     this.jsonDataString = newCode;
   }
@@ -554,12 +586,13 @@ class Data extends Component<IDataProps> {
                           rightIcon="remove-column-left"
                           text="Remove"
                           title="Remove column(s)"
-                          disabled={true}
+                          disabled={this.selectedRegions.length < 1}
                         />
                         <Button
                           icon="remove-row-bottom"
                           title="Remove row(s)"
-                          disabled={true}
+                          disabled={this.selectedRegions.length < 1}
+                          onClick={this.removeRows}
                         />
                       </ButtonGroup>
                     </Navbar.Group>
@@ -612,6 +645,7 @@ class Data extends Component<IDataProps> {
                       enableRowReordering={true}
                       enableMultipleSelection={true}
                       onRowsReordered={this.handleRowsReordered}
+                      onSelection={this.handleSelection}
                     >
                       {this.columns.map(name => {
                         return (
