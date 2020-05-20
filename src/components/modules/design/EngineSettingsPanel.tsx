@@ -16,10 +16,10 @@ import {
   Text,
   InputGroup
 } from '@blueprintjs/core';
-import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 import PropertyGridState from './PropertyGridState';
 import { IThemeInfo } from '../../../classes/IEngineConfig';
 import { observable } from 'mobx';
+import ConfirmationDialog from '../../core/ConfirmationDialog';
 
 const propertyGroupStyle = new StyleClass(css`
   border-bottom: 1px solid ${editorTheme.propertyPanelGridColor};
@@ -315,8 +315,10 @@ class EngineSettingsPanel extends Component<IEngineSettingsPanelProps> {
                         >
                           <Popover
                             content={
-                              <DeleteConfirmationDialog
-                                onDeleteClick={() => {
+                              <ConfirmationDialog
+                                title="Remove theme?"
+                                confirmText="Remove"
+                                onConfirmClick={() => {
                                   if (this.props.onThemeChange) {
                                     this.props.onThemeChange({
                                       removeThemeName: theme.name
