@@ -11,7 +11,15 @@ import EditorState from '../../core/EditorState';
 import { observable, computed, action, keys } from 'mobx';
 import { RouteComponentProps } from 'react-router-dom';
 
-import { Button, Tabs, Tab, Classes, ButtonGroup } from '@blueprintjs/core';
+import {
+  Button,
+  Tabs,
+  Tab,
+  Classes,
+  ButtonGroup,
+  Alert,
+  Intent
+} from '@blueprintjs/core';
 import { Menu, MenuItem, Navbar, Alignment } from '@blueprintjs/core';
 import {
   Column,
@@ -184,6 +192,8 @@ class Data extends Component<IDataProps> {
   @observable jsonDataString = '';
   @observable importCsvOpen = false;
   @observable importFileOpen = false;
+  @observable isDeleteRowsOpen = false;
+  @observable isDeleteColsOpen = false;
   @observable selectedRegions: IRegion[] = [];
 
   @computed get isFlat(): boolean {
@@ -306,6 +316,7 @@ class Data extends Component<IDataProps> {
         });
       }
     }
+    this.isDeleteRowsOpen = false;
   }
 
   @action.bound
@@ -338,6 +349,7 @@ class Data extends Component<IDataProps> {
         }
       }
     }
+    this.isDeleteColsOpen = false;
   }
 
   // @action.bound
@@ -619,14 +631,44 @@ class Data extends Component<IDataProps> {
                           text="Remove"
                           title="Remove column(s)"
                           disabled={this.selectedRegions.length < 1}
-                          onClick={this.removeColumns}
+                          onClick={() => {
+                            this.isDeleteColsOpen = true;
+                          }}
                         />
+                        <Alert
+                          isOpen={this.isDeleteColsOpen}
+                          icon="trash"
+                          intent={Intent.DANGER}
+                          confirmButtonText="Delete"
+                          cancelButtonText="Cancel"
+                          onConfirm={this.removeColumns}
+                          onCancel={() => {
+                            this.isDeleteColsOpen = false;
+                          }}
+                        >
+                          <p>Delete selected column(s)?</p>
+                        </Alert>
                         <Button
                           icon="remove-row-bottom"
                           title="Remove row(s)"
                           disabled={this.selectedRegions.length < 1}
-                          onClick={this.removeRows}
+                          onClick={() => {
+                            this.isDeleteRowsOpen = true;
+                          }}
                         />
+                        <Alert
+                          isOpen={this.isDeleteRowsOpen}
+                          icon="trash"
+                          intent={Intent.DANGER}
+                          confirmButtonText="Delete"
+                          cancelButtonText="Cancel"
+                          onConfirm={this.removeRows}
+                          onCancel={() => {
+                            this.isDeleteRowsOpen = false;
+                          }}
+                        >
+                          <p>Delete selected row(s)?</p>
+                        </Alert>
                       </ButtonGroup>
                     </Navbar.Group>
                     <Navbar.Divider />
