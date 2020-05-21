@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [4.0.0-alpha.10] - 2020-05-21
 ### Added
-- Added basic support for hierarchical chart types (TreeMap, etc.)
+- Basic support for hierarchical chart types (TreeMap, etc.)
+- Column and row removal in data module
+
+### Changed
+- Data module toolbar layout and workflow
 
 ## [4.0.0-alpha.9] - 2020-05-12
 ### Added
@@ -21,5 +25,6 @@ be fetched on the client for both compilation and runtime performance.
 ### Added
 - Initial public release.
 
+[4.0.0-alpha.10]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.10
 [4.0.0-alpha.9]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.9
 [4.0.0-alpha.8]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.8
