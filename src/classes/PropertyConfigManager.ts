@@ -49,6 +49,10 @@ export default class PropertyConfigManager {
           }
         }
 
+        if (data !== undefined) {
+          PropertyConfigManager.sanitizeData(data);
+        }
+
         if (chartProperties !== undefined) {
           // populate/mark values from config in the Property tree
           PropertyConfigManager.populatePropertiesFromConfig(
@@ -61,6 +65,26 @@ export default class PropertyConfigManager {
         resolve([chartProperties, data]);
       }
     );
+  }
+
+  /**
+   * Removes objects and other data types Editor can't handle.
+   *
+   * @static
+   * @param {Array<IChartData>} data
+   */
+  public static sanitizeData(data: Array<IChartData>) {
+    if (data !== undefined && data.length > 0) {
+      data.forEach(dataItem => {
+        Object.keys(dataItem).forEach((objProp, index) => {
+          if (Array.isArray(dataItem[objProp])) {
+            PropertyConfigManager.sanitizeData(dataItem[objProp]);
+          } else if (typeof dataItem[objProp] === 'object') {
+            delete dataItem[objProp];
+          }
+        });
+      });
+    }
   }
 
   /**

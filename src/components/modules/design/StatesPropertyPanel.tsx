@@ -19,8 +19,8 @@ import { StyleClass, css } from '../../../utils/Style';
 import PropertyEditorHelpers from './PropertyEditorHelpers';
 import IPropertyEditorProps from './IPropertyEditorProps';
 import IValueType from '../../../classes/IValueType';
-import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 import { observable } from 'mobx';
+import ConfirmationDialog from '../../core/ConfirmationDialog';
 
 const propertyEditorListStyle = new StyleClass(css`
   display: flex;
@@ -172,8 +172,10 @@ class StatesPropertyPanel extends Component<IPropertyEditorProps> {
                 <div className={propertyEditorListItemActionBoxStyle.className}>
                   <Popover
                     content={
-                      <DeleteConfirmationDialog
-                        onDeleteClick={() =>
+                      <ConfirmationDialog
+                        title="Remove item?"
+                        confirmText="Remove"
+                        onConfirmClick={() =>
                           this.handleRemoveListItemClick(p, listItem)
                         }
                       />

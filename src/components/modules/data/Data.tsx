@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { stretch } from '../../../utils/Prefixes';
 import { StyleClass, css, StyleSelector } from '../../../utils/Style';
 
+import editorTheme from './../../../themes/editor/EditorTheme';
 import IBaseProps from '../../core/IBaseProps';
 import { IChartData } from '../../core/IChartData';
 import EditorState from '../../core/EditorState';
@@ -12,11 +13,12 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import {
   Button,
-  InputGroup,
-  FileInput,
   Tabs,
   Tab,
-  Classes
+  Classes,
+  ButtonGroup,
+  Alert,
+  Intent
 } from '@blueprintjs/core';
 import { Menu, MenuItem, Navbar, Alignment } from '@blueprintjs/core';
 import {
@@ -24,32 +26,14 @@ import {
   Table,
   EditableCell,
   EditableName,
-  ColumnHeaderCell
+  ColumnHeaderCell,
+  IRegion
 } from '@blueprintjs/table';
 import CodeEditor from '../../core/CodeEditor';
 import jsbeautifier from 'js-beautify';
 import CsvImport from './CsvImport';
-
-// TODO move to a utility file
-function readFile(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onabort = () => {
-      reject(new Error('File reading was aborted'));
-    };
-
-    reader.onerror = () => {
-      reject(reader.error);
-    };
-
-    reader.onload = () => {
-      resolve(reader.result as string);
-    };
-
-    reader.readAsText(file);
-  });
-}
+import PropertyConfigManager from '../../../classes/PropertyConfigManager';
+import FileImport from './FileImport';
 
 type Ordering = -1 | 0 | 1;
 
@@ -183,12 +167,14 @@ new StyleSelector(
 const dataPanelStyle = new StyleClass(css``);
 
 const toolbarStyle = new StyleClass(css`
+  display: flex;
+  align-items: center;
   margin-bottom: 15px;
 `);
 
-const toolbarButtonStyle = new StyleClass(css`
-  margin-left: 10px;
-`);
+// const toolbarButtonStyle = new StyleClass(css`
+//   margin-left: 10px;
+// `);
 
 const dataModuleStyle = new StyleClass(
   stretch,
@@ -202,10 +188,33 @@ interface IDataProps extends IBaseProps, RouteComponentProps {}
 
 @observer
 class Data extends Component<IDataProps> {
-  @observable newColumnName = '';
   @observable loadingError: string | null = null;
   @observable jsonDataString = '';
   @observable importCsvOpen = false;
+  @observable importFileOpen = false;
+  @observable isDeleteRowsOpen = false;
+  @observable isDeleteColsOpen = false;
+  @observable selectedRegions: IRegion[] = [];
+
+  @computed get isFlat(): boolean {
+    let result = true;
+
+    const chartData = this.props.editorState.chartData;
+    if (chartData && chartData.length > 0) {
+      // flat if none of the items in data have array children
+      result =
+        chartData.find(dataItem => {
+          return (
+            undefined !==
+            Object.keys(dataItem).find(itemPropKey =>
+              Array.isArray(dataItem[itemPropKey])
+            )
+          );
+        }) === undefined;
+    }
+
+    return result;
+  }
 
   @computed get columns(): Array<string> {
     const columns: Array<string> = [];
@@ -238,6 +247,18 @@ class Data extends Component<IDataProps> {
     return columns;
   }
 
+  @computed get newColumnName(): string {
+    let columnNameIndex = this.columns.length;
+    let name = `column-${columnNameIndex}`;
+
+    while (this.columns.indexOf(name) > -1) {
+      columnNameIndex++;
+      name = `column-${columnNameIndex}`;
+    }
+
+    return name;
+  }
+
   @computed private get beautifiedJsonData(): string {
     return jsbeautifier.js_beautify(this.jsonDataString);
   }
@@ -251,10 +272,10 @@ class Data extends Component<IDataProps> {
     this.jsonDataString = JSON.stringify(this.props.editorState.chartData);
   }
 
-  @action.bound
-  setNewColumnName(event: React.ChangeEvent<HTMLInputElement>): void {
-    this.newColumnName = event.target.value;
-  }
+  // @action.bound
+  // setNewColumnName(event: React.ChangeEvent<HTMLInputElement>): void {
+  //   this.newColumnName = event.target.value;
+  // }
 
   @action.bound
   addRow(): void {
@@ -273,18 +294,77 @@ class Data extends Component<IDataProps> {
   }
 
   @action.bound
-  newColumnKeyUp(event: React.KeyboardEvent<HTMLInputElement>): void {
-    if (event.key === 'Enter') {
-      this.addColumn();
+  removeRows() {
+    if (this.selectedRegions.length > 0) {
+      const rowsToRemove: number[] = [];
+      this.selectedRegions.forEach(region => {
+        if (region.rows) {
+          for (let r = region.rows[0]; r <= region.rows[1]; r++) {
+            if (rowsToRemove.indexOf(r) < 0) {
+              rowsToRemove.push(r);
+            }
+          }
+        }
+      });
+
+      if (rowsToRemove.length > 0) {
+        rowsToRemove.sort((r1, r2) => r2 - r1);
+        rowsToRemove.forEach(r => {
+          if (this.props.editorState.chartData !== undefined) {
+            this.props.editorState.chartData.splice(r, 1);
+          }
+        });
+      }
     }
+    this.isDeleteRowsOpen = false;
   }
+
+  @action.bound
+  removeColumns() {
+    if (this.selectedRegions.length > 0) {
+      const columnsToRemove: number[] = [];
+      this.selectedRegions.forEach(region => {
+        if (region.cols) {
+          for (let r = region.cols[0]; r <= region.cols[1]; r++) {
+            if (columnsToRemove.indexOf(r) < 0) {
+              columnsToRemove.push(r);
+            }
+          }
+        }
+      });
+
+      if (columnsToRemove.length > 0) {
+        const columnNamesToRemove = this.columns.filter(
+          (name, index) => columnsToRemove.indexOf(index) > -1
+        );
+
+        if (this.props.editorState.chartData) {
+          this.props.editorState.chartData.forEach(dataItem => {
+            columnNamesToRemove.forEach(columnName => {
+              if (Object.keys(dataItem).indexOf(columnName) > -1) {
+                delete dataItem[columnName];
+              }
+            });
+          });
+        }
+      }
+    }
+    this.isDeleteColsOpen = false;
+  }
+
+  // @action.bound
+  // newColumnKeyUp(event: React.KeyboardEvent<HTMLInputElement>): void {
+  //   if (event.key === 'Enter') {
+  //     this.addColumn();
+  //   }
+  // }
 
   @action.bound
   addColumn(): void {
     const name = this.newColumnName.trim();
 
     if (name !== '' && this.columns.indexOf(name) === -1) {
-      this.newColumnName = '';
+      // this.newColumnName = '';
 
       if (!this.props.editorState.chartData) {
         this.props.editorState.chartData = [];
@@ -306,6 +386,8 @@ class Data extends Component<IDataProps> {
 
       if (Array.isArray(data)) {
         this.loadingError = null;
+
+        PropertyConfigManager.sanitizeData(data);
 
         const columns: Array<string> = [];
 
@@ -342,24 +424,29 @@ class Data extends Component<IDataProps> {
     this.loadingError = e.message;
   }
 
-  @action.bound
-  importJson(event: React.FormEvent<HTMLInputElement>): void {
-    const files = (event.target as HTMLInputElement).files;
+  // @action.bound
+  // importJson(event: React.FormEvent<HTMLInputElement>): void {
+  //   const files = (event.target as HTMLInputElement).files;
 
-    if (files == null) {
-      this.loadingError = 'Cannot import nothing';
-    } else if (files.length !== 1) {
-      this.loadingError = 'Cannot import multiple files';
-    } else {
-      readFile(files[0])
-        .then(this.setData)
-        .catch(this.setError);
-    }
-  }
+  //   if (files == null) {
+  //     this.loadingError = 'Cannot import nothing';
+  //   } else if (files.length !== 1) {
+  //     this.loadingError = 'Cannot import multiple files';
+  //   } else {
+  //     readFile(files[0])
+  //       .then(this.setData)
+  //       .catch(this.setError);
+  //   }
+  // }
 
   @action.bound
   importCsv(event: React.FormEvent<HTMLElement>): void {
     this.importCsvOpen = true;
+  }
+
+  @action.bound
+  importFile(event: React.FormEvent<HTMLElement>): void {
+    this.importFileOpen = true;
   }
 
   @action.bound
@@ -369,6 +456,14 @@ class Data extends Component<IDataProps> {
       this.setData(JSON.stringify(data));
     }
     this.importCsvOpen = false;
+  }
+
+  @action.bound
+  handleFileImport(data: string) {
+    if (data.length > 0) {
+      this.setData(data);
+    }
+    this.importFileOpen = false;
   }
 
   @action.bound
@@ -483,6 +578,11 @@ class Data extends Component<IDataProps> {
   }
 
   @action.bound
+  handleSelection(selectedRegions: IRegion[]) {
+    this.selectedRegions = selectedRegions;
+  }
+
+  @action.bound
   private handleCodeChanged(newCode: string) {
     this.jsonDataString = newCode;
   }
@@ -497,90 +597,148 @@ class Data extends Component<IDataProps> {
       <div className={dataStyle.className}>
         <Tabs
           large={true}
-          defaultSelectedTabId="table1"
+          defaultSelectedTabId={this.isFlat ? 'table1' : 'json'}
           className={dataTabsStyle.className}
           renderActiveTabPanelOnly={true}
         >
-          <Tab
-            id="table1"
-            title="Table"
-            className="dataTabStyle"
-            panel={
-              <div className={dataPanelStyle.className}>
-                <Navbar className={toolbarStyle.className}>
-                  <Navbar.Group align={Alignment.LEFT}>
-                    <FileInput
-                      text="Import JSON..."
-                      onInputChange={this.importJson}
-                    />
-
-                    <Button
-                      icon="import"
-                      text="Import CSV"
-                      className={toolbarButtonStyle.className}
-                      onClick={this.importCsv}
-                    />
-
-                    <CsvImport
-                      isOpen={this.importCsvOpen}
-                      onCsvImport={this.handleCsvImport}
-                      onImportCancel={() => {
-                        this.importCsvOpen = false;
-                      }}
-                    />
-
-                    <InputGroup
-                      className={toolbarButtonStyle.className}
-                      placeholder="New column name..."
-                      value={this.newColumnName}
-                      onChange={this.setNewColumnName}
-                      onKeyUp={this.newColumnKeyUp}
-                      rightElement={
-                        <Button icon="add" onClick={this.addColumn} />
-                      }
-                    />
-
-                    <Button
-                      className={toolbarButtonStyle.className}
-                      icon="add"
-                      text="New row"
-                      onClick={this.addRow}
-                    />
-                  </Navbar.Group>
-                </Navbar>
-
-                <div className={dataModuleStyle.className}>
-                  {this.loadingError != null ? (
-                    <div>{this.loadingError}</div>
-                  ) : null}
-
-                  <Table
-                    numRows={
-                      this.props.editorState.chartData
-                        ? this.props.editorState.chartData.length
-                        : 0
-                    }
-                    enableRowHeader={true}
-                    enableRowReordering={true}
-                    enableMultipleSelection={true}
-                    onRowsReordered={this.handleRowsReordered}
+          {this.isFlat && (
+            <Tab
+              id="table1"
+              title="Table"
+              className="dataTabStyle"
+              panel={
+                <div className={dataPanelStyle.className}>
+                  <Navbar
+                    className={`${toolbarStyle.className} ${editorTheme.uiLibThemeClassName}`}
                   >
-                    {this.columns.map(name => {
-                      return (
-                        <Column
-                          id={name}
-                          name={name}
-                          key={name}
-                          cellRenderer={this.renderCell}
-                          columnHeaderCellRenderer={this.renderColumnHeader}
+                    <Navbar.Group align={Alignment.LEFT}>
+                      <ButtonGroup minimal={true} large={true}>
+                        <Button
+                          rightIcon="add-column-left"
+                          text="Add"
+                          title="Add column"
+                          onClick={this.addColumn}
                         />
-                      );
-                    })}
-                  </Table>
+                        <Button
+                          icon="add-row-bottom"
+                          title="Add row"
+                          onClick={this.addRow}
+                        />
+                      </ButtonGroup>
+                      <ButtonGroup minimal={true} large={true}>
+                        <Button
+                          rightIcon="remove-column-left"
+                          text="Remove"
+                          title="Remove column(s)"
+                          disabled={this.selectedRegions.length < 1}
+                          onClick={() => {
+                            this.isDeleteColsOpen = true;
+                          }}
+                        />
+                        <Alert
+                          isOpen={this.isDeleteColsOpen}
+                          icon="trash"
+                          intent={Intent.DANGER}
+                          confirmButtonText="Delete"
+                          cancelButtonText="Cancel"
+                          onConfirm={this.removeColumns}
+                          onCancel={() => {
+                            this.isDeleteColsOpen = false;
+                          }}
+                        >
+                          <p>Delete selected column(s)?</p>
+                        </Alert>
+                        <Button
+                          icon="remove-row-bottom"
+                          title="Remove row(s)"
+                          disabled={this.selectedRegions.length < 1}
+                          onClick={() => {
+                            this.isDeleteRowsOpen = true;
+                          }}
+                        />
+                        <Alert
+                          isOpen={this.isDeleteRowsOpen}
+                          icon="trash"
+                          intent={Intent.DANGER}
+                          confirmButtonText="Delete"
+                          cancelButtonText="Cancel"
+                          onConfirm={this.removeRows}
+                          onCancel={() => {
+                            this.isDeleteRowsOpen = false;
+                          }}
+                        >
+                          <p>Delete selected row(s)?</p>
+                        </Alert>
+                      </ButtonGroup>
+                    </Navbar.Group>
+                    <Navbar.Divider />
+                    <Navbar.Group align={Alignment.LEFT}>
+                      <Button
+                        icon="import"
+                        text="Import JSON"
+                        minimal={true}
+                        onClick={this.importFile}
+                      />
+
+                      <FileImport
+                        isOpen={this.importFileOpen}
+                        onFileImport={this.handleFileImport}
+                        onImportCancel={() => {
+                          this.importFileOpen = false;
+                        }}
+                      />
+
+                      <Button
+                        icon="import"
+                        text="Import CSV"
+                        minimal={true}
+                        onClick={this.importCsv}
+                      />
+
+                      <CsvImport
+                        isOpen={this.importCsvOpen}
+                        onCsvImport={this.handleCsvImport}
+                        onImportCancel={() => {
+                          this.importCsvOpen = false;
+                        }}
+                      />
+                    </Navbar.Group>
+                  </Navbar>
+
+                  <div className={dataModuleStyle.className}>
+                    {this.loadingError != null ? (
+                      <div>{this.loadingError}</div>
+                    ) : null}
+
+                    <Table
+                      numRows={
+                        this.props.editorState.chartData
+                          ? this.props.editorState.chartData.length
+                          : 0
+                      }
+                      enableRowHeader={true}
+                      enableRowReordering={true}
+                      enableMultipleSelection={true}
+                      onRowsReordered={this.handleRowsReordered}
+                      onSelection={this.handleSelection}
+                    >
+                      {this.columns.map(name => {
+                        return (
+                          <Column
+                            id={name}
+                            name={name}
+                            key={name}
+                            cellRenderer={this.renderCell}
+                            columnHeaderCellRenderer={this.renderColumnHeader}
+                          />
+                        );
+                      })}
+                    </Table>
+                  </div>
                 </div>
-              </div>
-            }
-          />
+              }
+            />
+          )}
           <Tabs.Expander />
           <Tab
             id="json"

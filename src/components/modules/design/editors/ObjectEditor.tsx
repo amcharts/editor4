@@ -6,8 +6,8 @@ import Property from '../../../../classes/Property';
 import { Button, Intent, Popover } from '@blueprintjs/core';
 import { css, StyleClass, StyleSelector } from '../../../../utils/Style';
 import IValueType from '../../../../classes/IValueType';
-import DeleteConfirmationDialog from '../DeleteConfirmationDialog';
 import TypeSelectionMenu from '../TypeSelectionMenu';
+import ConfirmationDialog from '../../../core/ConfirmationDialog';
 
 const objectEditorBoxStyle = new StyleClass(css`
   width: 100%;
@@ -63,8 +63,10 @@ class ObjectEditor extends Component<IPropertyEditorProps> {
           <div>
             <Popover
               content={
-                <DeleteConfirmationDialog
-                  onDeleteClick={() => this.handleRemoveItemClick(p)}
+                <ConfirmationDialog
+                  title="Remove?"
+                  confirmText="Remove"
+                  onConfirmClick={() => this.handleRemoveItemClick(p)}
                 />
               }
             >
