@@ -67,9 +67,13 @@ class Preview extends Component<IBaseProps> {
     this.renderChart();
   }
 
-  public componentWillUpdate() {
+  public componentDidUpdate() {
     this.renderChart();
   }
+
+  // public componentWillUpdate() {
+  //   this.renderChart();
+  // }
 
   private async renderChart() {
     if (this.chart) {
