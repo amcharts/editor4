@@ -58,6 +58,7 @@ class App extends Component {
   private editorState = new EditorState();
 
   @observable redirect = '';
+  @observable isBusy = false;
 
   private get editorPath(): string {
     return window.location.pathname;
@@ -68,10 +69,10 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    this.editorState.isBusy = true;
+    this.isBusy = true;
     await defaults.init();
     this.setupLauncherComms();
-    this.editorState.isBusy = false;
+    this.isBusy = false;
   }
 
   @action.bound
@@ -201,7 +202,7 @@ class App extends Component {
     return (
       <Router basename={this.editorPath}>
         {this.redirect !== '' && <Redirect to={this.redirect} />}
-        <SpinnerView isBusy={this.editorState.isBusy} />
+        <SpinnerView isBusy={this.isBusy} />
         <div className={appStyle.className}>
           <Route
             path="/"
@@ -232,7 +233,7 @@ class App extends Component {
             />
             <Route
               path="/design/"
-              component={() => (
+              component={(routeProps: RouteComponentProps) => (
                 <Design
                   editorState={this.editorState}
                   onPropertyValueChange={this.handlePropertyValueChanged}
@@ -241,6 +242,7 @@ class App extends Component {
                   onNewObjectItemValue={this.handleNewObjectItemValue}
                   onThemeChange={this.handleThemeChange}
                   onLicensesChange={this.handleLicensesChange}
+                  {...routeProps}
                 />
               )}
             />
@@ -276,17 +278,9 @@ class App extends Component {
    */
   @action.bound
   private async handleChartImported(config: object) {
-    // PropertyConfigManager.configToProperty(config).then(result => {
-    //   [this.chartProperties, this.chartData] = result;
-    // });
-    setTimeout(() => {
-      this.editorState.isBusy = true;
-    }, 20);
+    this.isBusy = true;
     await this.completeChartImport(config);
-
-    setTimeout(() => {
-      this.editorState.isBusy = false;
-    }, 20);
+    this.isBusy = false;
   }
 
   @action.bound

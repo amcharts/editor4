@@ -62,24 +62,40 @@ const previewDivStyle = new StyleClass(css`
 class Preview extends Component<IBaseProps> {
   @observable private previewBackgroundColor = 'white';
   private chart?: am4core.Sprite;
+  private currentConfig = {};
 
   public componentDidMount() {
-    this.renderChart();
+    const cfgObject = this.getChartConfig();
+    this.currentConfig = cfgObject;
+    this.renderChart(this.currentConfig);
   }
 
   public componentDidUpdate() {
-    this.renderChart();
+    const cfgObject = this.getChartConfig();
+    if (JSON.stringify(this.currentConfig) !== JSON.stringify(cfgObject)) {
+      this.currentConfig = cfgObject;
+      this.renderChart(cfgObject);
+    }
   }
 
-  // public componentWillUpdate() {
-  //   this.renderChart();
-  // }
-
-  private async renderChart() {
-    if (this.chart) {
-      this.chart.dispose();
-      am4core.unuseAllThemes();
+  private getChartConfig() {
+    if (this.props.editorState.chartProperties) {
+      return PropertyConfigManager.propertyToConfig(
+        this.props.editorState.chartProperties,
+        this.props.editorState.chartData
+      );
+    } else {
+      return {};
     }
+  }
+
+  private renderChart(cfgObject: object) {
+    am4core.disposeAllCharts();
+    am4core.unuseAllThemes();
+    // if (this.chart) {
+    //   console.log(`preview disp: ${this.chart.uid}`);
+    //   this.chart.dispose();
+    // }
 
     if (this.props.editorState.chartProperties) {
       if (this.props.editorState.appliedThemes) {
@@ -96,15 +112,11 @@ class Preview extends Component<IBaseProps> {
         });
       }
 
-      const cfgObject = PropertyConfigManager.propertyToConfig(
-        this.props.editorState.chartProperties,
-        this.props.editorState.chartData
-      );
-      const cfgRenderCopy = await PropertyConfigManager.resolveGeoData(
-        cfgObject
-      );
+      // const cfgRenderCopy = await PropertyConfigManager.resolveGeoData(
+      //   cfgObject
+      // );
       this.chart = am4core.createFromConfig(
-        cfgRenderCopy,
+        JSON.parse(JSON.stringify(cfgObject)),
         document.getElementById('chartdiv') as HTMLElement
       );
     }
@@ -117,14 +129,8 @@ class Preview extends Component<IBaseProps> {
   }
 
   public render() {
-    const cfgObject = this.props.editorState.chartProperties
-      ? PropertyConfigManager.propertyToConfig(
-          this.props.editorState.chartProperties,
-          this.props.editorState.chartData
-        )
-      : {};
     // eslint-disable-next-line
-    const cfg = JSON.stringify(cfgObject);
+    const cfg = JSON.stringify(this.getChartConfig());
     // eslint-disable-next-line
     let themes = '';
     if (this.props.editorState.appliedThemes) {
