@@ -24,7 +24,8 @@ import PropertyConfigManager from '../../../classes/PropertyConfigManager';
 import IBaseProps from '../../core/IBaseProps';
 
 import editorTheme from './../../../themes/editor/EditorTheme';
-import { observable } from 'mobx';
+import { observable, action } from 'mobx';
+import { Switch, Navbar, Button, Alignment } from '@blueprintjs/core';
 
 interface IThemeStore {
   [index: string]: am4core.ITheme;
@@ -50,11 +51,20 @@ const previewPanelStyle = new StyleClass(css`
   background-color: ${editorTheme.previewAreaBackground};
   flex-grow: 1;
   display: flex;
+  flex-direction: column;
+`);
+
+const toolbarGroupStyle = new StyleClass(css`
+  justify-items: center;
+`);
+
+const switchControlStyle = new StyleClass(css`
+  margin: 5px 0px;
 `);
 
 const previewDivStyle = new StyleClass(css`
   background-color: white;
-  flex-grow: 1;
+  flex-grow: 2;
   margin: 20px;
 `);
 
@@ -63,18 +73,37 @@ class Preview extends Component<IBaseProps> {
   @observable private previewBackgroundColor = 'white';
   private chart?: am4core.Sprite;
   private currentConfig = {};
+  private isRefreshPending = false;
+  private autoRefreshId?: number = undefined;
+  @observable private isAutoRefreshEnabled = true;
 
   public componentDidMount() {
     const cfgObject = this.getChartConfig();
     this.currentConfig = cfgObject;
     this.renderChart(this.currentConfig);
+    this.autoRefreshId = window.setInterval(this.autoRefresh, 5000);
   }
 
   public componentDidUpdate() {
     const cfgObject = this.getChartConfig();
     if (JSON.stringify(this.currentConfig) !== JSON.stringify(cfgObject)) {
       this.currentConfig = cfgObject;
-      this.renderChart(cfgObject);
+      this.isRefreshPending = true;
+    }
+  }
+
+  @action.bound
+  private autoRefresh() {
+    if (this.isAutoRefreshEnabled) {
+      this.refreshIfNeeded();
+    }
+  }
+
+  @action.bound
+  private refreshIfNeeded() {
+    if (this.isRefreshPending) {
+      this.isRefreshPending = false;
+      this.renderChart(this.currentConfig);
     }
   }
 
@@ -126,6 +155,9 @@ class Preview extends Component<IBaseProps> {
     if (this.chart) {
       this.chart.dispose();
     }
+    if (this.autoRefreshId) {
+      window.clearInterval(this.autoRefreshId);
+    }
   }
 
   public render() {
@@ -144,6 +176,31 @@ class Preview extends Component<IBaseProps> {
 
     return (
       <div className={previewPanelStyle.className}>
+        <Navbar>
+          <Navbar.Group
+            align={Alignment.RIGHT}
+            className={toolbarGroupStyle.className}
+          >
+            <Button
+              minimal={true}
+              icon="refresh"
+              text="refresh"
+              disabled={this.isAutoRefreshEnabled}
+              onClick={this.refreshIfNeeded}
+            />
+            <Switch
+              checked={this.isAutoRefreshEnabled}
+              innerLabel="auto"
+              title="toggle auto refresh"
+              alignIndicator="right"
+              inline={true}
+              className={switchControlStyle.className}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                this.isAutoRefreshEnabled = event.target.checked;
+              }}
+            />
+          </Navbar.Group>
+        </Navbar>
         <div
           className={previewDivStyle.className}
           style={{ backgroundColor: this.previewBackgroundColor }}
