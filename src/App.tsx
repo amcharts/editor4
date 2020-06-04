@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
   Route,
-  RouteComponentProps
+  RouteComponentProps,
+  Redirect
 } from 'react-router-dom';
 
 import PropertyConfigManager from './classes/PropertyConfigManager';
@@ -26,9 +27,9 @@ import IConfig from './classes/IConfig';
 import Loader from './components/modules/loader/Loader';
 import IdHelper from './classes/IdHelper';
 import EditorState from './components/core/EditorState';
-// import SpinnerView from './components/core/SpinnerView';
+import SpinnerView from './components/core/SpinnerView';
 import ConfigManager from './classes/ConfigManager';
-import { computed } from 'mobx';
+import { computed, observable, action } from 'mobx';
 
 const appStyle = new StyleClass(
   row,
@@ -56,32 +57,25 @@ const mainBlockStyle = new StyleClass(
 class App extends Component {
   private editorState = new EditorState();
 
+  @observable redirect = '';
+  @observable isBusy = false;
+
   private get editorPath(): string {
     return window.location.pathname;
   }
 
   public constructor(props: Readonly<{}>) {
     super(props);
-
-    this.setConfig = this.setConfig.bind(this);
-    this.handleChartImported = this.handleChartImported.bind(this);
   }
 
   async componentDidMount() {
-    this.editorState.isBusy = true;
+    this.isBusy = true;
     await defaults.init();
-    // window or iframe
-    const launcherWindow = window.opener
-      ? (window.opener as Window)
-      : window.parent !== window
-      ? window.parent
-      : null;
-    if (launcherWindow) {
-      launcherWindow.postMessage('amcharts4-editor-loaded', '*');
-    }
-    this.editorState.isBusy = false;
+    this.setupLauncherComms();
+    this.isBusy = false;
   }
 
+  @action.bound
   private setConfig(config: IConfig) {
     if (config) {
       if (config.templates) {
@@ -128,23 +122,74 @@ class App extends Component {
         this.editorState.presetData = config.presetData;
       }
     }
-
-    // @todo comment preset data test code
-    // // test preset data functionality
-    // this.editorState.presetData = {
-    //   data: [
-    //     { cat: 'c1', val: 10 },
-    //     { cat: 'c2', val: 20 },
-    //     { cat: 'c3', val: 40 },
-    //     { cat: 'c4', val: 18 }
-    //   ],
-    //   templatePropertyMap: new Map([
-    //     ['category', 'cat'],
-    //     ['value', 'val'],
-    //     ['value1', 'val']
-    //   ])
-    // };
   }
+
+  @action.bound
+  private setupLauncherComms() {
+    // window or iframe
+    const launcherWindow = window.opener
+      ? (window.opener as Window)
+      : window.parent !== window
+      ? window.parent
+      : null;
+    if (launcherWindow) {
+      window.addEventListener('message', this.receiveLauncherMessage, false);
+      // post loaded message from App rather than from loader
+      launcherWindow.postMessage('amcharts4-editor-loaded', '*');
+    } else {
+      this.loadDefaultConfig();
+    }
+  }
+
+  @action.bound
+  private loadDefaultConfig() {
+    // set default config
+    const defaultCfg = ConfigManager.getDefaultConfig();
+    this.setConfig(defaultCfg);
+    this.redirect = '/home';
+  }
+
+  @action.bound
+  private async receiveLauncherMessage(event: MessageEvent) {
+    if (event.data.messageType === 'amcharts4-editor-message') {
+      if (event.data.config) {
+        this.setConfig(event.data.config);
+        if (event.data.config.chartConfig !== undefined) {
+          await this.processChartImported(event.data.config.chartConfig);
+        } else {
+          this.redirect = '/home';
+        }
+      } else {
+        this.loadDefaultConfig();
+      }
+    }
+  }
+
+  @action.bound
+  private async processChartImported(config: IConfig) {
+    if (defaults.defaultsLoaded) {
+      await this.handleChartImported(config);
+      this.redirect = '/design';
+    } else {
+      console.log('ERROR: defaults not loaded before import');
+    }
+  }
+
+  // @todo comment preset data test code
+  // // test preset data functionality
+  // this.editorState.presetData = {
+  //   data: [
+  //     { cat: 'c1', val: 10 },
+  //     { cat: 'c2', val: 20 },
+  //     { cat: 'c3', val: 40 },
+  //     { cat: 'c4', val: 18 }
+  //   ],
+  //   templatePropertyMap: new Map([
+  //     ['category', 'cat'],
+  //     ['value', 'val'],
+  //     ['value1', 'val']
+  //   ])
+  // };
 
   @computed private get hasLicense(): boolean {
     return (
@@ -156,19 +201,13 @@ class App extends Component {
   public render() {
     return (
       <Router basename={this.editorPath}>
-        {/* <SpinnerView editorState={this.editorState} />} */}
+        {this.redirect !== '' && <Redirect to={this.redirect} />}
+        <SpinnerView isBusy={this.isBusy} />
         <div className={appStyle.className}>
           <Route
             path="/"
             exact
-            component={(p: RouteComponentProps) => (
-              <Loader
-                editorState={this.editorState}
-                onEditorConfigLoaded={this.setConfig}
-                onChartImported={this.handleChartImported}
-                {...p}
-              />
-            )}
+            component={(p: RouteComponentProps) => <Loader />}
           />
           <ModuleBar editorState={this.editorState} />
           <div className={mainBlockStyle.className}>
@@ -194,7 +233,7 @@ class App extends Component {
             />
             <Route
               path="/design/"
-              component={() => (
+              component={(routeProps: RouteComponentProps) => (
                 <Design
                   editorState={this.editorState}
                   onPropertyValueChange={this.handlePropertyValueChanged}
@@ -203,6 +242,7 @@ class App extends Component {
                   onNewObjectItemValue={this.handleNewObjectItemValue}
                   onThemeChange={this.handleThemeChange}
                   onLicensesChange={this.handleLicensesChange}
+                  {...routeProps}
                 />
               )}
             />
@@ -236,19 +276,14 @@ class App extends Component {
    *
    * @private
    */
+  @action.bound
   private async handleChartImported(config: object) {
-    // PropertyConfigManager.configToProperty(config).then(result => {
-    //   [this.chartProperties, this.chartData] = result;
-    // });
-    setTimeout(() => {
-      this.editorState.isBusy = true;
-    }, 20);
+    this.isBusy = true;
     await this.completeChartImport(config);
-    setTimeout(() => {
-      this.editorState.isBusy = false;
-    }, 20);
+    this.isBusy = false;
   }
 
+  @action.bound
   private async completeChartImport(config: object) {
     if (defaults.defaultsLoaded) {
       [
@@ -459,6 +494,7 @@ class App extends Component {
     }
   };
 
+  @action.bound
   private handleActionButtonClick = (isOk: boolean) => {
     // window or iframe
     const launcherWindow = window.opener

@@ -10,7 +10,7 @@ class StringEditor extends Component<IPropertyEditorProps> {
     return (
       <InputGroup
         small={true}
-        value={p.value}
+        value={p.value !== undefined ? p.value : ''}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           if (this.props.onPropertyValueChange) {
             this.props.onPropertyValueChange(p, {

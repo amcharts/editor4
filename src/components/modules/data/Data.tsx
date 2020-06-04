@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 import { stretch } from '../../../utils/Prefixes';
 import { StyleClass, css, StyleSelector } from '../../../utils/Style';
 
-import editorTheme from './../../../themes/editor/EditorTheme';
 import IBaseProps from '../../core/IBaseProps';
 import { IChartData } from '../../core/IChartData';
 import EditorState from '../../core/EditorState';
@@ -142,7 +141,7 @@ class ColumnHeader extends Component<IHeaderProps> {
 const dataStyle = new StyleClass(css`
   display: flex;
   flex-grow: 2;
-  padding: 10px;
+  flex-direction: column;
 `);
 
 const dataTabsStyle = new StyleClass(css`
@@ -150,6 +149,8 @@ const dataTabsStyle = new StyleClass(css`
   flex-direction: column;
   flex-grow: 2;
   overflow: hidden;
+  margin: 10px;
+  margin-top: 0px;
 `);
 
 const dataTabStyle = new StyleClass(css`
@@ -158,9 +159,10 @@ const dataTabStyle = new StyleClass(css`
 `);
 
 new StyleSelector(
-  `.${Classes.TAB_PANEL}.${dataTabStyle.className}`,
+  `.${Classes.TAB_PANEL}`,
   css`
     flex-grow: 2;
+    margin-top: 5px;
   `
 );
 
@@ -180,7 +182,6 @@ const dataModuleStyle = new StyleClass(
   stretch,
   css`
     overflow: auto;
-    margin-left: 5px;
   `
 );
 
@@ -595,6 +596,101 @@ class Data extends Component<IDataProps> {
   public render() {
     return (
       <div className={dataStyle.className}>
+        <Navbar className={`${toolbarStyle.className}`}>
+          <Navbar.Group align={Alignment.LEFT}>
+            <ButtonGroup minimal={true} large={true}>
+              <Button
+                rightIcon="add-column-left"
+                text="Add"
+                title="Add column"
+                onClick={this.addColumn}
+              />
+              <Button
+                icon="add-row-bottom"
+                title="Add row"
+                onClick={this.addRow}
+              />
+            </ButtonGroup>
+            <ButtonGroup minimal={true} large={true}>
+              <Button
+                rightIcon="remove-column-left"
+                text="Remove"
+                title="Remove column(s)"
+                disabled={this.selectedRegions.length < 1}
+                onClick={() => {
+                  this.isDeleteColsOpen = true;
+                }}
+              />
+              <Alert
+                isOpen={this.isDeleteColsOpen}
+                icon="trash"
+                intent={Intent.DANGER}
+                confirmButtonText="Delete"
+                cancelButtonText="Cancel"
+                onConfirm={this.removeColumns}
+                onCancel={() => {
+                  this.isDeleteColsOpen = false;
+                }}
+              >
+                <p>Delete selected column(s)?</p>
+              </Alert>
+              <Button
+                icon="remove-row-bottom"
+                title="Remove row(s)"
+                disabled={this.selectedRegions.length < 1}
+                onClick={() => {
+                  this.isDeleteRowsOpen = true;
+                }}
+              />
+              <Alert
+                isOpen={this.isDeleteRowsOpen}
+                icon="trash"
+                intent={Intent.DANGER}
+                confirmButtonText="Delete"
+                cancelButtonText="Cancel"
+                onConfirm={this.removeRows}
+                onCancel={() => {
+                  this.isDeleteRowsOpen = false;
+                }}
+              >
+                <p>Delete selected row(s)?</p>
+              </Alert>
+            </ButtonGroup>
+          </Navbar.Group>
+          <Navbar.Divider />
+          <Navbar.Group align={Alignment.LEFT}>
+            <Button
+              icon="import"
+              text="Import JSON"
+              minimal={true}
+              onClick={this.importFile}
+            />
+
+            <FileImport
+              isOpen={this.importFileOpen}
+              onFileImport={this.handleFileImport}
+              onImportCancel={() => {
+                this.importFileOpen = false;
+              }}
+            />
+
+            <Button
+              icon="import"
+              text="Import CSV"
+              minimal={true}
+              onClick={this.importCsv}
+            />
+
+            <CsvImport
+              isOpen={this.importCsvOpen}
+              onCsvImport={this.handleCsvImport}
+              onImportCancel={() => {
+                this.importCsvOpen = false;
+              }}
+            />
+          </Navbar.Group>
+        </Navbar>
+
         <Tabs
           large={true}
           defaultSelectedTabId={this.isFlat ? 'table1' : 'json'}
@@ -608,103 +704,6 @@ class Data extends Component<IDataProps> {
               className="dataTabStyle"
               panel={
                 <div className={dataPanelStyle.className}>
-                  <Navbar
-                    className={`${toolbarStyle.className} ${editorTheme.uiLibThemeClassName}`}
-                  >
-                    <Navbar.Group align={Alignment.LEFT}>
-                      <ButtonGroup minimal={true} large={true}>
-                        <Button
-                          rightIcon="add-column-left"
-                          text="Add"
-                          title="Add column"
-                          onClick={this.addColumn}
-                        />
-                        <Button
-                          icon="add-row-bottom"
-                          title="Add row"
-                          onClick={this.addRow}
-                        />
-                      </ButtonGroup>
-                      <ButtonGroup minimal={true} large={true}>
-                        <Button
-                          rightIcon="remove-column-left"
-                          text="Remove"
-                          title="Remove column(s)"
-                          disabled={this.selectedRegions.length < 1}
-                          onClick={() => {
-                            this.isDeleteColsOpen = true;
-                          }}
-                        />
-                        <Alert
-                          isOpen={this.isDeleteColsOpen}
-                          icon="trash"
-                          intent={Intent.DANGER}
-                          confirmButtonText="Delete"
-                          cancelButtonText="Cancel"
-                          onConfirm={this.removeColumns}
-                          onCancel={() => {
-                            this.isDeleteColsOpen = false;
-                          }}
-                        >
-                          <p>Delete selected column(s)?</p>
-                        </Alert>
-                        <Button
-                          icon="remove-row-bottom"
-                          title="Remove row(s)"
-                          disabled={this.selectedRegions.length < 1}
-                          onClick={() => {
-                            this.isDeleteRowsOpen = true;
-                          }}
-                        />
-                        <Alert
-                          isOpen={this.isDeleteRowsOpen}
-                          icon="trash"
-                          intent={Intent.DANGER}
-                          confirmButtonText="Delete"
-                          cancelButtonText="Cancel"
-                          onConfirm={this.removeRows}
-                          onCancel={() => {
-                            this.isDeleteRowsOpen = false;
-                          }}
-                        >
-                          <p>Delete selected row(s)?</p>
-                        </Alert>
-                      </ButtonGroup>
-                    </Navbar.Group>
-                    <Navbar.Divider />
-                    <Navbar.Group align={Alignment.LEFT}>
-                      <Button
-                        icon="import"
-                        text="Import JSON"
-                        minimal={true}
-                        onClick={this.importFile}
-                      />
-
-                      <FileImport
-                        isOpen={this.importFileOpen}
-                        onFileImport={this.handleFileImport}
-                        onImportCancel={() => {
-                          this.importFileOpen = false;
-                        }}
-                      />
-
-                      <Button
-                        icon="import"
-                        text="Import CSV"
-                        minimal={true}
-                        onClick={this.importCsv}
-                      />
-
-                      <CsvImport
-                        isOpen={this.importCsvOpen}
-                        onCsvImport={this.handleCsvImport}
-                        onImportCancel={() => {
-                          this.importCsvOpen = false;
-                        }}
-                      />
-                    </Navbar.Group>
-                  </Navbar>
-
                   <div className={dataModuleStyle.className}>
                     {this.loadingError != null ? (
                       <div>{this.loadingError}</div>

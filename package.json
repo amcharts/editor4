@@ -1,6 +1,6 @@
 {
   "name": "editor4",
-  "version": "4.0.0-alpha.10",
+  "version": "4.0.0-alpha.11",
   "homepage": "./",
   "private": true,
   "dependencies": {
@@ -12,7 +12,7 @@
     "@types/js-beautify": "^1.8.1",
     "@types/react": "^16.8.7",
     "@types/react-dom": "^16.8.2",
-    "@types/react-router-dom": "^4.3.1",
+    "@types/react-router-dom": "^5.1.5",
     "codemirror": "^5.48.0",
     "js-beautify": "^1.10.1",
     "mobx": "^5.9.0",
@@ -21,7 +21,7 @@
     "react": "^16.8.4",
     "react-codemirror2": "^6.0.0",
     "react-dom": "^16.8.4",
-    "react-router-dom": "^5.0.1",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "^3.1.1",
     "typescript": "~3.5.0"
   },
