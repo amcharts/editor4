@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auto-refresh controls for the chart preview
 
 ### Fixed
-- Uncontrolled/controlled component switching errors in property grid
-- Design module rendering ineficiencies
+- Uncontrolled/controlled component switching errors in the property grid
+- Design module rendering inefficiencies
 
 ### Changed
 - Data module toolbar layout
@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.0.0-alpha.10] - 2020-05-21
 ### Added
 - Basic support for hierarchical chart types (TreeMap, etc.)
-- Column and row removal in data module
+- Column and row removal in the data module
 
 ### Changed
 - Data module toolbar layout and workflow
@@ -37,6 +37,7 @@ be fetched on the client for both compilation and runtime performance.
 ### Added
 - Initial public release.
 
+[4.0.0-alpha.11]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.11
 [4.0.0-alpha.10]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.10
 [4.0.0-alpha.9]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.9
 [4.0.0-alpha.8]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.8
