@@ -7,7 +7,14 @@ import { StyleClass, css, StyleSelector } from '../../../utils/Style';
 import IBaseProps from '../../core/IBaseProps';
 import { IChartData } from '../../core/IChartData';
 import EditorState from '../../core/EditorState';
-import { observable, computed, action, keys } from 'mobx';
+import {
+  observable,
+  computed,
+  action,
+  keys,
+  observe,
+  IValueDidChange
+} from 'mobx';
 import { RouteComponentProps } from 'react-router-dom';
 
 import {
@@ -109,10 +116,21 @@ class ColumnHeader extends Component<IHeaderProps> {
           }
 
           this.props.editorState.chartData.forEach(x => {
-            if (oldName in x) {
-              x[newName] = x[oldName];
-              delete x[oldName];
-            }
+            // rewrite the whole object to preserve order
+            Object.keys(x).forEach(k => {
+              if (k !== oldName) {
+                x[`_${k}`] = x[k];
+              } else {
+                x[`_${newName}`] = x[k];
+              }
+              delete x[k];
+            });
+            Object.keys(x).forEach(k => {
+              if (k !== oldName) {
+                x[k.substr(1)] = x[k];
+              }
+              delete x[k];
+            });
           });
         }
       }
@@ -233,16 +251,16 @@ class Data extends Component<IDataProps> {
         }
       });
 
-      // TODO make utility function for this
-      columns.sort((x, y) => {
-        if (x === y) {
-          return 0;
-        } else if (x < y) {
-          return -1;
-        } else {
-          return 1;
-        }
-      });
+      // @todo: was there any functional reason to sort?
+      // columns.sort((x, y) => {
+      //   if (x === y) {
+      //     return 0;
+      //   } else if (x < y) {
+      //     return -1;
+      //   } else {
+      //     return 1;
+      //   }
+      // });
     }
 
     return columns;
@@ -266,6 +284,8 @@ class Data extends Component<IDataProps> {
 
   public componentDidMount() {
     this.setJsonDataString();
+
+    observe(this, 'columns', this.columnsChanged);
   }
 
   @action.bound
@@ -591,6 +611,17 @@ class Data extends Component<IDataProps> {
   @action.bound
   private handleEditorBlur() {
     this.setData(this.jsonDataString);
+  }
+
+  @action.bound
+  private columnsChanged(ev: IValueDidChange<this['columns']>) {
+    if (this.props.editorState.chartProperties && ev.oldValue && ev.newValue) {
+      PropertyConfigManager.adjustDataFields(
+        this.props.editorState.chartProperties,
+        ev.oldValue,
+        ev.newValue
+      );
+    }
   }
 
   public render() {
