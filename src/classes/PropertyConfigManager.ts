@@ -1240,4 +1240,112 @@ export default class PropertyConfigManager {
 
     return 'unknown';
   }
+
+  /**
+   * Goes through the property tree and changes data field values in data.
+   * To be used when column names in underlying data changes.
+   *
+   * @param {Property} property
+   * @param {Array<string>} oldFields
+   * @param {Array<string>} newFields
+   */
+  public static adjustDataFields(
+    property: Property,
+    oldFields: Array<string>,
+    newFields: Array<string>
+  ): void {
+    if (property.properties) {
+      property.properties.forEach(p => {
+        if (p.isSet || p.isUserSet) {
+          if (p.value !== undefined) {
+            if (p.name === 'states') {
+              // special case for states if needed?
+            } else if (
+              PropertyConfigManager.getPropertyTypeFamily(p) === 'list'
+            ) {
+              if (p.valueTypes && p.valueTypes[0].name === 'ListTemplate') {
+                // special case for ListTemplate-type properties
+                if (
+                  (p.value as Property[]).length > 0 &&
+                  (p.value as Property[]).findIndex(
+                    item => item.isSet === true || item.isUserSet === true
+                  ) >= 0
+                ) {
+                  (p.value as Property[]).forEach(subp =>
+                    PropertyConfigManager.adjustDataFields(
+                      subp,
+                      oldFields,
+                      newFields
+                    )
+                  );
+                }
+              } else if (
+                p.valueTypes &&
+                p.valueTypes[0].name === 'DictionaryTemplate'
+              ) {
+                // special case for List-type properties
+                (p.value as Property[]).forEach(subp => {
+                  const pName = subp.getStringPropertyValue('name');
+                  if (pName !== undefined) {
+                    PropertyConfigManager.adjustDataFields(
+                      subp,
+                      oldFields,
+                      newFields
+                    );
+                  }
+                });
+              } else {
+                // special case for List-type properties
+                (p.value as Property[]).forEach(subp =>
+                  PropertyConfigManager.adjustDataFields(
+                    subp,
+                    oldFields,
+                    newFields
+                  )
+                );
+              }
+            } else if (
+              PropertyConfigManager.getPropertyTypeFamily(p) === 'object'
+            ) {
+              PropertyConfigManager.adjustDataFields(
+                p.value,
+                oldFields,
+                newFields
+              );
+            } else if (
+              PropertyConfigManager.getPropertyTypeFamily(p) === 'scalar'
+            ) {
+              if (p.editorType === 'DataField' && p.value !== undefined) {
+                const oldFieldIndex = oldFields.indexOf(p.value);
+                if (oldFieldIndex > -1 && newFields.length > oldFieldIndex) {
+                  p.value = newFields[oldFieldIndex];
+                }
+              }
+            }
+          }
+          if (p.properties && p.properties.length > 0) {
+            // go one level deeper
+            if (p.valueTypes && p.valueTypes[0].name.indexOf('Template') >= 0) {
+              // special case for ListTemplate properties
+              const templateProperty = p.properties.find(
+                tp => tp.name === 'template'
+              );
+              if (
+                templateProperty !== undefined &&
+                templateProperty.value !== undefined
+              ) {
+                PropertyConfigManager.adjustDataFields(
+                  templateProperty.value,
+                  oldFields,
+                  newFields
+                );
+              }
+            } else {
+              PropertyConfigManager.adjustDataFields(p, oldFields, newFields);
+            }
+          }
+        }
+      });
+    }
+  }
 }

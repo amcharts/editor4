@@ -63,10 +63,10 @@ in the documentation to learn about available properties and configuration optio
 
 For practical applications, check out the included samples:
 
-- Vanilla JavaScript
+- [Vanilla JavaScript](https://github.com/amcharts/editor4/tree/master/samples/javascript/)
 - [React](https://github.com/amcharts/editor4/tree/master/samples/react/)
 - [Vue](https://github.com/amcharts/editor4/tree/master/samples/vue/)
-- Angular
+- [Angular](https://github.com/amcharts/editor4/tree/master/samples/angular/)
 
 ## Status
 
