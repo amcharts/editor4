@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0-alpha.12] - 2020-06-15
+### Added
+- Data field names are kept in sync when column names in data are changed via the data editor or import
+
+### Fixed
+- Added missing "vanilla" JavaScript and Angluar sample links to readme
+
 ## [4.0.0-alpha.11] - 2020-06-04
 ### Added
 - Spinner indicator during template loading
@@ -37,6 +44,7 @@ be fetched on the client for both compilation and runtime performance.
 ### Added
 - Initial public release.
 
+[4.0.0-alpha.12]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.12
 [4.0.0-alpha.11]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.11
 [4.0.0-alpha.10]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.10
 [4.0.0-alpha.9]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.9
