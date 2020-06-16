@@ -124,7 +124,9 @@ class CsvImport extends Component<ICsvImportProps> {
     if (this.csvToImport !== '') {
       const trimmedCsv = this.csvToImport.trim();
 
-      const parseConfig: ParseConfig = {};
+      const parseConfig: ParseConfig = {
+        dynamicTyping: true
+      };
       parseConfig.header = this.firstRowHeadings;
       if (this.firstRowHeadings) {
         parseConfig.transformHeader = (header): string => {
