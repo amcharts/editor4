@@ -1214,7 +1214,7 @@ export default class PropertyConfigManager {
       return 'list';
     } else if (
       vtString.match(
-        /^(string|number|boolean|number--Percent|number--string|any)$/g
+        /^(string|number|boolean|number--Percent|number--string|number--undefined|any)$/g
       ) ||
       p.editorType.match(
         /^(select|string|number|boolean|Color|Color--LinearGradient--Pattern--RadialGradient)$/g
