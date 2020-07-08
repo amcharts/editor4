@@ -55,7 +55,9 @@ export default class PropertyEditorHelpers {
     if (p.toStringProperty && p.properties) {
       const tSP = p.properties.find(sp => sp.name === p.toStringProperty);
       if (tSP && tSP.value) {
-        return tSP.value.toString();
+        return `${tSP.value.toString()} [${PropertyEditorHelpers.getDisplayName(
+          p
+        )}]`;
       }
     }
     return PropertyEditorHelpers.getDisplayName(p);

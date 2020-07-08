@@ -156,7 +156,9 @@ class PropertyGroup extends Component<IPropertyGroupProps> {
       onPropertyExpandedChange,
       ...baseProps
     } = this.props;
-    if (p.name === 'states') {
+    if (p.editorType === 'hidden') {
+      return <div key={p.name}></div>;
+    } else if (p.name === 'states') {
       return <StatesPropertyPanel key={p.name} property={p} {...baseProps} />;
     } else if (p.editorType.startsWith('ChartElementReference')) {
       return <ElementRefPanel key={p.name} property={p} {...baseProps} />;
@@ -187,25 +189,29 @@ class PropertyGroup extends Component<IPropertyGroupProps> {
   }
 
   private isPropertyVisible(p: Property): boolean {
-    if (!this.isFilterSet) {
-      // no filter
-      if (this.isExpanded || p.isCore || p.isSet || p.isUserSet) {
-        return true;
+    if (p.editorType !== 'hidden') {
+      if (!this.isFilterSet) {
+        // no filter
+        if (this.isExpanded || p.isCore || p.isSet || p.isUserSet) {
+          return true;
+        } else {
+          return false;
+        }
       } else {
-        return false;
+        // filter by property name
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const criteria = new RegExp(this.props.filter!, 'gi');
+        if (
+          p.name.match(criteria) ||
+          PropertyEditorHelpers.getDisplayName(p).match(criteria)
+        ) {
+          return true;
+        } else {
+          return false;
+        }
       }
     } else {
-      // filter by property name
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const criteria = new RegExp(this.props.filter!, 'gi');
-      if (
-        p.name.match(criteria) ||
-        PropertyEditorHelpers.getDisplayName(p).match(criteria)
-      ) {
-        return true;
-      } else {
-        return false;
-      }
+      return false;
     }
   }
 }
