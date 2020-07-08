@@ -1202,11 +1202,12 @@ export default class PropertyConfigManager {
     | 'elementref'
     | 'skip'
     | 'unknown' {
-    const vtString = PropertyConfigManager.valueTypesToString(p.valueTypes);
-
     if (p.editorType.startsWith('ChartElementReference')) {
       return 'elementref';
-    } else if (
+    }
+
+    const vtString = PropertyConfigManager.valueTypesToString(p.valueTypes);
+    if (
       vtString.match(
         /^(List|ListTemplate|DictionaryTemplate|SortedListTemplate)$/g
       )
