@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Displaying series names instead of just type in the lists
 - Data type dection in CSV imports
 - Handling of more chart property types
+- Developers can use `dummyData` chart property to store any serializable information in the chart config
 
 ### Fixed
 - Handling of function type property values (eg. easing)
