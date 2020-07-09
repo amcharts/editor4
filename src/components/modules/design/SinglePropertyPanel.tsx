@@ -132,6 +132,7 @@ class SinglePropertyPanel extends Component<IPropertyEditorProps> {
         );
       }
       case 'number':
+      case 'number--undefined':
       case 'Percent--number': {
         return (
           <NumberEditor

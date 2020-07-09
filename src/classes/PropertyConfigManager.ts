@@ -1202,11 +1202,12 @@ export default class PropertyConfigManager {
     | 'elementref'
     | 'skip'
     | 'unknown' {
-    const vtString = PropertyConfigManager.valueTypesToString(p.valueTypes);
-
     if (p.editorType.startsWith('ChartElementReference')) {
       return 'elementref';
-    } else if (
+    }
+
+    const vtString = PropertyConfigManager.valueTypesToString(p.valueTypes);
+    if (
       vtString.match(
         /^(List|ListTemplate|DictionaryTemplate|SortedListTemplate)$/g
       )
@@ -1214,7 +1215,7 @@ export default class PropertyConfigManager {
       return 'list';
     } else if (
       vtString.match(
-        /^(string|number|boolean|number--Percent|number--string|any)$/g
+        /^(string|number|boolean|number--Percent|number--string|number--undefined|any)$/g
       ) ||
       p.editorType.match(
         /^(select|string|number|boolean|Color|Color--LinearGradient--Pattern--RadialGradient)$/g

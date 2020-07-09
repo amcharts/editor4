@@ -13,7 +13,7 @@ import {
   FormGroup
 } from '@blueprintjs/core';
 import { StyleClass, css } from '../../../utils/Style';
-import * as am4core from '@amcharts/amcharts4/core';
+import Papa, { ParseConfig } from 'papaparse';
 
 const dialogStyle = new StyleClass(css`
   flex-grow: 2;
@@ -123,15 +123,28 @@ class CsvImport extends Component<ICsvImportProps> {
   private handleImportClick() {
     if (this.csvToImport !== '') {
       const trimmedCsv = this.csvToImport.trim();
-      const parser = new am4core.CSVParser();
-      parser.options.useColumnNames = this.firstRowHeadings;
+
+      const parseConfig: ParseConfig = {
+        dynamicTyping: true
+      };
+      parseConfig.header = this.firstRowHeadings;
+      if (this.firstRowHeadings) {
+        parseConfig.transformHeader = (header): string => {
+          // prefix number column names if any
+          if (Number.parseInt(header).toString() === header) {
+            return `c_${header}`;
+          } else {
+            return header;
+          }
+        };
+      }
       if (this.delimiter !== 'auto') {
-        parser.options.delimiter = this.delimiter;
+        parseConfig.delimiter = this.delimiter;
       }
 
-      const parsedData = parser.parse(trimmedCsv);
+      const parsedData = Papa.parse(trimmedCsv, parseConfig);
       if (this.props.onCsvImport) {
-        this.props.onCsvImport(parsedData);
+        this.props.onCsvImport(parsedData.data);
       }
     }
   }
