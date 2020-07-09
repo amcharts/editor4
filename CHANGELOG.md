@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0-alpha.13] - 2020-07-09
+### Added
+- Displaying series names instead of just type in the lists
+- Data type dection in CSV imports
+- Handling of more chart property types
+
+### Fixed
+- Handling of function type property values (eg. easing)
+- Specifying cursor in a template resulted in a crash in some instances
+
+### Changed
+- Replaced CSV parsing engine with Papaparse
+
+
 ## [4.0.0-alpha.12] - 2020-06-15
 ### Added
 - Data field names are kept in sync when column names in data are changed via the data editor or import
@@ -44,6 +58,7 @@ be fetched on the client for both compilation and runtime performance.
 ### Added
 - Initial public release.
 
+[4.0.0-alpha.13]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.13
 [4.0.0-alpha.12]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.12
 [4.0.0-alpha.11]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.11
 [4.0.0-alpha.10]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.10
