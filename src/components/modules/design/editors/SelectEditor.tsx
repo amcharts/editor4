@@ -10,7 +10,7 @@ import Property from '../../../../classes/Property';
 class SelectEditor extends Component<IPropertyEditorProps> {
   private getStringValue(p: Property): string {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let result = (p.value as any).toString();
+    let result = p.value !== undefined ? (p.value as any).toString() : '';
     if (typeof p.value === 'function') {
       if ((p.value as Function).name && p.valueTypes) {
         const valueOptions = this.getValueOptions(p.valueTypes);
