@@ -109,6 +109,11 @@ export default class PropertyConfigManager {
       result.type = property.name;
     }
 
+    // special case for number formatters to ensure a new one is always created
+    if (result.type === 'NumberFormatter') {
+      result.forceCreate = true;
+    }
+
     if (data !== undefined) {
       result.data = JSON.parse(JSON.stringify(data));
     }
@@ -1215,7 +1220,7 @@ export default class PropertyConfigManager {
       return 'list';
     } else if (
       vtString.match(
-        /^(string|number|boolean|number--Percent|number--string|number--undefined|any)$/g
+        /^(string|number|boolean|number--Percent|number--string|number--undefined|NumberFormatOptions--string|any)$/g
       ) ||
       p.editorType.match(
         /^(select|string|number|boolean|Color|Color--LinearGradient--Pattern--RadialGradient)$/g

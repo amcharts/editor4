@@ -111,6 +111,7 @@ class SinglePropertyPanel extends Component<IPropertyEditorProps> {
     switch (p.editorType) {
       case 'string':
       case 'number--string':
+      case 'NumberFormatOptions--string':
       case 'any': {
         return (
           <StringEditor

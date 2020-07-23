@@ -17,7 +17,7 @@ class BooleanEditor extends Component<IPropertyEditorProps> {
     return (
       <div className={booleanEditorStyle.className}>
         <Switch
-          checked={p.value}
+          checked={p.value !== undefined ? p.value : false}
           className={switchControlStyle.className}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             if (this.props.onPropertyValueChange) {

@@ -24,7 +24,8 @@ import {
   Classes,
   ButtonGroup,
   Alert,
-  Intent
+  Intent,
+  Popover
 } from '@blueprintjs/core';
 import { Menu, MenuItem, Navbar, Alignment } from '@blueprintjs/core';
 import {
@@ -401,6 +402,59 @@ class Data extends Component<IDataProps> {
   }
 
   @action.bound
+  transformToNumber() {
+    this.transformData('number');
+  }
+
+  @action.bound
+  transformToString() {
+    this.transformData('string');
+  }
+
+  @action.bound
+  transformData(target: 'number' | 'string') {
+    if (this.selectedRegions.length > 0) {
+      this.selectedRegions.forEach(r => {
+        if (
+          this.props.editorState.chartData &&
+          this.props.editorState.chartData.length > 0
+        ) {
+          const rows = r.rows
+            ? r.rows
+            : [0, this.props.editorState.chartData.length - 1];
+          const colsNumbers = r.cols
+            ? r.cols
+            : [0, Object.keys(this.props.editorState.chartData[0]).length - 1];
+          const cols: string[] = [];
+          for (let c = colsNumbers[0]; c <= colsNumbers[1]; c++) {
+            cols.push(Object.keys(this.props.editorState.chartData[0])[c]);
+          }
+
+          for (let r = rows[0]; r <= rows[1]; r++) {
+            cols.forEach(col => {
+              /* eslint-disable @typescript-eslint/no-non-null-assertion */
+              if (target === 'number') {
+                const tryParseResult = parseFloat(
+                  this.props.editorState.chartData![r][col]
+                );
+                if (!isNaN(tryParseResult)) {
+                  this.props.editorState.chartData![r][col] = tryParseResult;
+                }
+              } else if (target === 'string') {
+                this.props.editorState.chartData![r][
+                  col
+                ] = this.props.editorState.chartData![r][col].toString();
+              }
+              /* eslint-enable @typescript-eslint/no-non-null-assertion */
+            });
+          }
+        }
+      });
+      this.setJsonDataString();
+    }
+  }
+
+  @action.bound
   setData(json: string): void {
     try {
       const data = JSON.parse(json);
@@ -688,6 +742,22 @@ class Data extends Component<IDataProps> {
               </Alert>
             </ButtonGroup>
           </Navbar.Group>
+          <Navbar.Divider />
+          <Popover
+            content={
+              <Menu>
+                <MenuItem text="number" onClick={this.transformToNumber} />
+                <MenuItem text="string" onClick={this.transformToString} />
+              </Menu>
+            }
+          >
+            <Button
+              minimal={true}
+              text="Transform to ..."
+              disabled={this.selectedRegions.length < 1}
+              rightIcon="caret-down"
+            />
+          </Popover>
           <Navbar.Divider />
           <Navbar.Group align={Alignment.LEFT}>
             <Button

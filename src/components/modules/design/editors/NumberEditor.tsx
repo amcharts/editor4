@@ -20,7 +20,7 @@ class NumberEditor extends Component<IPropertyEditorNumberProps> {
     return (
       <InputGroup
         small={true}
-        value={p.value}
+        value={p.value !== undefined ? p.value : ''}
         type={this.props.acceptPercent ? 'string' : 'number'}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           if (this.props.onPropertyValueChange) {
