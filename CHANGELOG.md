@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0-alpha.14] - 2020-07-23
+### Added 
+- editing `numberFormatter` property across the board
+- transform values in data editor from string to number and vice versa
+- editing of Container's `children` property
+
+### Fixed
+- Crash when dropdown value was `undefined`
+- Exception when boolean or number property was `undefined`
+
 ## [4.0.0-alpha.13] - 2020-07-09
 ### Added
 - Displaying series names instead of just type in the lists
@@ -59,6 +69,7 @@ be fetched on the client for both compilation and runtime performance.
 ### Added
 - Initial public release.
 
+[4.0.0-alpha.14]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.14
 [4.0.0-alpha.13]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.13
 [4.0.0-alpha.12]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.12
 [4.0.0-alpha.11]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-alpha.11
