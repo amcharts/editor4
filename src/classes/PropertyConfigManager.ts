@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { toJS } from 'mobx';
+
 import Property from './Property';
 import defaults from './PropertyDefaults';
 
@@ -11,7 +13,6 @@ import IValueType from './IValueType';
 import PropertyGroupFactory from './PropertyGroupFactory';
 import { IChartData } from '../components/core/IChartData';
 import { IPresetData } from './IConfig';
-
 /**
  * Static class to handle {Property} <-> config transformations
  *
@@ -233,6 +234,9 @@ export default class PropertyConfigManager {
                 ) {
                   // make sure numbers are rendered without quotes
                   result[p.name] = Number(p.value);
+                } else if (typeof p.value === 'object' && p.value !== null) {
+                  // special case when "any" value is an object
+                  result[p.name] = toJS(p.value);
                 } else {
                   result[p.name] = p.value;
                 }
