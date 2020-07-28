@@ -780,6 +780,7 @@ export default class PropertyConfigManager {
 
               Object.keys(chartPropValue._dictionary).forEach(st => {
                 const stateConfig =
+                  subConfig !== undefined &&
                   (subConfig as any).states !== undefined &&
                   (subConfig as any).states[st] !== undefined
                     ? (subConfig as any).states[st].properties
