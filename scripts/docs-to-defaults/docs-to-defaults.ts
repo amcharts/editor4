@@ -14,6 +14,7 @@ const EDITOR_CORE_TAG = 'editor_core'; // [optional] if set property will be dis
 const EDITOR_OMIT_TYPE_TAG = 'editor_omit_type'; // [optional] if set 'type' will not be rendered into config json
 const EDITOR_SELECT_VALUES_TAG = 'editor_select_values'; // [optional] if editor type is 'select' and this tag is present values for it will be hardcoded from this list
 const EDITOR_NO_AUTOINHERIT_TAG = 'editor_no_autoinherit'; // [optional] do not include the option in the descentant type unless explicitly specified by @editor_include_properties
+const EDITOR_VALUE_TYPES = 'editor_value_types'; // [optional] value types for the property (class level types take precedence). If omitted the types are inferred from the type signature
 
 const ITEM_TYPES_TAG = 'editor_item_types';
 const TOSTRING_PROPERTY_TAG = 'editor_tostring_property';
@@ -331,7 +332,18 @@ displayedObjectDocs.forEach(cls => {
             ? prop.getSignature[0].type
             : prop.getSignature.type
           : prop.type;
-      const clsTypes = clsItemTypes[prop.name.toLowerCase()]; // types from class declaration
+      let clsTypes = clsItemTypes[prop.name.toLowerCase()]; // types from class declaration
+      if (clsTypes === undefined) {
+        // see if there are property level value types
+        const valueTypesString = getTagValue(prop, EDITOR_VALUE_TYPES);
+        if (
+          valueTypesString !== undefined &&
+          valueTypesString.trim().length > 0
+        ) {
+          clsTypes = valueTypesString.trim().split(',');
+          clsTypes = clsTypes.map(t => t.trim());
+        }
+      }
 
       if (typeProp === undefined) {
         console.log(prop);
