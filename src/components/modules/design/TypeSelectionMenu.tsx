@@ -37,10 +37,13 @@ class TypeSelectionMenu extends Component<ITypeSelectionMenuProps> {
   private getNewListItemMenuItems(): JSX.Element[] | undefined {
     if (
       this.props.property.valueTypes &&
-      this.props.property.valueTypes.length > 0 &&
-      this.props.property.valueTypes[0].subTypes
+      this.props.property.valueTypes.length > 0
     ) {
-      return this.props.property.valueTypes[0].subTypes.map(vt => (
+      const valueTypes = this.props.property.valueTypes[0].subTypes
+        ? this.props.property.valueTypes[0].subTypes
+        : this.props.property.valueTypes;
+
+      return valueTypes.map(vt => (
         <MenuItem
           key={vt.name}
           text={vt.name}

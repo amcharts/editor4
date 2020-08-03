@@ -1,7 +1,7 @@
 import ITemplateGroup from '../../classes/ITemplateGroup';
 import basicRadarTemplate from './other/BasicRadarTemplate';
 import simpleGaugeChart from './other/SimpleGaugeTemplate';
-// import simpleSankeyTemplate from './other/SankeyTemplate';
+import simpleSankeyTemplate from './other/SankeyTemplate';
 import simpleTreemapTemplate from './other/SimpleTreemapTemplate';
 
 const otherTemplateGroup: ITemplateGroup = {
@@ -9,7 +9,7 @@ const otherTemplateGroup: ITemplateGroup = {
   templates: [
     basicRadarTemplate,
     simpleGaugeChart,
-    // simpleSankeyTemplate,
+    simpleSankeyTemplate,
     simpleTreemapTemplate
   ]
 };

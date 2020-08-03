@@ -1,6 +1,6 @@
 {
   "name": "editor4",
-  "version": "4.0.0-alpha.14",
+  "version": "4.0.0-alpha.15",
   "homepage": "./",
   "private": true,
   "dependencies": {
@@ -29,6 +29,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "bumpversion:prerelease": "npm version prerelease && yarn build:version",
     "build": "react-scripts build",
     "build:launcher-only": "rimraf launcher/am4editor && mkdirp launcher/am4editor && cpr build launcher/am4editor && cd launcher && yarn build",
     "build:launcher": "yarn build:version && react-scripts build && yarn build:launcher-only",

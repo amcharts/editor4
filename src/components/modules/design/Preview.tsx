@@ -73,6 +73,7 @@ class Preview extends Component<IBaseProps> {
   @observable private previewBackgroundColor = 'white';
   private chart?: am4core.Sprite;
   private currentConfig = {};
+  private currentThemes: string[] = [];
   private isRefreshPending = false;
   private autoRefreshId?: number = undefined;
   @observable private isAutoRefreshEnabled = true;
@@ -80,6 +81,9 @@ class Preview extends Component<IBaseProps> {
   public componentDidMount() {
     const cfgObject = this.getChartConfig();
     this.currentConfig = cfgObject;
+    if (this.props.editorState.appliedThemes) {
+      this.currentThemes.push(...this.props.editorState.appliedThemes);
+    }
     this.renderChart(this.currentConfig);
     this.autoRefreshId = window.setInterval(this.autoRefresh, 5000);
   }
@@ -88,6 +92,18 @@ class Preview extends Component<IBaseProps> {
     const cfgObject = this.getChartConfig();
     if (JSON.stringify(this.currentConfig) !== JSON.stringify(cfgObject)) {
       this.currentConfig = cfgObject;
+      this.isRefreshPending = true;
+    }
+    if (
+      this.props.editorState.appliedThemes &&
+      this.props.editorState.appliedThemes.join('-') !==
+        this.currentThemes.join('-')
+    ) {
+      this.currentThemes.splice(
+        0,
+        this.currentThemes.length,
+        ...this.props.editorState.appliedThemes
+      );
       this.isRefreshPending = true;
     }
   }
@@ -127,13 +143,11 @@ class Preview extends Component<IBaseProps> {
     // }
 
     if (this.props.editorState.chartProperties) {
-      if (this.props.editorState.appliedThemes) {
-        this.props.editorState.appliedThemes.forEach(themeName => {
-          am4core.useTheme(themeStore[themeName]);
-        });
-        const interfaceColors = new am4core.InterfaceColorSet();
-        this.previewBackgroundColor = interfaceColors.getFor('background').hex;
-      }
+      this.currentThemes.forEach(themeName => {
+        am4core.useTheme(themeStore[themeName]);
+      });
+      const interfaceColors = new am4core.InterfaceColorSet();
+      this.previewBackgroundColor = interfaceColors.getFor('background').hex;
 
       if (this.props.editorState.licenseNumbers) {
         this.props.editorState.licenseNumbers.forEach(license => {

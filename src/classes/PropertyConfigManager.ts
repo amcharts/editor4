@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { toJS } from 'mobx';
+
 import Property from './Property';
 import defaults from './PropertyDefaults';
 
@@ -11,7 +13,6 @@ import IValueType from './IValueType';
 import PropertyGroupFactory from './PropertyGroupFactory';
 import { IChartData } from '../components/core/IChartData';
 import { IPresetData } from './IConfig';
-
 /**
  * Static class to handle {Property} <-> config transformations
  *
@@ -233,6 +234,9 @@ export default class PropertyConfigManager {
                 ) {
                   // make sure numbers are rendered without quotes
                   result[p.name] = Number(p.value);
+                } else if (typeof p.value === 'object' && p.value !== null) {
+                  // special case when "any" value is an object
+                  result[p.name] = toJS(p.value);
                 } else {
                   result[p.name] = p.value;
                 }
@@ -255,7 +259,20 @@ export default class PropertyConfigManager {
               } else if (
                 PropertyConfigManager.getPropertyTypeFamily(p) === 'array'
               ) {
-                result[p.name] = p.value;
+                result[p.name] = [];
+                p.value.forEach((val: string | undefined) => {
+                  if (
+                    val !== undefined &&
+                    !isNaN(parseFloat(val)) &&
+                    parseFloat(val).toString() === val.toString()
+                  ) {
+                    // number - add converted
+                    result[p.name].push(parseFloat(val));
+                  } else {
+                    // push as is
+                    result[p.name].push(val);
+                  }
+                });
               }
             }
             if (p.properties && p.properties.length > 0) {
@@ -776,6 +793,7 @@ export default class PropertyConfigManager {
 
               Object.keys(chartPropValue._dictionary).forEach(st => {
                 const stateConfig =
+                  subConfig !== undefined &&
                   (subConfig as any).states !== undefined &&
                   (subConfig as any).states[st] !== undefined
                     ? (subConfig as any).states[st].properties
