@@ -762,7 +762,7 @@ class Data extends Component<IDataProps> {
           <Navbar.Group align={Alignment.LEFT}>
             <Button
               icon="import"
-              text="Import JSON"
+              text="File import"
               minimal={true}
               onClick={this.importFile}
             />
@@ -776,8 +776,8 @@ class Data extends Component<IDataProps> {
             />
 
             <Button
-              icon="import"
-              text="Import CSV"
+              icon="clipboard"
+              text="Paste CSV"
               minimal={true}
               onClick={this.importCsv}
             />
