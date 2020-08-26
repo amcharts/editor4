@@ -17,6 +17,7 @@ import SelectEditor from './editors/SelectEditor';
 import SimpleArrayEditor from './editors/SimpleArrayEditor';
 import ReadOnlyEditor from './editors/ReadOnlyEditor';
 import DataFieldEditor from './editors/DataFieldEditor';
+import ColorEditor from './editors/ColorEditor';
 
 const propertyEditorStyle = new StyleClass(css`
   display: flex;
@@ -163,7 +164,7 @@ class SinglePropertyPanel extends Component<IPropertyEditorProps> {
       case 'Color--LinearGradient--Pattern--RadialGradient': {
         // @todo implement proper editor - string editor for now
         return (
-          <StringEditor
+          <ColorEditor
             key={p.name}
             property={p}
             editorState={this.props.editorState}
