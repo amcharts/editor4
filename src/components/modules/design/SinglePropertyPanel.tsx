@@ -148,7 +148,7 @@ class SinglePropertyPanel extends Component<IPropertyEditorProps> {
       }
       case 'PropertyFields':
       case 'object': {
-        return <ObjectEditor property={p} {...this.props} />;
+        return <ObjectEditor {...this.props} />;
       }
       case 'select': {
         return (
