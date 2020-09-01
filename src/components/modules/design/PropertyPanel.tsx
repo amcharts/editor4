@@ -84,7 +84,10 @@ class PropertyPanel extends Component<IBaseProps> {
         onPropertyExpandedChange: this.handlePropertyExpandedChange,
         ...this.props
       },
-      title: PropertyEditorHelpers.getDisplayName(property)
+      title: PropertyEditorHelpers.getDisplayName(
+        property,
+        this.props.editorState.language
+      )
     };
     this.panelStack = [...this.panelStack, newPanel];
   }
@@ -97,7 +100,8 @@ class PropertyPanel extends Component<IBaseProps> {
         {this.props.editorState.chartProperties && (
           <Button
             text={PropertyEditorHelpers.getDisplayName(
-              this.props.editorState.chartProperties
+              this.props.editorState.chartProperties,
+              this.props.editorState.language
             )}
             minimal={true}
             large={true}

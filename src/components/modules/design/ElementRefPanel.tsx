@@ -111,9 +111,10 @@ class ElementRefPanel extends Component<IPropertyEditorProps> {
         optionValue = idPropValue;
       }
       valueOptions.push({
-        label: `${PropertyEditorHelpers.getDisplayName(el)}${
-          optionValue !== '' ? ' (' + optionValue + ')' : ''
-        }`,
+        label: `${PropertyEditorHelpers.getDisplayName(
+          el,
+          this.props.editorState.language
+        )}${optionValue !== '' ? ' (' + optionValue + ')' : ''}`,
         value: elIndex
       });
     });
@@ -132,7 +133,10 @@ class ElementRefPanel extends Component<IPropertyEditorProps> {
       <div key={p.name} className={editorStyle.className}>
         <div className={editorLabelStyle.className}>
           <Text ellipsize={true}>
-            {PropertyEditorHelpers.getDisplayName(p)}
+            {PropertyEditorHelpers.getDisplayName(
+              p,
+              this.props.editorState.language
+            )}
           </Text>
         </div>
         {p.editorType !== 'ChartElementReference' && (

@@ -51,13 +51,19 @@ class ObjectEditor extends Component<IPropertyEditorProps> {
             <a
               href="#details"
               className={objectEditorObjectButtonStyle.className}
-              title={PropertyEditorHelpers.getDisplayString(p)}
+              title={PropertyEditorHelpers.getDisplayString(
+                p,
+                this.props.editorState.language
+              )}
               onClick={event => {
                 event.preventDefault();
                 this.handleItemClick(p);
               }}
             >
-              {PropertyEditorHelpers.getDisplayString(p)}
+              {PropertyEditorHelpers.getDisplayString(
+                p,
+                this.props.editorState.language
+              )}
             </a>
           </div>
           <div>

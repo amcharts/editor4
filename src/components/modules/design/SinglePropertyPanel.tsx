@@ -52,7 +52,10 @@ class SinglePropertyPanel extends Component<IPropertyEditorProps> {
       <div key={p.name} className={propertyEditorStyle.className}>
         <div className={propertyEditorLabelStyle.className}>
           <Text ellipsize={true}>
-            {PropertyEditorHelpers.getDisplayName(p)}
+            {PropertyEditorHelpers.getDisplayName(
+              p,
+              this.props.editorState.language
+            )}
           </Text>
           {(p.isSet || p.isUserSet) && (
             <Popover

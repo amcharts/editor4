@@ -59,7 +59,10 @@ class TemplatePropertyPanel extends Component<IPropertyEditorProps> {
         <div className={propertyEditorLabelStyle.className}>
           <div className={editorLabelTextStyle.className}>
             <Text ellipsize={true}>
-              {PropertyEditorHelpers.getDisplayName(p)}
+              {PropertyEditorHelpers.getDisplayName(
+                p,
+                this.props.editorState.language
+              )}
             </Text>
           </div>
         </div>

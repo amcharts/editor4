@@ -2,6 +2,7 @@ import { observable } from 'mobx';
 import Property from '../../classes/Property';
 import { IChartData } from './IChartData';
 import IConfig, { IPresetData } from '../../classes/IConfig';
+import { Language } from '../../utils/Language';
 
 export default class EditorState {
   @observable public chartProperties?: Property;
@@ -14,4 +15,5 @@ export default class EditorState {
     enabledModules: undefined
   };
   @observable public isBusy = false;
+  @observable public language = new Language();
 }
