@@ -1,7 +1,7 @@
 import ITemplateGroup from './ITemplateGroup';
 import { IEngineConfig } from './IEngineConfig';
-import { IChartData } from '../components/core/IChartData';
-import { ITranslationPack } from '../utils/Language';
+import { IChartData } from './../components/core/IChartData';
+import { ITranslationPack } from './../utils/Language';
 
 /**
  * Editor modules.

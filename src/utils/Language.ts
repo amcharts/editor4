@@ -1,4 +1,4 @@
-import en from './lang/en/en.js';
+import en from './lang/en/en';
 
 export interface ITranslationBlock {
   [key: string]: string;

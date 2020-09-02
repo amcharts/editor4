@@ -17,9 +17,16 @@ export {
   IPresetData
 } from './../../src/classes/IConfig';
 
+export {
+  Language,
+  ITranslationBlock,
+  ITranslationPack
+} from './../../src/utils/Language';
+
 // workaround for declarations not being exported
 import './../../src/classes/IConfig';
 import './../../src/components/core/IChartData';
 import './../../src/classes/ITemplate';
 import './../../src/classes/ITemplateGroup';
 import './../../src/classes/IEngineConfig';
+import './../../src/utils/Language';
