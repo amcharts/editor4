@@ -1,6 +1,7 @@
 import ITemplateGroup from './ITemplateGroup';
 import { IEngineConfig } from './IEngineConfig';
-import { IChartData } from '../components/core/IChartData';
+import { IChartData } from './../components/core/IChartData';
+import { ITranslationPack } from './../utils/Language';
 
 /**
  * Editor modules.
@@ -43,6 +44,10 @@ export default interface IConfig {
    * Editor license key
    */
   editorLicense?: string;
+  /**
+   * Translation prompts.
+   */
+  language?: ITranslationPack;
 }
 
 /**

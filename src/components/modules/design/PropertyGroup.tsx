@@ -203,7 +203,10 @@ class PropertyGroup extends Component<IPropertyGroupProps> {
         const criteria = new RegExp(this.props.filter!, 'gi');
         if (
           p.name.match(criteria) ||
-          PropertyEditorHelpers.getDisplayName(p).match(criteria)
+          PropertyEditorHelpers.getDisplayName(
+            p,
+            this.props.editorState.language
+          ).match(criteria)
         ) {
           return true;
         } else {

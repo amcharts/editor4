@@ -41,9 +41,14 @@ export class PropertyDefaults {
     const chunk = forClassPart.charAt(1).toUpperCase();
 
     if (this.defaults[chunk] && this.defaults[chunk][forClassPart]) {
-      const defaultsCopy = JSON.parse(
+      const defaultsCopy: IProperty = JSON.parse(
         JSON.stringify(this.defaults[chunk][forClassPart])
       );
+      if (defaultsCopy.properties) {
+        defaultsCopy.properties.forEach(
+          p => (p.path = `${defaultsCopy.name}.${p.name}`)
+        );
+      }
       if (forClass.startsWith('propertyFields::')) {
         // special case for propertyFields - change all the properties to string and DataField editor
         if (defaultsCopy.properties !== undefined) {

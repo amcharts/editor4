@@ -38,6 +38,7 @@ export default class Property implements IProperty {
    */
   @observable public isUserSet?: boolean;
   public modules?: string[];
+  public path: string;
 
   public constructor(prop: IProperty) {
     this.name = prop.name;
@@ -52,6 +53,7 @@ export default class Property implements IProperty {
     this.omitValueType = prop.omitValueType;
     this.value = prop.value;
     this.modules = prop.modules;
+    this.path = prop.path !== undefined ? prop.path : prop.name;
 
     // populate subproperties
     // @todo extract from constructor?

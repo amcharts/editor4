@@ -118,7 +118,10 @@ class ListPropertyPanel extends Component<IPropertyEditorProps> {
               className={editorLabelIconStyle.className}
             />
             <Text ellipsize={true}>
-              {PropertyEditorHelpers.getDisplayName(p)}
+              {PropertyEditorHelpers.getDisplayName(
+                p,
+                this.props.editorState.language
+              )}
             </Text>
           </div>
           <div className={propertyEditorListActionRowStyle.className}>
@@ -181,7 +184,10 @@ class ListPropertyPanel extends Component<IPropertyEditorProps> {
               >
                 <div
                   className={propertyEditorListItemObjectStyle.className}
-                  title={PropertyEditorHelpers.getDisplayString(listItem)}
+                  title={PropertyEditorHelpers.getDisplayString(
+                    listItem,
+                    this.props.editorState.language
+                  )}
                   onClick={event => {
                     this.handleListItemClick(listItem, p);
                   }}
@@ -196,7 +202,10 @@ class ListPropertyPanel extends Component<IPropertyEditorProps> {
                       propertyEditorListItemObjectButtonStyle.className
                     }
                   >
-                    {PropertyEditorHelpers.getDisplayString(listItem)}
+                    {PropertyEditorHelpers.getDisplayString(
+                      listItem,
+                      this.props.editorState.language
+                    )}
                   </Text>
                 </div>
                 <div className={propertyEditorListItemActionBoxStyle.className}>

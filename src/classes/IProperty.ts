@@ -20,4 +20,5 @@ export default interface IProperty {
   value?: any;
   properties?: IProperty[];
   modules?: string[];
+  path?: string;
 }

@@ -80,6 +80,8 @@ export default class PropertyConfigManager {
         Object.keys(dataItem).forEach((objProp, index) => {
           if (Array.isArray(dataItem[objProp])) {
             PropertyConfigManager.sanitizeData(dataItem[objProp]);
+          } else if (dataItem[objProp] instanceof Date) {
+            dataItem[objProp] = (dataItem[objProp] as Date).toISOString();
           } else if (typeof dataItem[objProp] === 'object') {
             delete dataItem[objProp];
           }

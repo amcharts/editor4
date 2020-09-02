@@ -67,6 +67,8 @@ class ModuleBar extends Component<IBaseProps & RouteComponentProps> {
   }
 
   public render() {
+    const lang = this.props.editorState.language;
+
     const noModuleConfig =
       this.props.editorState.editorConfig === undefined ||
       this.props.editorState.editorConfig.enabledModules === undefined;
@@ -85,8 +87,14 @@ class ModuleBar extends Component<IBaseProps & RouteComponentProps> {
             <Button
               key={item.path}
               icon={item.icon}
-              title={item.title}
-              text={this.isExpanded && item.title}
+              title={lang.getUiTranslation(
+                `module_bar.${item.type}`,
+                item.title
+              )}
+              text={
+                this.isExpanded &&
+                lang.getUiTranslation(`module_bar.${item.type}`, item.title)
+              }
               intent={
                 this.props.location.pathname === item.path ? 'primary' : 'none'
               }

@@ -121,6 +121,10 @@ class App extends Component {
       if (config.presetData) {
         this.editorState.presetData = config.presetData;
       }
+
+      if (config.language) {
+        this.editorState.language.translations = config.language;
+      }
     }
   }
 
