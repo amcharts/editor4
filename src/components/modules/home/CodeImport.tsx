@@ -4,6 +4,7 @@ import { observable } from 'mobx';
 import CodeEditor from '../../core/CodeEditor';
 import { Button, Callout } from '@blueprintjs/core';
 import { StyleClass, css } from '../../../utils/Style';
+import { Language } from '../../../utils/Language';
 
 const codeImportStyle = new StyleClass(css`
   padding: 20px 0px;
@@ -21,6 +22,7 @@ const importButtoRowStyle = new StyleClass(css`
 `);
 
 interface ICodeImportProps {
+  lang: Language;
   onChartImport: (config: object) => void;
 }
 
@@ -36,11 +38,15 @@ class CodeImport extends Component<ICodeImportProps> {
   }
 
   render() {
+    const lang = this.props.lang;
+
     return (
       <div className={codeImportStyle.className}>
         <p>
-          Paste JSON chart config or JavaScript code created with this Editor in
-          the field below and press "Import."
+          {lang.getUiTranslation(
+            'code_import.prompt',
+            'Paste JSON chart config or JavaScript code created with this Editor in the field below and press "Import."'
+          )}
         </p>
         <CodeEditor
           mode="javascript"
@@ -56,7 +62,10 @@ class CodeImport extends Component<ICodeImportProps> {
         <div className={importButtoRowStyle.className}>
           <Button
             icon="import"
-            text="Import..."
+            text={lang.getUiTranslation(
+              'code_import.import_button',
+              'Import...'
+            )}
             onClick={this.handleImportClick}
             disabled={this.codeToImport === ''}
           />

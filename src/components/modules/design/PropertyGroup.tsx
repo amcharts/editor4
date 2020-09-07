@@ -88,6 +88,8 @@ class PropertyGroup extends Component<IPropertyGroupProps> {
   }
 
   public render() {
+    const lang = this.props.editorState.language;
+
     if (this.props.groupProperties && this.props.groupProperties.length > 0) {
       const gp = this.props.groupProperties
         .filter(p => this.isPropertyVisible(p))
@@ -103,7 +105,12 @@ class PropertyGroup extends Component<IPropertyGroupProps> {
                 icon={this.props.isExpanded ? 'folder-open' : 'folder-close'}
                 className={propertyGroupTitleIconStyle.className}
               />
-              <h4>{this.props.group.displayName}</h4>
+              <h4>
+                {lang.getUiTranslation(
+                  `property_group.group_name_${this.props.group.name}`,
+                  this.props.group.displayName
+                )}
+              </h4>
             </div>
 
             <Collapse
@@ -125,7 +132,15 @@ class PropertyGroup extends Component<IPropertyGroupProps> {
                       this.isExpanded = !this.isExpanded;
                     }}
                   >
-                    {this.isExpanded ? 'show less' : 'show more'}
+                    {this.isExpanded
+                      ? lang.getUiTranslation(
+                          'property_group.show_less',
+                          'show less'
+                        )
+                      : lang.getUiTranslation(
+                          'property_group.show_more',
+                          'show more'
+                        )}
                   </Button>
                 </div>
               )}

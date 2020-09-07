@@ -175,6 +175,8 @@ class Preview extends Component<IBaseProps> {
   }
 
   public render() {
+    const lang = this.props.editorState.language;
+
     // eslint-disable-next-line
     const cfg = JSON.stringify(this.getChartConfig());
     // eslint-disable-next-line
@@ -198,14 +200,20 @@ class Preview extends Component<IBaseProps> {
             <Button
               minimal={true}
               icon="refresh"
-              text="refresh"
+              text={lang.getUiTranslation('preview.refresh', 'refresh')}
               disabled={this.isAutoRefreshEnabled}
               onClick={this.refreshIfNeeded}
             />
             <Switch
               checked={this.isAutoRefreshEnabled}
-              innerLabel="auto"
-              title="toggle auto refresh"
+              innerLabel={lang.getUiTranslation(
+                'preview.auto_refresh_inner',
+                'auto'
+              )}
+              title={lang.getUiTranslation(
+                'preview.auto_refresh_title',
+                'toggle auto refresh'
+              )}
               alignIndicator="right"
               inline={true}
               className={switchControlStyle.className}

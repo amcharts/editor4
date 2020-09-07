@@ -111,6 +111,7 @@ class PropertyPanel extends Component<IBaseProps> {
         )}
         {this.panelStack.length === 1 && (
           <EngineSettingsPanel
+            lang={this.props.editorState.language}
             gridState={this.gridStateStack[0]}
             onExpandedChange={this.handleGroupExpandedChange}
             {...this.props}

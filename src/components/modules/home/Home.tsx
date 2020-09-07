@@ -105,6 +105,8 @@ class Home extends Component<IHomeProps> {
       this.props.editorState.editorConfig !== undefined &&
       this.props.editorState.editorConfig.templates !== undefined
     ) {
+      const lang = this.props.editorState.language;
+
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const TemplateCard = (props: {
         template: ITemplate;
@@ -129,7 +131,10 @@ class Home extends Component<IHomeProps> {
               <span />
             </div>
             <H4 className={templateHeadingStyle.className}>
-              {props.template.displayName}
+              {lang.getUiTranslation(
+                `template_title.${props.template.id}`,
+                props.template.displayName
+              )}
             </H4>
             <p>{props.template.description}</p>
           </Card>
@@ -157,10 +162,14 @@ class Home extends Component<IHomeProps> {
 
       return (
         <div className={homeStyle.className}>
-          <H2 className={mainHeadingStyle.className}>New chart</H2>
+          <H2 className={mainHeadingStyle.className}>
+            {lang.getUiTranslation(`home.new_chart_title`, 'New chart')}
+          </H2>
           <p>
-            Create a new chart based on one of the templates below or import a
-            previously created chart.
+            {lang.getUiTranslation(
+              `home.new_chart_description`,
+              'Create a new chart based on one of the templates below or import a previously created chart.'
+            )}
           </p>
 
           <Tabs className={templateListStyle.className} vertical={true}>
@@ -168,7 +177,10 @@ class Home extends Component<IHomeProps> {
               <Tab
                 id={tg.name}
                 key={tg.name}
-                title={tg.name}
+                title={lang.getUiTranslation(
+                  `template_group.${tg.name}`,
+                  tg.name
+                )}
                 className={templateTabStyle.className}
                 panel={
                   <TemplateGroup
@@ -181,9 +193,14 @@ class Home extends Component<IHomeProps> {
             <Tabs.Expander />
             <Tab
               id="importCode"
-              title="Import from code..."
+              title={lang.getUiTranslation(
+                'home.import_from_code',
+                'Import from code...'
+              )}
               className={codeTabStyle.className}
-              panel={<CodeImport onChartImport={this.handleImport} />}
+              panel={
+                <CodeImport lang={lang} onChartImport={this.handleImport} />
+              }
             />
           </Tabs>
         </div>

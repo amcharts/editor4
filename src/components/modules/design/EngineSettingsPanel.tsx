@@ -20,6 +20,7 @@ import PropertyGridState from './PropertyGridState';
 import { IThemeInfo } from '../../../classes/IEngineConfig';
 import { observable } from 'mobx';
 import ConfirmationDialog from '../../core/ConfirmationDialog';
+import { Language } from '../../../utils/Language';
 
 const propertyGroupStyle = new StyleClass(css`
   border-bottom: 1px solid ${editorTheme.propertyPanelGridColor};
@@ -148,6 +149,7 @@ const propertyEditorEditStyle = new StyleClass(css`
  * @extends {IBaseProps}
  */
 interface IEngineSettingsPanelProps extends IBaseProps {
+  lang: Language;
   gridState: PropertyGridState;
   onExpandedChange: (groupName: string) => void;
 }
@@ -187,6 +189,7 @@ class EngineSettingsPanel extends Component<IEngineSettingsPanelProps> {
   }
 
   public render() {
+    const lang = this.props.lang;
     const engineConfig = this.props.editorState.editorConfig.engineConfig;
     let appliedThemeInfos: IThemeInfo[] = [];
     if (
@@ -209,7 +212,12 @@ class EngineSettingsPanel extends Component<IEngineSettingsPanelProps> {
           onClick={() => this.props.onExpandedChange('engine')}
         >
           <Icon icon="cog" className={propertyGroupTitleIconStyle.className} />
-          <h4>Engine settings</h4>
+          <h4>
+            {lang.getUiTranslation(
+              'engine_settings_panel.engine_settings',
+              'Engine settings'
+            )}
+          </h4>
         </div>
 
         <Collapse
@@ -233,7 +241,12 @@ class EngineSettingsPanel extends Component<IEngineSettingsPanelProps> {
                       icon="style"
                       className={editorLabelIconStyle.className}
                     />
-                    <div>Themes</div>
+                    <div>
+                      {lang.getUiTranslation(
+                        'engine_settings_panel.themes',
+                        'Themes'
+                      )}
+                    </div>
                   </div>
                   <div className={propertyEditorListActionRowStyle.className}>
                     <div>
@@ -270,7 +283,10 @@ class EngineSettingsPanel extends Component<IEngineSettingsPanelProps> {
                               small={true}
                               minimal={true}
                               icon="plus"
-                              title="add"
+                              title={lang.getUiTranslation(
+                                'engine_settings_panel.theme_add',
+                                'add'
+                              )}
                               intent={Intent.SUCCESS}
                             />
                           </Popover>
@@ -316,8 +332,14 @@ class EngineSettingsPanel extends Component<IEngineSettingsPanelProps> {
                           <Popover
                             content={
                               <ConfirmationDialog
-                                title="Remove theme?"
-                                confirmText="Remove"
+                                title={lang.getUiTranslation(
+                                  'engine_settings_panel.remove_theme_prompt',
+                                  'Remove theme?'
+                                )}
+                                confirmText={lang.getUiTranslation(
+                                  'engine_settings_panel.remove_theme_confirm',
+                                  'Remove'
+                                )}
                                 onConfirmClick={() => {
                                   if (this.props.onThemeChange) {
                                     this.props.onThemeChange({
@@ -344,7 +366,12 @@ class EngineSettingsPanel extends Component<IEngineSettingsPanelProps> {
             )}
           <div key="licenses-editor" className={propertyEditorStyle.className}>
             <div className={propertyEditorLabelStyle.className}>
-              <Text ellipsize={true}>Licenses</Text>
+              <Text ellipsize={true}>
+                {lang.getUiTranslation(
+                  'engine_settings_panel.licenses',
+                  'Licenses'
+                )}
+              </Text>
             </div>
             <div className={propertyEditorEditStyle.className}>
               <InputGroup
