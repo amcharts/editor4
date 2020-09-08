@@ -43,6 +43,7 @@ class ObjectEditor extends Component<IPropertyEditorProps> {
   }
 
   public render() {
+    const lang = this.props.editorState.language;
     const p = this.props.property;
     if (p.value !== undefined) {
       return (
@@ -51,27 +52,27 @@ class ObjectEditor extends Component<IPropertyEditorProps> {
             <a
               href="#details"
               className={objectEditorObjectButtonStyle.className}
-              title={PropertyEditorHelpers.getDisplayString(
-                p,
-                this.props.editorState.language
-              )}
+              title={PropertyEditorHelpers.getDisplayString(p, lang)}
               onClick={event => {
                 event.preventDefault();
                 this.handleItemClick(p);
               }}
             >
-              {PropertyEditorHelpers.getDisplayString(
-                p,
-                this.props.editorState.language
-              )}
+              {PropertyEditorHelpers.getDisplayString(p, lang)}
             </a>
           </div>
           <div>
             <Popover
               content={
                 <ConfirmationDialog
-                  title="Remove?"
-                  confirmText="Remove"
+                  title={lang.getUiTranslation(
+                    'object_editor.remove_prompt',
+                    'Remove?'
+                  )}
+                  confirmText={lang.getUiTranslation(
+                    'object_editor.remove_confirm',
+                    'Remove'
+                  )}
                   onConfirmClick={() => this.handleRemoveItemClick(p)}
                 />
               }
@@ -93,7 +94,10 @@ class ObjectEditor extends Component<IPropertyEditorProps> {
           <Button
             icon="plus"
             small={true}
-            title="create"
+            title={lang.getUiTranslation(
+              'object_editor.create_button',
+              'create'
+            )}
             minimal={true}
             intent={Intent.SUCCESS}
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -118,7 +122,10 @@ class ObjectEditor extends Component<IPropertyEditorProps> {
             <Button
               icon="plus"
               small={true}
-              title="create"
+              title={lang.getUiTranslation(
+                'object_editor.create_button',
+                'create'
+              )}
               minimal={true}
               intent={Intent.SUCCESS}
             />

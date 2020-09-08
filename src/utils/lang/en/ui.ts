@@ -1,4 +1,8 @@
 export default {
+  'app.title': 'Chart Editor',
+  'app.save_button': 'save',
+  'app.close_button': 'close',
+
   'module_bar.home': 'Home',
   'module_bar.design': 'Design',
   'module_bar.data': 'Data',
@@ -48,5 +52,64 @@ export default {
   'property_group.group_name_behavior': 'Behavior',
   'property_group.group_name_interactivity': 'Interactivity',
   'property_group.group_name_a11y': 'Accessibility',
-  'property_group.group_name_misc': 'Other'
+  'property_group.group_name_misc': 'Other',
+
+  'object_editor.remove_prompt': 'Remove?',
+  'object_editor.remove_confirm': 'Remove',
+  'object_editor.create_button': 'create',
+
+  'list_property_panel.add_button': 'add',
+  'list_property_panel.remove_prompt': 'Remove item?',
+  'list_property_panel.remove_confirm': 'Remove',
+  'list_property_panel.template_button': 'template',
+
+  'data.add_column_button': 'Add',
+  'data.add_column_button_title': 'Add column',
+  'data.add_row_button_title': 'Add row',
+  'data.remove_column_button': 'Remove',
+  'data.remove_column_button_title': 'Remove column(s)',
+  'data.delete_button_text': 'Delete',
+  'data.cancel_button_text': 'Cancel',
+  'data.delete_columns_prompt': 'Delete selected column(s)?',
+  'data.remove_row_button_title': 'Remove row(s)',
+  'data.delete_rows_prompt': 'Delete selected row(s)?',
+  'data.transform_to_number': 'number',
+  'data.transform_to_string': 'string',
+  'data.transform_to_button': 'Transform to ...',
+  'data.file_import_button': 'File import',
+  'data.paste_csv_button': 'Paste CSV',
+  'data.table_tab': 'Table',
+  'data.json_tab': 'JSON',
+
+  'data.column_empty_prompt': 'Column cannot be empty, delete column?',
+  'data.column_exists_prompt': 'Column already exists, merge columns?',
+  'data.json_not_array_error': 'JSON data must be an array',
+  'data.json_format_error': 'Malformed JSON',
+
+  'file_import.title': 'Import data from a file',
+  'file_import.prompt': 'Select a JSON or CSV data file and press "Import."',
+  'file_import.csv_options': 'CSV import options:',
+  'file_import.csv_data_has_headers': 'My data has headers',
+  'file_import.csv_delimiter': 'Delimiter:',
+  'file_import.close_button': 'Close',
+  'file_import.import_button': 'Import...',
+  'file_import.no_file_error': 'Please select a file',
+  'file_import.multiple_files_error': 'Cannot import multiple files',
+
+  'csv_delimiter.auto': 'auto',
+  'csv_delimiter.tab': '(tab)',
+  'csv_delimiter.space': '(space)',
+
+  'csv_import.title': 'Import CSV data',
+  'csv_import.prompt':
+    'Paste CSV data into the field below and press "Import."',
+  'csv_import.csv_data_has_headers': 'My data has headers',
+  'csv_import.csv_delimiter': 'Delimiter:',
+  'csv_import.close_button': 'Close',
+  'csv_import.import_button': 'Import...',
+
+  'code.json_tab': 'JSON config',
+  'code.es2015_tab': 'ES2015/TypeScript with JSON',
+  'code.html_js_tab': 'HTML &amp; JavaScript',
+  'code.object_js_tab': 'Object-style ES2015'
 };

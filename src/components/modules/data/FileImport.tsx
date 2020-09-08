@@ -15,6 +15,7 @@ import {
 } from '@blueprintjs/core';
 import { StyleClass, css } from '../../../utils/Style';
 import Papa, { ParseConfig } from 'papaparse';
+import { Language } from '../../../utils/Language';
 
 const dialogStyle = new StyleClass(css`
   margin: 30px;
@@ -33,6 +34,7 @@ const optionsBlockStyle = new StyleClass(css`
 `);
 
 interface IFileImportProps {
+  lang: Language;
   isOpen: boolean;
   onFileImport: (fileContent: string) => void;
   onImportCancel: () => void;
@@ -49,11 +51,20 @@ class FileImport extends Component<IFileImportProps> {
   @observable private fileToImport?: File;
 
   delimiterOptions: IOptionProps[] = [
-    { value: 'auto' },
+    {
+      value: 'auto',
+      label: this.props.lang.getUiTranslation('csv_delimiter.auto', 'auto')
+    },
     { value: ',' },
     { value: ';' },
-    { value: '\t', label: '(tab)' },
-    { value: ' ', label: '(space)' }
+    {
+      value: '\t',
+      label: this.props.lang.getUiTranslation('csv_delimiter.tab', '(tab)')
+    },
+    {
+      value: ' ',
+      label: this.props.lang.getUiTranslation('csv_delimiter.space', '(space)')
+    }
   ];
 
   @computed
@@ -84,19 +95,28 @@ class FileImport extends Component<IFileImportProps> {
   }
 
   render() {
+    const lang = this.props.lang;
     return (
       <Dialog
         icon="import"
         isOpen={this.props.isOpen}
         onClose={this.props.onImportCancel}
-        title="Import data from a file"
+        title={lang.getUiTranslation(
+          'file_import.title',
+          'Import data from a file'
+        )}
         className={dialogStyle.className}
       >
         <div className={`${Classes.DIALOG_BODY} ${fileImportStyle.className}`}>
           {this.loadingError !== undefined && this.loadingError.length > 0 && (
             <Callout title="Error importing file">{this.loadingError}</Callout>
           )}
-          <p>Select a JSON or CSV data file and press "Import."</p>
+          <p>
+            {lang.getUiTranslation(
+              'file_import.prompt',
+              'Select a JSON or CSV data file and press "Import."'
+            )}
+          </p>
           <FileInput
             text={this.importFileName}
             hasSelection={this.importFileName !== this.importPromptText}
@@ -104,18 +124,32 @@ class FileImport extends Component<IFileImportProps> {
           />
           {this.isCSV && (
             <div>
-              <h5>CSV import options:</h5>
+              <h5>
+                {lang.getUiTranslation(
+                  'file_import.csv_options',
+                  'CSV import options:'
+                )}
+              </h5>
               <div className={optionsBlockStyle.className}>
                 <FormGroup>
                   <Checkbox
                     checked={this.firstRowHeadings}
-                    label="My data has headers"
+                    label={lang.getUiTranslation(
+                      'file_import.csv_data_has_headers',
+                      'My data has headers'
+                    )}
                     onChange={() => {
                       this.firstRowHeadings = !this.firstRowHeadings;
                     }}
                   />
                 </FormGroup>
-                <FormGroup label="Delimiter:" inline={true}>
+                <FormGroup
+                  label={lang.getUiTranslation(
+                    'file_import.csv_delimiter',
+                    'Delimiter:'
+                  )}
+                  inline={true}
+                >
                   <HTMLSelect
                     options={this.delimiterOptions}
                     placeholder="Delimiter"
@@ -133,14 +167,16 @@ class FileImport extends Component<IFileImportProps> {
 
         <div className={Classes.DIALOG_FOOTER}>
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-            <Button onClick={this.props.onImportCancel}>Close</Button>
+            <Button onClick={this.props.onImportCancel}>
+              {lang.getUiTranslation('file_import.close_button', 'Close')}
+            </Button>
             <Button
               intent={Intent.PRIMARY}
               icon="import"
               disabled={this.fileToImport === undefined}
               onClick={this.handleImportClick}
             >
-              Import...
+              {lang.getUiTranslation('file_import.import_button', 'Import...')}
             </Button>
           </div>
         </div>
@@ -191,9 +227,15 @@ class FileImport extends Component<IFileImportProps> {
     const files = (event.target as HTMLInputElement).files;
 
     if (files == null) {
-      this.loadingError = 'Please select a file';
+      this.loadingError = this.props.lang.getUiTranslation(
+        'file_import.no_file_error',
+        'Please select a file'
+      );
     } else if (files.length !== 1) {
-      this.loadingError = 'Cannot import multiple files';
+      this.loadingError = this.props.lang.getUiTranslation(
+        'file_import.multiple_files_error',
+        'Cannot import multiple files'
+      );
     } else {
       this.fileToImport = files[0];
       this.importFileName = this.fileToImport.name;

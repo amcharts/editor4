@@ -220,6 +220,7 @@ ${encodedJsonSplit}
   }
 
   public render() {
+    const lang = this.props.editorState.language;
     return (
       <div className={codeModuleStyle.className}>
         <Tabs
@@ -228,7 +229,7 @@ ${encodedJsonSplit}
         >
           <Tab
             id="jsonConfig"
-            title="JSON config"
+            title={lang.getUiTranslation('code.json_tab', 'JSON config')}
             className={codeTabStyle.className}
             panel={
               <CodeEditor
@@ -243,7 +244,10 @@ ${encodedJsonSplit}
           />
           <Tab
             id="es2015JsonConfig"
-            title="ES2015/TypeScript with JSON"
+            title={lang.getUiTranslation(
+              'code.es2015_tab',
+              'ES2015/TypeScript with JSON'
+            )}
             className={codeTabStyle.className}
             panel={
               <CodeEditor
@@ -255,7 +259,10 @@ ${encodedJsonSplit}
           />
           <Tab
             id="htmlJs"
-            title="HTML &amp; JavaScript"
+            title={lang.getUiTranslation(
+              'code.html_js_tab',
+              'HTML &amp; JavaScript'
+            )}
             className={codeTabStyle.className}
             panel={
               <CodeEditor
@@ -267,7 +274,10 @@ ${encodedJsonSplit}
           />
           <Tab
             id="jsCode"
-            title="Object-style ES2015"
+            title={lang.getUiTranslation(
+              'code.object_js_tab',
+              'Object-style ES2015'
+            )}
             className={codeTabStyle.className}
             panel={
               <CodeEditor
