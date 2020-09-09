@@ -63,6 +63,8 @@ export default {
   'list_property_panel.remove_confirm': 'Remove',
   'list_property_panel.template_button': 'template',
 
+  'data_field_editor.not_set': '(not set)',
+
   'data.add_column_button': 'Add',
   'data.add_column_button_title': 'Add column',
   'data.add_row_button_title': 'Add row',
