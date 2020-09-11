@@ -106,6 +106,7 @@ class PropertyPanel extends Component<IBaseProps> {
             minimal={true}
             large={true}
             icon="chart"
+            title={this.props.editorState.chartProperties.name}
             onClick={this.goToChartProperties}
           />
         )}

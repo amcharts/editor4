@@ -89,6 +89,13 @@ const editorListItemIconStyle = new StyleClass(css`
   margin-right: 10px;
 `);
 
+const labelStyle = new StyleClass(css`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+`);
+
 @observer
 class StatesPropertyPanel extends Component<IPropertyEditorProps> {
   @observable private isOpen = false;
@@ -103,6 +110,10 @@ class StatesPropertyPanel extends Component<IPropertyEditorProps> {
 
   public render() {
     const p = this.props.property;
+    const displayName = PropertyEditorHelpers.getDisplayName(
+      p,
+      this.props.editorState.language
+    );
     const values = p.value !== undefined ? (p.value as Property[]) : [];
     return (
       <div key={p.name} className={propertyEditorListStyle.className}>
@@ -115,12 +126,12 @@ class StatesPropertyPanel extends Component<IPropertyEditorProps> {
               icon={this.isOpen ? 'caret-down' : 'caret-right'}
               className={editorLabelIconStyle.className}
             />
-            <Text ellipsize={true}>
-              {PropertyEditorHelpers.getDisplayName(
-                p,
-                this.props.editorState.language
-              )}
-            </Text>
+            <div
+              className={labelStyle.className}
+              title={`${displayName} (${p.name})`}
+            >
+              {displayName}
+            </div>
           </div>
           <div className={propertyEditorListActionRowStyle.className}>
             <div>
