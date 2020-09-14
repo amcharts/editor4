@@ -16,6 +16,8 @@ let am4editor_lang_ru = {
 
 }
 
+window.am4editor_lang_en.ui['app.title'] = 'Very good chart editor';
+
 const templates = [
   {
     name: 'Basic templates',
@@ -834,7 +836,7 @@ function launchEditor(editMode) {
         : undefined,
       enabledModules: getModules(),
       engineConfig: engineConfig,
-      language: am4editor_lang_ru
+      language: am4editor_lang_en
       // @todo comment preset data test code
       // // test preset data functionality
       // presetData: {
