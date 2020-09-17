@@ -1,5 +1,5 @@
 /* eslint-disable */
-  window.am4editor_lang_en = {
+export default {
     "ui": {
         "app.title": "Chart Editor",
         "app.save_button": "save",

@@ -38,6 +38,8 @@ class PropertyGrid extends Component<IPropertyGridProps> {
   }
 
   public render() {
+    const lang = this.props.editorState.language;
+
     const groups = PropertyGroupFactory.getDefaultPropertyGroupSet();
 
     const fitlerResetButton =
@@ -61,7 +63,10 @@ class PropertyGrid extends Component<IPropertyGridProps> {
           <InputGroup
             value={this.props.gridState.filter}
             leftIcon="filter"
-            placeholder="Filter properties..."
+            placeholder={lang.getUiTranslation(
+              'property_grid.filter_properties',
+              'Filter properties...'
+            )}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               this.props.onFilterChange(event.target.value);
             }}

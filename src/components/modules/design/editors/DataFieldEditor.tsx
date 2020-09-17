@@ -8,7 +8,15 @@ import { IChartData } from '../../../core/IChartData';
 @observer
 class DataFieldEditor extends Component<IPropertyEditorProps> {
   @computed get dataFields(): IOptionProps[] {
-    const result: IOptionProps[] = [{ label: '(not set)', value: -1 }];
+    const result: IOptionProps[] = [
+      {
+        label: this.props.editorState.language.getUiTranslation(
+          'data_field_editor.not_set',
+          '(not set)'
+        ),
+        value: -1
+      }
+    ];
     if (
       this.props.editorState.chartData !== undefined &&
       this.props.editorState.chartData.length > 0

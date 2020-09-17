@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 
-import { Text, Button, Popover, Intent } from '@blueprintjs/core';
+import { Button, Popover, Intent } from '@blueprintjs/core';
 
 import Property from '../../../classes/Property';
 
@@ -41,6 +41,13 @@ const editorLabelTextStyle = new StyleClass(css`
   cursor: pointer;
 `);
 
+const labelStyle = new StyleClass(css`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+`);
+
 @observer
 class TemplatePropertyPanel extends Component<IPropertyEditorProps> {
   @observable private isOpen = false;
@@ -53,17 +60,21 @@ class TemplatePropertyPanel extends Component<IPropertyEditorProps> {
 
   public render() {
     const p = this.props.property;
+    const displayName = PropertyEditorHelpers.getDisplayName(
+      p,
+      this.props.editorState.language
+    );
 
     return (
       <div key={p.name} className={propertyEditorStyle.className}>
         <div className={propertyEditorLabelStyle.className}>
           <div className={editorLabelTextStyle.className}>
-            <Text ellipsize={true}>
-              {PropertyEditorHelpers.getDisplayName(
-                p,
-                this.props.editorState.language
-              )}
-            </Text>
+            <div
+              className={labelStyle.className}
+              title={`${displayName} (${p.name})`}
+            >
+              {displayName}
+            </div>
           </div>
         </div>
         <div className={propertyEditorEditStyle.className}>

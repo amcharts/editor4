@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 
-import { Text, IOptionProps, HTMLSelect, Checkbox } from '@blueprintjs/core';
+import { IOptionProps, HTMLSelect, Checkbox } from '@blueprintjs/core';
 
 import Property from '../../../classes/Property';
 
@@ -80,6 +80,13 @@ const propertyEditorEditStyle = new StyleClass(css`
   width: 50%;
 `);
 
+const labelStyle = new StyleClass(css`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+`);
+
 @observer
 class ElementRefPanel extends Component<IPropertyEditorProps> {
   public constructor(props: Readonly<IPropertyEditorProps>) {
@@ -90,7 +97,10 @@ class ElementRefPanel extends Component<IPropertyEditorProps> {
 
   public render() {
     const p = this.props.property;
-
+    const displayName = PropertyEditorHelpers.getDisplayName(
+      p,
+      this.props.editorState.language
+    );
     const valueOptions: IOptionProps[] = [];
     if (p.editorType === 'ChartElementReference') {
       valueOptions.push({ label: '(not set)', value: -1 });
@@ -132,12 +142,12 @@ class ElementRefPanel extends Component<IPropertyEditorProps> {
     return (
       <div key={p.name} className={editorStyle.className}>
         <div className={editorLabelStyle.className}>
-          <Text ellipsize={true}>
-            {PropertyEditorHelpers.getDisplayName(
-              p,
-              this.props.editorState.language
-            )}
-          </Text>
+          <div
+            className={labelStyle.className}
+            title={`${displayName} (${p.name})`}
+          >
+            {displayName}
+          </div>
         </div>
         {p.editorType !== 'ChartElementReference' && (
           <div className={propertyEditorListItemListStyle.className}>

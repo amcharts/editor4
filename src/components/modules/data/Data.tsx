@@ -99,7 +99,14 @@ class ColumnHeader extends Component<IHeaderProps> {
       if (this.props.editorState.chartData) {
         if (newName === '') {
           // TODO replace with dialog box
-          if (!window.confirm('Column cannot be empty, delete column?')) {
+          if (
+            !window.confirm(
+              this.props.editorState.language.getUiTranslation(
+                'data.column_empty_prompt',
+                'Column cannot be empty, delete column?'
+              )
+            )
+          ) {
             this.currentName = this.props.oldName;
             return;
           }
@@ -110,7 +117,14 @@ class ColumnHeader extends Component<IHeaderProps> {
         } else {
           if (this.props.columns.indexOf(newName) !== -1) {
             // TODO replace with dialog box
-            if (!window.confirm('Column already exists, merge columns?')) {
+            if (
+              !window.confirm(
+                this.props.editorState.language.getUiTranslation(
+                  'data.column_exists_prompt',
+                  'Column already exists, merge columns?'
+                )
+              )
+            ) {
               this.currentName = this.props.oldName;
               return;
             }
@@ -486,10 +500,16 @@ class Data extends Component<IDataProps> {
         this.props.editorState.chartData = data;
         this.setJsonDataString();
       } else {
-        this.loadingError = 'JSON data must be an array';
+        this.loadingError = this.props.editorState.language.getUiTranslation(
+          'data.json_not_array_error',
+          'JSON data must be an array'
+        );
       }
     } catch {
-      this.loadingError = 'Malformed JSON';
+      this.loadingError = this.props.editorState.language.getUiTranslation(
+        'data.json_format_error',
+        'Malformed JSON'
+      );
       // throw new SyntaxError('Malformed JSON');
     }
   }
@@ -679,6 +699,7 @@ class Data extends Component<IDataProps> {
   }
 
   public render() {
+    const lang = this.props.editorState.language;
     return (
       <div className={dataStyle.className}>
         <Navbar className={`${toolbarStyle.className}`}>
@@ -686,21 +707,33 @@ class Data extends Component<IDataProps> {
             <ButtonGroup minimal={true} large={true}>
               <Button
                 rightIcon="add-column-left"
-                text="Add"
-                title="Add column"
+                text={lang.getUiTranslation('data.add_column_button', 'Add')}
+                title={lang.getUiTranslation(
+                  'data.add_column_button_title',
+                  'Add column'
+                )}
                 onClick={this.addColumn}
               />
               <Button
                 icon="add-row-bottom"
-                title="Add row"
+                title={lang.getUiTranslation(
+                  'data.add_row_button_title',
+                  'Add row'
+                )}
                 onClick={this.addRow}
               />
             </ButtonGroup>
             <ButtonGroup minimal={true} large={true}>
               <Button
                 rightIcon="remove-column-left"
-                text="Remove"
-                title="Remove column(s)"
+                text={lang.getUiTranslation(
+                  'data.remove_column_button',
+                  'Remove'
+                )}
+                title={lang.getUiTranslation(
+                  'data.remove_column_button_title',
+                  'Remove column(s)'
+                )}
                 disabled={this.selectedRegions.length < 1}
                 onClick={() => {
                   this.isDeleteColsOpen = true;
@@ -710,18 +743,32 @@ class Data extends Component<IDataProps> {
                 isOpen={this.isDeleteColsOpen}
                 icon="trash"
                 intent={Intent.DANGER}
-                confirmButtonText="Delete"
-                cancelButtonText="Cancel"
+                confirmButtonText={lang.getUiTranslation(
+                  'data.delete_button_text',
+                  'Delete'
+                )}
+                cancelButtonText={lang.getUiTranslation(
+                  'data.cancel_button_text',
+                  'Cancel'
+                )}
                 onConfirm={this.removeColumns}
                 onCancel={() => {
                   this.isDeleteColsOpen = false;
                 }}
               >
-                <p>Delete selected column(s)?</p>
+                <p>
+                  {lang.getUiTranslation(
+                    'data.delete_columns_prompt',
+                    'Delete selected column(s)?'
+                  )}
+                </p>
               </Alert>
               <Button
                 icon="remove-row-bottom"
-                title="Remove row(s)"
+                title={lang.getUiTranslation(
+                  'data.remove_row_button_title',
+                  'Remove row(s)'
+                )}
                 disabled={this.selectedRegions.length < 1}
                 onClick={() => {
                   this.isDeleteRowsOpen = true;
@@ -731,14 +778,25 @@ class Data extends Component<IDataProps> {
                 isOpen={this.isDeleteRowsOpen}
                 icon="trash"
                 intent={Intent.DANGER}
-                confirmButtonText="Delete"
-                cancelButtonText="Cancel"
+                confirmButtonText={lang.getUiTranslation(
+                  'data.delete_button_text',
+                  'Delete'
+                )}
+                cancelButtonText={lang.getUiTranslation(
+                  'data.cancel_button_text',
+                  'Cancel'
+                )}
                 onConfirm={this.removeRows}
                 onCancel={() => {
                   this.isDeleteRowsOpen = false;
                 }}
               >
-                <p>Delete selected row(s)?</p>
+                <p>
+                  {lang.getUiTranslation(
+                    'data.delete_rows_prompt',
+                    'Delete selected row(s)?'
+                  )}
+                </p>
               </Alert>
             </ButtonGroup>
           </Navbar.Group>
@@ -746,14 +804,29 @@ class Data extends Component<IDataProps> {
           <Popover
             content={
               <Menu>
-                <MenuItem text="number" onClick={this.transformToNumber} />
-                <MenuItem text="string" onClick={this.transformToString} />
+                <MenuItem
+                  text={lang.getUiTranslation(
+                    'data.transform_to_number',
+                    'number'
+                  )}
+                  onClick={this.transformToNumber}
+                />
+                <MenuItem
+                  text={lang.getUiTranslation(
+                    'data.transform_to_string',
+                    'string'
+                  )}
+                  onClick={this.transformToString}
+                />
               </Menu>
             }
           >
             <Button
               minimal={true}
-              text="Transform to ..."
+              text={lang.getUiTranslation(
+                'data.transform_to_button',
+                'Transform to ...'
+              )}
               disabled={this.selectedRegions.length < 1}
               rightIcon="caret-down"
             />
@@ -762,12 +835,16 @@ class Data extends Component<IDataProps> {
           <Navbar.Group align={Alignment.LEFT}>
             <Button
               icon="import"
-              text="File import"
+              text={lang.getUiTranslation(
+                'data.file_import_button',
+                'File import'
+              )}
               minimal={true}
               onClick={this.importFile}
             />
 
             <FileImport
+              lang={this.props.editorState.language}
               isOpen={this.importFileOpen}
               onFileImport={this.handleFileImport}
               onImportCancel={() => {
@@ -777,12 +854,13 @@ class Data extends Component<IDataProps> {
 
             <Button
               icon="clipboard"
-              text="Paste CSV"
+              text={lang.getUiTranslation('data.paste_csv_button', 'Paste CSV')}
               minimal={true}
               onClick={this.importCsv}
             />
 
             <CsvImport
+              lang={this.props.editorState.language}
               isOpen={this.importCsvOpen}
               onCsvImport={this.handleCsvImport}
               onImportCancel={() => {
@@ -801,7 +879,7 @@ class Data extends Component<IDataProps> {
           {this.isFlat && (
             <Tab
               id="table1"
-              title="Table"
+              title={lang.getUiTranslation('data.table_tab', 'Table')}
               className="dataTabStyle"
               panel={
                 <div className={dataPanelStyle.className}>
@@ -842,7 +920,7 @@ class Data extends Component<IDataProps> {
           <Tabs.Expander />
           <Tab
             id="json"
-            title="JSON"
+            title={lang.getUiTranslation('data.json_tab', 'JSON')}
             className={dataTabStyle.className}
             panel={
               <CodeEditor

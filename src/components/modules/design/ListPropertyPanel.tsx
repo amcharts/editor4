@@ -87,6 +87,13 @@ const editorListItemIconStyle = new StyleClass(css`
   margin-right: 10px;
 `);
 
+const labelStyle = new StyleClass(css`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+`);
+
 @observer
 class ListPropertyPanel extends Component<IPropertyEditorProps> {
   //@observable private isOpen = false;
@@ -99,7 +106,9 @@ class ListPropertyPanel extends Component<IPropertyEditorProps> {
   }
 
   public render() {
+    const lang = this.props.editorState.language;
     const p = this.props.property;
+    const displayName = PropertyEditorHelpers.getDisplayName(p, lang);
     const values = p.value !== undefined ? (p.value as Property[]) : [];
 
     return (
@@ -117,12 +126,12 @@ class ListPropertyPanel extends Component<IPropertyEditorProps> {
               icon={this.props.isExpanded ? 'caret-down' : 'caret-right'}
               className={editorLabelIconStyle.className}
             />
-            <Text ellipsize={true}>
-              {PropertyEditorHelpers.getDisplayName(
-                p,
-                this.props.editorState.language
-              )}
-            </Text>
+            <div
+              className={labelStyle.className}
+              title={`${displayName} (${p.name})`}
+            >
+              {displayName}
+            </div>
           </div>
           <div className={propertyEditorListActionRowStyle.className}>
             {p.editorType.indexOf('Template') > 0 && (
@@ -148,7 +157,10 @@ class ListPropertyPanel extends Component<IPropertyEditorProps> {
                       small={true}
                       minimal={true}
                       icon="plus"
-                      title="add"
+                      title={lang.getUiTranslation(
+                        'list_property_panel.add_button',
+                        'add'
+                      )}
                       intent={Intent.SUCCESS}
                     />
                   </Popover>
@@ -161,7 +173,10 @@ class ListPropertyPanel extends Component<IPropertyEditorProps> {
                     small={true}
                     minimal={true}
                     icon="plus"
-                    title="add"
+                    title={lang.getUiTranslation(
+                      'list_property_panel.add_button',
+                      'add'
+                    )}
                     intent={Intent.SUCCESS}
                     onClick={() =>
                       this.handleAddItemClick(
@@ -184,10 +199,7 @@ class ListPropertyPanel extends Component<IPropertyEditorProps> {
               >
                 <div
                   className={propertyEditorListItemObjectStyle.className}
-                  title={PropertyEditorHelpers.getDisplayString(
-                    listItem,
-                    this.props.editorState.language
-                  )}
+                  title={PropertyEditorHelpers.getDisplayString(listItem, lang)}
                   onClick={event => {
                     this.handleListItemClick(listItem, p);
                   }}
@@ -202,18 +214,21 @@ class ListPropertyPanel extends Component<IPropertyEditorProps> {
                       propertyEditorListItemObjectButtonStyle.className
                     }
                   >
-                    {PropertyEditorHelpers.getDisplayString(
-                      listItem,
-                      this.props.editorState.language
-                    )}
+                    {PropertyEditorHelpers.getDisplayString(listItem, lang)}
                   </Text>
                 </div>
                 <div className={propertyEditorListItemActionBoxStyle.className}>
                   <Popover
                     content={
                       <ConfirmationDialog
-                        title="Remove item?"
-                        confirmText="Remove"
+                        title={lang.getUiTranslation(
+                          'list_property_panel.remove_prompt',
+                          'Remove item?'
+                        )}
+                        confirmText={lang.getUiTranslation(
+                          'list_property_panel.remove_confirm',
+                          'Remove'
+                        )}
                         onConfirmClick={() =>
                           this.handleRemoveListItemClick(p, listItem)
                         }
@@ -289,7 +304,10 @@ class ListPropertyPanel extends Component<IPropertyEditorProps> {
           small={true}
           minimal={true}
           rightIcon="settings"
-          title="template"
+          title={this.props.editorState.language.getUiTranslation(
+            'list_property_panel.template_button',
+            'template'
+          )}
           intent={Intent.NONE}
           onClick={() => this.handleListItemClick(templateProperty.value, p)}
         />
@@ -311,7 +329,10 @@ class ListPropertyPanel extends Component<IPropertyEditorProps> {
             small={true}
             minimal={true}
             icon="settings"
-            title="template"
+            title={this.props.editorState.language.getUiTranslation(
+              'list_property_panel.template_button',
+              'template'
+            )}
             intent="primary"
           />
         </Popover>
@@ -322,7 +343,10 @@ class ListPropertyPanel extends Component<IPropertyEditorProps> {
           small={true}
           minimal={true}
           icon="settings"
-          title="template"
+          title={this.props.editorState.language.getUiTranslation(
+            'list_property_panel.template_button',
+            'template'
+          )}
           intent="primary"
           onClick={() =>
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

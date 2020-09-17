@@ -216,6 +216,7 @@ class App extends Component {
           <ModuleBar editorState={this.editorState} />
           <div className={mainBlockStyle.className}>
             <Header
+              lang={this.editorState.language}
               actionButtonsEnabled={
                 window.opener
                   ? window.opener !== null

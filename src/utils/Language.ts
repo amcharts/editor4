@@ -40,8 +40,13 @@ export class Language {
       this._translations ? this._translations.ui : undefined
     );
     if (translation !== undefined) {
+      // return `[[${translation}]]`;
       return translation;
     } else if (fallback !== undefined) {
+      // @todo comment next block after initial setup
+      if (!id.startsWith('template_title.')) {
+        console.log(`localization not found: '${id}': '${fallback}'`);
+      }
       return fallback;
     } else {
       return id;

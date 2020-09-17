@@ -14,6 +14,7 @@ import {
 } from '@blueprintjs/core';
 import { StyleClass, css } from '../../../utils/Style';
 import Papa, { ParseConfig } from 'papaparse';
+import { Language } from '../../../utils/Language';
 
 const dialogStyle = new StyleClass(css`
   flex-grow: 2;
@@ -38,6 +39,7 @@ const textAreaStyle = new StyleClass(css`
 `);
 
 interface ICsvImportProps {
+  lang: Language;
   isOpen: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onCsvImport: (data: any[]) => void;
@@ -51,11 +53,20 @@ class CsvImport extends Component<ICsvImportProps> {
   @observable private delimiter = 'auto';
 
   delimiterOptions: IOptionProps[] = [
-    { value: 'auto' },
+    {
+      value: 'auto',
+      label: this.props.lang.getUiTranslation('csv_delimiter.auto', 'auto')
+    },
     { value: ',' },
     { value: ';' },
-    { value: '\t', label: '(tab)' },
-    { value: ' ', label: '(space)' }
+    {
+      value: '\t',
+      label: this.props.lang.getUiTranslation('csv_delimiter.tab', '(tab)')
+    },
+    {
+      value: ' ',
+      label: this.props.lang.getUiTranslation('csv_delimiter.space', '(space)')
+    }
   ];
 
   public constructor(props: Readonly<ICsvImportProps>) {
@@ -63,16 +74,22 @@ class CsvImport extends Component<ICsvImportProps> {
   }
 
   render() {
+    const lang = this.props.lang;
     return (
       <Dialog
         icon="import"
         isOpen={this.props.isOpen}
         onClose={this.props.onImportCancel}
-        title="Import CSV data"
+        title={lang.getUiTranslation('csv_import.title', 'Import CSV data')}
         className={dialogStyle.className}
       >
         <div className={`${Classes.DIALOG_BODY} ${csvImportStyle.className}`}>
-          <p>Paste CSV data into the field below and press "Import."</p>
+          <p>
+            {lang.getUiTranslation(
+              'csv_import.prompt',
+              'Paste CSV data into the field below and press "Import."'
+            )}
+          </p>
           <TextArea
             value={this.csvToImport}
             onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -84,16 +101,28 @@ class CsvImport extends Component<ICsvImportProps> {
             <FormGroup>
               <Checkbox
                 checked={this.firstRowHeadings}
-                label="My data has headers"
+                label={lang.getUiTranslation(
+                  'csv_import.csv_data_has_headers',
+                  'My data has headers'
+                )}
                 onChange={() => {
                   this.firstRowHeadings = !this.firstRowHeadings;
                 }}
               />
             </FormGroup>
-            <FormGroup label="Delimiter:" inline={true}>
+            <FormGroup
+              label={lang.getUiTranslation(
+                'csv_import.csv_delimiter',
+                'Delimiter:'
+              )}
+              inline={true}
+            >
               <HTMLSelect
                 options={this.delimiterOptions}
-                placeholder="Delimiter"
+                placeholder={lang.getUiTranslation(
+                  'csv_import.csv_delimiter',
+                  'Delimiter:'
+                )}
                 minimal={true}
                 value={this.delimiter}
                 onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -105,13 +134,15 @@ class CsvImport extends Component<ICsvImportProps> {
         </div>
         <div className={Classes.DIALOG_FOOTER}>
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-            <Button onClick={this.props.onImportCancel}>Close</Button>
+            <Button onClick={this.props.onImportCancel}>
+              {lang.getUiTranslation('csv_import.close_button', 'Close')}
+            </Button>
             <Button
               intent={Intent.PRIMARY}
               icon="import"
               onClick={this.handleImportClick}
             >
-              Import...
+              {lang.getUiTranslation('csv_import.import_button', 'Import...')}
             </Button>
           </div>
         </div>

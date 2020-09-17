@@ -106,11 +106,13 @@ class PropertyPanel extends Component<IBaseProps> {
             minimal={true}
             large={true}
             icon="chart"
+            title={this.props.editorState.chartProperties.name}
             onClick={this.goToChartProperties}
           />
         )}
         {this.panelStack.length === 1 && (
           <EngineSettingsPanel
+            lang={this.props.editorState.language}
             gridState={this.gridStateStack[0]}
             onExpandedChange={this.handleGroupExpandedChange}
             {...this.props}

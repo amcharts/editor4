@@ -230,7 +230,7 @@ export default class PropertyConfigManager {
               ) {
                 if (
                   p.valueTypes &&
-                  p.valueTypes.length === 1 &&
+                  p.valueTypes.length > 0 &&
                   p.valueTypes[0].name !== 'string' &&
                   p.value.toString() === Number(p.value).toString()
                 ) {

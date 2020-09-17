@@ -2,19 +2,21 @@
 let launcher;
 let chartConfig;
 
-let am4editor_lang_ru = {
-  ui: {
-    "module_bar.design": "Дизайн"
-  },
-  common: {
-    width: "Ширина"
-  },
-  properties: {
-    "Label.text": "Текст"
-  },
+// let am4editor_lang_ru = {
+//   ui: {
+//     "module_bar.design": "Дизайн"
+//   },
+//   common: {
+//     width: "Ширина"
+//   },
+//   properties: {
+//     "Label.text": "Текст"
+//   },
 
 
-}
+// }
+
+window.am4editor_lang_en.ui['app.title'] = 'Very good chart editor';
 
 const templates = [
   {

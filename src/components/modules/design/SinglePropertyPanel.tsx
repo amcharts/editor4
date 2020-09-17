@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 
-import { Text, Button, Popover, Menu, MenuItem } from '@blueprintjs/core';
+import { Button, Popover, Menu, MenuItem } from '@blueprintjs/core';
 
 import Property from '../../../classes/Property';
 
@@ -39,6 +39,13 @@ const propertyEditorEditStyle = new StyleClass(css`
   width: 50%;
 `);
 
+const labelStyle = new StyleClass(css`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+`);
+
 @observer
 class SinglePropertyPanel extends Component<IPropertyEditorProps> {
   public constructor(props: Readonly<IPropertyEditorProps>) {
@@ -48,15 +55,19 @@ class SinglePropertyPanel extends Component<IPropertyEditorProps> {
 
   public render() {
     const p = this.props.property;
+    const displayName = PropertyEditorHelpers.getDisplayName(
+      p,
+      this.props.editorState.language
+    );
     return (
       <div key={p.name} className={propertyEditorStyle.className}>
         <div className={propertyEditorLabelStyle.className}>
-          <Text ellipsize={true}>
-            {PropertyEditorHelpers.getDisplayName(
-              p,
-              this.props.editorState.language
-            )}
-          </Text>
+          <div
+            className={labelStyle.className}
+            title={`${displayName} (${p.name})`}
+          >
+            {displayName}
+          </div>
           {(p.isSet || p.isUserSet) && (
             <Popover
               position="auto-end"
