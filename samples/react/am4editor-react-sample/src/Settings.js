@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 
+import am4editor_lang_en from '@amcharts/editor4/am4editor/lang/en/en.esm';
+import am4editor_lang_lt from '@amcharts/editor4/am4editor/lang/lt/lt.esm';
+import am4editor_lang_ru from '@amcharts/editor4/am4editor/lang/ru/ru.esm';
+
 class Settings extends Component {
   setTargetType(target) {
     if (this.props.onTargetChanged) {
@@ -16,6 +20,12 @@ class Settings extends Component {
   toggleTheme(name, isEnabled) {
     if (this.props.onThemeToggled) {
       this.props.onThemeToggled(name, isEnabled);
+    }
+  }
+
+  setLanguage(languagePack) {
+    if (this.props.onLanguageChanged) {
+      this.props.onLanguageChanged(languagePack);
     }
   }
 
@@ -65,6 +75,30 @@ class Settings extends Component {
             {theme.label}
           </label>
         ))}
+
+        <h2>Launch Editor in...</h2>
+        <label>
+          <input type="radio" name="language-pack" value="en" 
+            checked={this.props.editorConfig.language === am4editor_lang_en || this.props.editorConfig.language === undefined}
+            onChange={() => this.setLanguage(am4editor_lang_en)}
+          />
+          English
+        </label>
+        <label>
+          <input type="radio" name="language-pack" value="lt" 
+            checked={this.props.editorConfig.language === am4editor_lang_lt}
+            onChange={() => this.setLanguage(am4editor_lang_lt)}
+          />
+          Lithuanian
+        </label>
+        <label>
+          <input type="radio" name="language-pack" value="ru" 
+            checked={this.props.editorConfig.language === am4editor_lang_ru}
+            onChange={() => this.setLanguage(am4editor_lang_ru)}
+          />
+          Russian
+        </label>
+
       </div>
     )
   }

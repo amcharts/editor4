@@ -41,6 +41,30 @@
       />
       {{ theme.label }}
     </label>
+
+    <h2>UI language</h2>
+    <label>
+      <input type="radio" name="target-type" value="en" 
+        :checked="editorConfig.language === langEn || editorConfig.language === undefined"
+        @change="setLanguage(langEn)"
+      />
+      English
+    </label>
+    <label>
+      <input type="radio" name="target-type" value="lt" 
+        :checked="editorConfig.language === langLt"
+        @change="setLanguage(langLt)"
+      />
+      Lithuanian
+    </label>
+    <label>
+      <input type="radio" name="target-type" value="ru" 
+        :checked="editorConfig.language === langRu"
+        @change="setLanguage(langRu)"
+      />
+      Russian
+    </label>
+
   </div>
 </template>
 
@@ -50,12 +74,22 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 // import Editor Launcher
 import * as am4editor from '@amcharts/editor4';
 
+/* eslint-disable @typescript-eslint/camelcase */
+import am4editor_lang_en from '@amcharts/editor4/am4editor/lang/en/en.esm';
+import am4editor_lang_lt from '@amcharts/editor4/am4editor/lang/lt/lt.esm';
+import am4editor_lang_ru from '@amcharts/editor4/am4editor/lang/ru/ru.esm';
+/* eslint-enable @typescript-eslint/camelcase */
+
 @Component
 export default class Settings extends Vue {
   @Prop() allModules!: am4editor.ModuleType[];
   @Prop() allThemes!: am4editor.IThemeInfo[];
   @Prop() launcherSettings!: am4editor.ILauncherConfig;
   @Prop() editorConfig!: am4editor.IConfig;
+
+  langEn = am4editor_lang_en;
+  langLt = am4editor_lang_lt;
+  langRu = am4editor_lang_ru;
 
   private toggleModule(name: string, isEnabled: boolean) {
     this.$emit('toggle-module', name, isEnabled);
@@ -67,6 +101,11 @@ export default class Settings extends Vue {
 
   private setTargetType(targetType: string) {
     this.$emit('set-target-type', targetType);
+  }
+
+  private setLanguage(languagePack: am4editor.ITranslationPack) {
+    console.log(languagePack);
+    this.$emit('set-language', languagePack);
   }
 }
 </script>

@@ -56,6 +56,7 @@
         @toggle-module="toggleModules"
         @toggle-theme="toggleThemes"
         @set-target-type="setTargetType"
+        @set-language="setLanguage"
         />
     </main>
 
@@ -146,6 +147,10 @@ export default class App extends Vue {
   private setTargetType(targetType: string) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.launcherSettings.target!.type = targetType === 'window' ? 'window' : 'inline';
+  }
+
+  private setLanguage(languagePack: am4editor.ITranslationPack) {
+    this.editorConfig.language = languagePack;
   }
 }
 </script>
