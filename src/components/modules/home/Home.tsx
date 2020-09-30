@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
-import { Card, H4, H2, Tabs, Tab, Classes } from '@blueprintjs/core';
+import { Card, H4, H2, Tabs, Tab, Classes, TabId } from '@blueprintjs/core';
 
 import { StyleClass, css, StyleSelector } from '../../../utils/Style';
 import IBaseProps from '../../core/IBaseProps';
@@ -11,6 +11,7 @@ import ITemplateGroup from '../../../classes/ITemplateGroup';
 
 import defaultPreviewImg from '../../../assets/default-template-cover.jpg';
 import CodeImport from './CodeImport';
+import { action } from 'mobx';
 
 const homeStyle = new StyleClass(css`
   padding: 20px;
@@ -172,7 +173,12 @@ class Home extends Component<IHomeProps> {
             )}
           </p>
 
-          <Tabs className={templateListStyle.className} vertical={true}>
+          <Tabs
+            className={templateListStyle.className}
+            onChange={this.handleTabChange}
+            vertical={true}
+            selectedTabId={this.props.editorState.activeTemplateTabId}
+          >
             {this.props.editorState.editorConfig.templates.map(tg => (
               <Tab
                 id={tg.name}
@@ -215,6 +221,11 @@ class Home extends Component<IHomeProps> {
       await this.props.onChartImported(config);
       this.props.history.push('/design');
     }
+  }
+
+  @action.bound
+  private handleTabChange(newTabId: TabId) {
+    this.props.editorState.activeTemplateTabId = newTabId.toString();
   }
 }
 

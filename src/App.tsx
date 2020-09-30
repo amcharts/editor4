@@ -83,6 +83,9 @@ class App extends Component {
       } else if (config.allowDefaultTemplates) {
         this.editorState.editorConfig.templates = ConfigManager.getDefaultTemplates();
       }
+      if (this.editorState.editorConfig.templates) {
+        this.editorState.activeTemplateTabId = this.editorState.editorConfig.templates[0].name;
+      }
 
       if (config.enabledModules) {
         this.editorState.editorConfig.enabledModules = config.enabledModules;
