@@ -51,6 +51,7 @@ class App extends Component {
     this.setTargetType = this.setTargetType.bind(this);
     this.toggleModule = this.toggleModule.bind(this);
     this.toggleTheme = this.toggleTheme.bind(this);
+    this.setLanguage = this.setLanguage.bind(this);
   }
 
   menuSwitch(page) {
@@ -91,6 +92,12 @@ class App extends Component {
       }
     }
     this.setState( { editorConfig: newState } );
+  }
+
+  setLanguage(languagePack) {
+    const newState = Object.assign({}, this.state.editorConfig);
+    newState.language = languagePack;
+    this.setState( { editorConfig: newState} );
   }
 
   render() {
@@ -171,6 +178,7 @@ class App extends Component {
               onTargetChanged={this.setTargetType}
               onModuleToggled={this.toggleModule}
               onThemeToggled={this.toggleTheme}
+              onLanguageChanged={this.setLanguage}
             />
           }
         </main>

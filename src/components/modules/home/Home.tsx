@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
-import { Card, H4, H2, Tabs, Tab, Classes } from '@blueprintjs/core';
+import { Card, H4, H2, Tabs, Tab, Classes, TabId } from '@blueprintjs/core';
 
 import { StyleClass, css, StyleSelector } from '../../../utils/Style';
 import IBaseProps from '../../core/IBaseProps';
@@ -11,6 +11,8 @@ import ITemplateGroup from '../../../classes/ITemplateGroup';
 
 import defaultPreviewImg from '../../../assets/default-template-cover.jpg';
 import CodeImport from './CodeImport';
+import { action } from 'mobx';
+import EditorState from '../../core/EditorState';
 
 const homeStyle = new StyleClass(css`
   padding: 20px;
@@ -94,10 +96,21 @@ interface IHomeProps extends IBaseProps, RouteComponentProps {
 
 @observer
 class Home extends Component<IHomeProps> {
+  private activeCard?: HTMLElement = undefined;
+  private setActiveCardRef = (element: HTMLDivElement) => {
+    this.activeCard = element;
+  };
+
   public constructor(props: Readonly<IHomeProps>) {
     super(props);
 
     this.handleImport = this.handleImport.bind(this);
+  }
+
+  componentDidMount() {
+    if (this.activeCard) {
+      this.activeCard.scrollIntoView();
+    }
   }
 
   public render() {
@@ -110,13 +123,21 @@ class Home extends Component<IHomeProps> {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const TemplateCard = (props: {
         template: ITemplate;
+        editorState: EditorState;
         handleClick: (config: object) => void;
+        setActiveCardRef: (element: HTMLDivElement) => void;
       }): JSX.Element => {
         return (
           <Card
             interactive={true}
             className={templateListItemStyle.className}
-            onClick={() => props.handleClick(props.template.config)}
+            elevation={
+              props.template.id === props.editorState.activeTemplate ? 3 : 0
+            }
+            onClick={() => {
+              props.editorState.activeTemplate = props.template.id;
+              props.handleClick(props.template.config);
+            }}
           >
             <div
               className={templatePreviewImageStyle.className}
@@ -127,6 +148,11 @@ class Home extends Component<IHomeProps> {
                     : defaultPreviewImg
                 })`
               }}
+              ref={
+                props.template.id === props.editorState.activeTemplate
+                  ? props.setActiveCardRef
+                  : undefined
+              }
             >
               <span />
             </div>
@@ -143,7 +169,9 @@ class Home extends Component<IHomeProps> {
 
       const TemplateGroup = (props: {
         templateGroup: ITemplateGroup;
+        editorState: EditorState;
         handleClick: (config: object) => void;
+        setActiveCardRef: (element: HTMLDivElement) => void;
       }): JSX.Element => {
         return (
           <div className={templateGroupStyle.className}>
@@ -152,7 +180,9 @@ class Home extends Component<IHomeProps> {
                 <TemplateCard
                   key={t.id}
                   template={t}
+                  editorState={props.editorState}
                   handleClick={props.handleClick}
+                  setActiveCardRef={props.setActiveCardRef}
                 />
               ))}
             </div>
@@ -172,7 +202,12 @@ class Home extends Component<IHomeProps> {
             )}
           </p>
 
-          <Tabs className={templateListStyle.className} vertical={true}>
+          <Tabs
+            className={templateListStyle.className}
+            onChange={this.handleTabChange}
+            vertical={true}
+            selectedTabId={this.props.editorState.activeTemplateTabId}
+          >
             {this.props.editorState.editorConfig.templates.map(tg => (
               <Tab
                 id={tg.name}
@@ -185,7 +220,9 @@ class Home extends Component<IHomeProps> {
                 panel={
                   <TemplateGroup
                     templateGroup={tg}
+                    editorState={this.props.editorState}
                     handleClick={this.handleImport}
+                    setActiveCardRef={this.setActiveCardRef}
                   />
                 }
               />
@@ -215,6 +252,11 @@ class Home extends Component<IHomeProps> {
       await this.props.onChartImported(config);
       this.props.history.push('/design');
     }
+  }
+
+  @action.bound
+  private handleTabChange(newTabId: TabId) {
+    this.props.editorState.activeTemplateTabId = newTabId.toString();
   }
 }
 

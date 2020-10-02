@@ -112,6 +112,6 @@ export default {
 
   'code.json_tab': 'JSON config',
   'code.es2015_tab': 'ES2015/TypeScript with JSON',
-  'code.html_js_tab': 'HTML &amp; JavaScript',
+  'code.html_js_tab': 'HTML & JavaScript',
   'code.object_js_tab': 'Object-style ES2015'
 };

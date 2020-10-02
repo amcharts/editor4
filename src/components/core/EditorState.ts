@@ -16,4 +16,6 @@ export default class EditorState {
   };
   @observable public isBusy = false;
   @observable public language = new Language();
+  @observable public activeTemplateTabId = '';
+  @observable public activeTemplate = '';
 }

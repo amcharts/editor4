@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Route,
   RouteComponentProps,
   Redirect
@@ -82,6 +82,9 @@ class App extends Component {
         this.editorState.editorConfig.templates = config.templates;
       } else if (config.allowDefaultTemplates) {
         this.editorState.editorConfig.templates = ConfigManager.getDefaultTemplates();
+      }
+      if (this.editorState.editorConfig.templates) {
+        this.editorState.activeTemplateTabId = this.editorState.editorConfig.templates[0].name;
       }
 
       if (config.enabledModules) {

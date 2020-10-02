@@ -175,6 +175,7 @@ const dataStyle = new StyleClass(css`
   display: flex;
   flex-grow: 2;
   flex-direction: column;
+  max-height: 100%;
 `);
 
 const dataTabsStyle = new StyleClass(css`
@@ -184,11 +185,18 @@ const dataTabsStyle = new StyleClass(css`
   overflow: hidden;
   margin: 10px;
   margin-top: 0px;
+  padding-bottom: 50px;
 `);
 
 const dataTabStyle = new StyleClass(css`
   display: flex;
-  overflow: hidden;
+  max-height: 100%;
+  overflow: auto;
+  background-color: #2b3e50;
+`);
+
+const dataTabStyleCode = new StyleClass(css`
+  display: flex;
 `);
 
 new StyleSelector(
@@ -880,7 +888,7 @@ class Data extends Component<IDataProps> {
             <Tab
               id="table1"
               title={lang.getUiTranslation('data.table_tab', 'Table')}
-              className="dataTabStyle"
+              className={dataTabStyle.className}
               panel={
                 <div className={dataPanelStyle.className}>
                   <div className={dataModuleStyle.className}>
@@ -921,7 +929,7 @@ class Data extends Component<IDataProps> {
           <Tab
             id="json"
             title={lang.getUiTranslation('data.json_tab', 'JSON')}
-            className={dataTabStyle.className}
+            className={dataTabStyleCode.className}
             panel={
               <CodeEditor
                 value={this.beautifiedJsonData}

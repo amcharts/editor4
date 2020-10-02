@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@amcharts/amcharts4": "^4.9.8",
-    "@amcharts/editor4": "^4.0.0-alpha.6",
+    "@amcharts/editor4": "^4.0.0-beta.3",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",

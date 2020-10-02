@@ -20,10 +20,10 @@
     venn.js "^0.2.20"
     xlsx "^0.15.4"
 
-"@amcharts/editor4@^4.0.0-alpha.6":
-  version "4.0.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/@amcharts/editor4/-/editor4-4.0.0-alpha.6.tgz#8fdad5bac205c1b40f49d1a814fc8df4d6a3ea84"
-  integrity sha512-ytHV5SlECEImYVo6gxfXF5rqGOeolWfwn9plu4DCNlp4DpSh/mQOE9yhdzsFwP0O6Wr66Pp0Oe9xxZMqrT2boA==
+"@amcharts/editor4@^4.0.0-beta.3":
+  version "4.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@amcharts/editor4/-/editor4-4.0.0-beta.3.tgz#b8eb556f1b93c26a53c85194b643c1956cff2794"
+  integrity sha512-zIfrozoLGUzZ5EL/w07ccLyqT+owXYspDwuyBQc45IzxALAxy9IJXON5kBSxm+ZO+WCIj6WNMyWe2/YmjCv4gQ==
 
 "@babel/code-frame@7.8.3", "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.8.3":
   version "7.8.3"
