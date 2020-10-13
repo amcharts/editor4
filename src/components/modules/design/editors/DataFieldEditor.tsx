@@ -115,9 +115,9 @@ class DataFieldEditor extends Component<IPropertyEditorProps> {
         fill={true}
         items={this.dataFields}
         selectedItem={this.dataFields.find(option => {
-          return p.value !== undefined
+          return p.value !== undefined && p.value !== ''
             ? option.value === p.value
-            : option.value === '-1';
+            : option.value === -1;
         })}
         inputValueRenderer={item => (item.label ? item.label : '')}
         itemsEqual={(a, b) => a.value === b.value}
