@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0-beta.5] - 2020-10-15
+### Added
+- Better handling of external data source set on the chart
+- Ability to set custom data field name
+
+### Fixed
+- Crash when changing data field to "(not set)" and switching to Code module
+
 ## [4.0.0-beta.4] - 2020-10-02
 ### Added
 - Language switching to Vue and React demos.
@@ -113,6 +121,7 @@ be fetched on the client for both compilation and runtime performance.
 ### Added
 - Initial public release.
 
+[4.0.0-beta.5]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-beta.5
 [4.0.0-beta.4]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-beta.4
 [4.0.0-beta.3]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-beta.3
 [4.0.0-beta.2]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-beta.2
