@@ -67,6 +67,7 @@ export default {
         "data.paste_csv_button": "Paste CSV",
         "data.table_tab": "Table",
         "data.json_tab": "JSON",
+        "data.external_data": "chart uses external data source",
         "data.column_empty_prompt": "Column cannot be empty, delete column?",
         "data.column_exists_prompt": "Column already exists, merge columns?",
         "data.json_not_array_error": "JSON data must be an array",
