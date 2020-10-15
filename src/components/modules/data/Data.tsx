@@ -25,7 +25,8 @@ import {
   ButtonGroup,
   Alert,
   Intent,
-  Popover
+  Popover,
+  Callout
 } from '@blueprintjs/core';
 import { Menu, MenuItem, Navbar, Alignment } from '@blueprintjs/core';
 import {
@@ -41,6 +42,7 @@ import jsbeautifier from 'js-beautify';
 import CsvImport from './CsvImport';
 import PropertyConfigManager from '../../../classes/PropertyConfigManager';
 import FileImport from './FileImport';
+import Property from '../../../classes/Property';
 
 type Ordering = -1 | 0 | 1;
 
@@ -199,6 +201,19 @@ const dataTabStyleCode = new StyleClass(css`
   display: flex;
 `);
 
+const externalDataMessageStyle = new StyleClass(css`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 2;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+`);
+
+const externalDataCalloutStyle = new StyleClass(css`
+  max-width: 400px;
+`);
+
 new StyleSelector(
   `.${Classes.TAB_PANEL}`,
   css`
@@ -303,6 +318,22 @@ class Data extends Component<IDataProps> {
 
   @computed private get beautifiedJsonData(): string {
     return jsbeautifier.js_beautify(this.jsonDataString);
+  }
+
+  @computed private get isExternalDataSource(): boolean {
+    let result = false;
+
+    const p = this.props.editorState.chartProperties;
+    if (p !== undefined && p.properties !== undefined) {
+      const dsProp = p.properties.find(prop => prop.name === 'dataSource');
+      if (dsProp !== undefined && dsProp.value !== undefined) {
+        result =
+          (dsProp.value as Property).getStringPropertyValue('url') !==
+          undefined;
+      }
+    }
+
+    return result;
   }
 
   public componentDidMount() {
@@ -708,242 +739,263 @@ class Data extends Component<IDataProps> {
 
   public render() {
     const lang = this.props.editorState.language;
-    return (
-      <div className={dataStyle.className}>
-        <Navbar className={`${toolbarStyle.className}`}>
-          <Navbar.Group align={Alignment.LEFT}>
-            <ButtonGroup minimal={true} large={true}>
+    if (!this.isExternalDataSource) {
+      return (
+        <div className={dataStyle.className}>
+          <Navbar className={`${toolbarStyle.className}`}>
+            <Navbar.Group align={Alignment.LEFT}>
+              <ButtonGroup minimal={true} large={true}>
+                <Button
+                  rightIcon="add-column-left"
+                  text={lang.getUiTranslation('data.add_column_button', 'Add')}
+                  title={lang.getUiTranslation(
+                    'data.add_column_button_title',
+                    'Add column'
+                  )}
+                  onClick={this.addColumn}
+                />
+                <Button
+                  icon="add-row-bottom"
+                  title={lang.getUiTranslation(
+                    'data.add_row_button_title',
+                    'Add row'
+                  )}
+                  onClick={this.addRow}
+                />
+              </ButtonGroup>
+              <ButtonGroup minimal={true} large={true}>
+                <Button
+                  rightIcon="remove-column-left"
+                  text={lang.getUiTranslation(
+                    'data.remove_column_button',
+                    'Remove'
+                  )}
+                  title={lang.getUiTranslation(
+                    'data.remove_column_button_title',
+                    'Remove column(s)'
+                  )}
+                  disabled={this.selectedRegions.length < 1}
+                  onClick={() => {
+                    this.isDeleteColsOpen = true;
+                  }}
+                />
+                <Alert
+                  isOpen={this.isDeleteColsOpen}
+                  icon="trash"
+                  intent={Intent.DANGER}
+                  confirmButtonText={lang.getUiTranslation(
+                    'data.delete_button_text',
+                    'Delete'
+                  )}
+                  cancelButtonText={lang.getUiTranslation(
+                    'data.cancel_button_text',
+                    'Cancel'
+                  )}
+                  onConfirm={this.removeColumns}
+                  onCancel={() => {
+                    this.isDeleteColsOpen = false;
+                  }}
+                >
+                  <p>
+                    {lang.getUiTranslation(
+                      'data.delete_columns_prompt',
+                      'Delete selected column(s)?'
+                    )}
+                  </p>
+                </Alert>
+                <Button
+                  icon="remove-row-bottom"
+                  title={lang.getUiTranslation(
+                    'data.remove_row_button_title',
+                    'Remove row(s)'
+                  )}
+                  disabled={this.selectedRegions.length < 1}
+                  onClick={() => {
+                    this.isDeleteRowsOpen = true;
+                  }}
+                />
+                <Alert
+                  isOpen={this.isDeleteRowsOpen}
+                  icon="trash"
+                  intent={Intent.DANGER}
+                  confirmButtonText={lang.getUiTranslation(
+                    'data.delete_button_text',
+                    'Delete'
+                  )}
+                  cancelButtonText={lang.getUiTranslation(
+                    'data.cancel_button_text',
+                    'Cancel'
+                  )}
+                  onConfirm={this.removeRows}
+                  onCancel={() => {
+                    this.isDeleteRowsOpen = false;
+                  }}
+                >
+                  <p>
+                    {lang.getUiTranslation(
+                      'data.delete_rows_prompt',
+                      'Delete selected row(s)?'
+                    )}
+                  </p>
+                </Alert>
+              </ButtonGroup>
+            </Navbar.Group>
+            <Navbar.Divider />
+            <Popover
+              content={
+                <Menu>
+                  <MenuItem
+                    text={lang.getUiTranslation(
+                      'data.transform_to_number',
+                      'number'
+                    )}
+                    onClick={this.transformToNumber}
+                  />
+                  <MenuItem
+                    text={lang.getUiTranslation(
+                      'data.transform_to_string',
+                      'string'
+                    )}
+                    onClick={this.transformToString}
+                  />
+                </Menu>
+              }
+            >
               <Button
-                rightIcon="add-column-left"
-                text={lang.getUiTranslation('data.add_column_button', 'Add')}
-                title={lang.getUiTranslation(
-                  'data.add_column_button_title',
-                  'Add column'
-                )}
-                onClick={this.addColumn}
-              />
-              <Button
-                icon="add-row-bottom"
-                title={lang.getUiTranslation(
-                  'data.add_row_button_title',
-                  'Add row'
-                )}
-                onClick={this.addRow}
-              />
-            </ButtonGroup>
-            <ButtonGroup minimal={true} large={true}>
-              <Button
-                rightIcon="remove-column-left"
+                minimal={true}
                 text={lang.getUiTranslation(
-                  'data.remove_column_button',
-                  'Remove'
-                )}
-                title={lang.getUiTranslation(
-                  'data.remove_column_button_title',
-                  'Remove column(s)'
+                  'data.transform_to_button',
+                  'Transform to ...'
                 )}
                 disabled={this.selectedRegions.length < 1}
-                onClick={() => {
-                  this.isDeleteColsOpen = true;
-                }}
+                rightIcon="caret-down"
               />
-              <Alert
-                isOpen={this.isDeleteColsOpen}
-                icon="trash"
-                intent={Intent.DANGER}
-                confirmButtonText={lang.getUiTranslation(
-                  'data.delete_button_text',
-                  'Delete'
-                )}
-                cancelButtonText={lang.getUiTranslation(
-                  'data.cancel_button_text',
-                  'Cancel'
-                )}
-                onConfirm={this.removeColumns}
-                onCancel={() => {
-                  this.isDeleteColsOpen = false;
-                }}
-              >
-                <p>
-                  {lang.getUiTranslation(
-                    'data.delete_columns_prompt',
-                    'Delete selected column(s)?'
-                  )}
-                </p>
-              </Alert>
+            </Popover>
+            <Navbar.Divider />
+            <Navbar.Group align={Alignment.LEFT}>
               <Button
-                icon="remove-row-bottom"
-                title={lang.getUiTranslation(
-                  'data.remove_row_button_title',
-                  'Remove row(s)'
+                icon="import"
+                text={lang.getUiTranslation(
+                  'data.file_import_button',
+                  'File import'
                 )}
-                disabled={this.selectedRegions.length < 1}
-                onClick={() => {
-                  this.isDeleteRowsOpen = true;
+                minimal={true}
+                onClick={this.importFile}
+              />
+
+              <FileImport
+                lang={this.props.editorState.language}
+                isOpen={this.importFileOpen}
+                onFileImport={this.handleFileImport}
+                onImportCancel={() => {
+                  this.importFileOpen = false;
                 }}
               />
-              <Alert
-                isOpen={this.isDeleteRowsOpen}
-                icon="trash"
-                intent={Intent.DANGER}
-                confirmButtonText={lang.getUiTranslation(
-                  'data.delete_button_text',
-                  'Delete'
+
+              <Button
+                icon="clipboard"
+                text={lang.getUiTranslation(
+                  'data.paste_csv_button',
+                  'Paste CSV'
                 )}
-                cancelButtonText={lang.getUiTranslation(
-                  'data.cancel_button_text',
-                  'Cancel'
-                )}
-                onConfirm={this.removeRows}
-                onCancel={() => {
-                  this.isDeleteRowsOpen = false;
+                minimal={true}
+                onClick={this.importCsv}
+              />
+
+              <CsvImport
+                lang={this.props.editorState.language}
+                isOpen={this.importCsvOpen}
+                onCsvImport={this.handleCsvImport}
+                onImportCancel={() => {
+                  this.importCsvOpen = false;
                 }}
-              >
-                <p>
-                  {lang.getUiTranslation(
-                    'data.delete_rows_prompt',
-                    'Delete selected row(s)?'
-                  )}
-                </p>
-              </Alert>
-            </ButtonGroup>
-          </Navbar.Group>
-          <Navbar.Divider />
-          <Popover
-            content={
-              <Menu>
-                <MenuItem
-                  text={lang.getUiTranslation(
-                    'data.transform_to_number',
-                    'number'
-                  )}
-                  onClick={this.transformToNumber}
-                />
-                <MenuItem
-                  text={lang.getUiTranslation(
-                    'data.transform_to_string',
-                    'string'
-                  )}
-                  onClick={this.transformToString}
-                />
-              </Menu>
-            }
+              />
+            </Navbar.Group>
+          </Navbar>
+
+          <Tabs
+            large={true}
+            defaultSelectedTabId={this.isFlat ? 'table1' : 'json'}
+            className={dataTabsStyle.className}
+            renderActiveTabPanelOnly={true}
           >
-            <Button
-              minimal={true}
-              text={lang.getUiTranslation(
-                'data.transform_to_button',
-                'Transform to ...'
-              )}
-              disabled={this.selectedRegions.length < 1}
-              rightIcon="caret-down"
-            />
-          </Popover>
-          <Navbar.Divider />
-          <Navbar.Group align={Alignment.LEFT}>
-            <Button
-              icon="import"
-              text={lang.getUiTranslation(
-                'data.file_import_button',
-                'File import'
-              )}
-              minimal={true}
-              onClick={this.importFile}
-            />
+            {this.isFlat && (
+              <Tab
+                id="table1"
+                title={lang.getUiTranslation('data.table_tab', 'Table')}
+                className={dataTabStyle.className}
+                panel={
+                  <div className={dataPanelStyle.className}>
+                    <div className={dataModuleStyle.className}>
+                      {this.loadingError != null ? (
+                        <div>{this.loadingError}</div>
+                      ) : null}
 
-            <FileImport
-              lang={this.props.editorState.language}
-              isOpen={this.importFileOpen}
-              onFileImport={this.handleFileImport}
-              onImportCancel={() => {
-                this.importFileOpen = false;
-              }}
-            />
-
-            <Button
-              icon="clipboard"
-              text={lang.getUiTranslation('data.paste_csv_button', 'Paste CSV')}
-              minimal={true}
-              onClick={this.importCsv}
-            />
-
-            <CsvImport
-              lang={this.props.editorState.language}
-              isOpen={this.importCsvOpen}
-              onCsvImport={this.handleCsvImport}
-              onImportCancel={() => {
-                this.importCsvOpen = false;
-              }}
-            />
-          </Navbar.Group>
-        </Navbar>
-
-        <Tabs
-          large={true}
-          defaultSelectedTabId={this.isFlat ? 'table1' : 'json'}
-          className={dataTabsStyle.className}
-          renderActiveTabPanelOnly={true}
-        >
-          {this.isFlat && (
-            <Tab
-              id="table1"
-              title={lang.getUiTranslation('data.table_tab', 'Table')}
-              className={dataTabStyle.className}
-              panel={
-                <div className={dataPanelStyle.className}>
-                  <div className={dataModuleStyle.className}>
-                    {this.loadingError != null ? (
-                      <div>{this.loadingError}</div>
-                    ) : null}
-
-                    <Table
-                      numRows={
-                        this.props.editorState.chartData
-                          ? this.props.editorState.chartData.length
-                          : 0
-                      }
-                      enableRowHeader={true}
-                      enableRowReordering={true}
-                      enableMultipleSelection={true}
-                      onRowsReordered={this.handleRowsReordered}
-                      onSelection={this.handleSelection}
-                    >
-                      {this.columns.map(name => {
-                        return (
-                          <Column
-                            id={name}
-                            name={name}
-                            key={name}
-                            cellRenderer={this.renderCell}
-                            columnHeaderCellRenderer={this.renderColumnHeader}
-                          />
-                        );
-                      })}
-                    </Table>
+                      <Table
+                        numRows={
+                          this.props.editorState.chartData
+                            ? this.props.editorState.chartData.length
+                            : 0
+                        }
+                        enableRowHeader={true}
+                        enableRowReordering={true}
+                        enableMultipleSelection={true}
+                        onRowsReordered={this.handleRowsReordered}
+                        onSelection={this.handleSelection}
+                      >
+                        {this.columns.map(name => {
+                          return (
+                            <Column
+                              id={name}
+                              name={name}
+                              key={name}
+                              cellRenderer={this.renderCell}
+                              columnHeaderCellRenderer={this.renderColumnHeader}
+                            />
+                          );
+                        })}
+                      </Table>
+                    </div>
                   </div>
-                </div>
+                }
+              />
+            )}
+            <Tabs.Expander />
+            <Tab
+              id="json"
+              title={lang.getUiTranslation('data.json_tab', 'JSON')}
+              className={dataTabStyleCode.className}
+              panel={
+                <CodeEditor
+                  value={this.beautifiedJsonData}
+                  mode="javascript"
+                  onValueChange={newValue => {
+                    this.handleCodeChanged(newValue);
+                  }}
+                  onBlur={this.handleEditorBlur}
+                />
               }
             />
-          )}
-          <Tabs.Expander />
-          <Tab
-            id="json"
-            title={lang.getUiTranslation('data.json_tab', 'JSON')}
-            className={dataTabStyleCode.className}
-            panel={
-              <CodeEditor
-                value={this.beautifiedJsonData}
-                mode="javascript"
-                onValueChange={newValue => {
-                  this.handleCodeChanged(newValue);
-                }}
-                onBlur={this.handleEditorBlur}
-              />
-            }
-          />
-        </Tabs>
-      </div>
-    );
+          </Tabs>
+        </div>
+      );
+    } else {
+      return (
+        <div className={dataStyle.className}>
+          <div className={externalDataMessageStyle.className}>
+            <Callout
+              intent="primary"
+              className={externalDataCalloutStyle.className}
+            >
+              {lang.getUiTranslation(
+                'data.external_data',
+                'chart uses external data source'
+              )}
+            </Callout>
+          </div>
+        </div>
+      );
+    }
   }
 }
 

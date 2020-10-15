@@ -67,6 +67,7 @@ export default {
         "data.paste_csv_button": "Įklijuoti CSV",
         "data.table_tab": "Lentelė",
         "data.json_tab": "JSON",
+        "data.external_data": "grafikas naudoja išorinius duomenys",
         "data.column_empty_prompt": "Stulpelis negali būti tuščias, ištrinti stulpelį?",
         "data.column_exists_prompt": "Stulpelis jau egzistuoja, sujungti stulpelius?",
         "data.json_not_array_error": "JSON duomenys turi būti masyvo tipo",

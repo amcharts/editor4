@@ -67,6 +67,7 @@ export default {
         "data.paste_csv_button": "Вставить CSV",
         "data.table_tab": "Таблица",
         "data.json_tab": "JSON",
+        "data.external_data": "диаграмма использует внешние данные",
         "data.column_empty_prompt": "Столбец не может быть пустым, стереть столбец?",
         "data.column_exists_prompt": "Столбец существует, объединить столбцы?",
         "data.json_not_array_error": "JSON-данные должны быть массивом",

@@ -88,6 +88,8 @@ export default {
   'data.json_not_array_error': 'JSON data must be an array',
   'data.json_format_error': 'Malformed JSON',
 
+  'data.external_data': 'chart uses external data source',
+
   'file_import.title': 'Import data from a file',
   'file_import.prompt': 'Select a JSON or CSV data file and press "Import."',
   'file_import.csv_options': 'CSV import options:',

@@ -387,16 +387,16 @@ export default class PropertyConfigManager {
               prevGroup = p.groupName;
             }
 
-            const pModule =
-              p.value.modules === undefined
-                ? localModule
-                : p.value.modules.length === 1
-                ? p.value.modules[0]
-                : p.value.modules.indexOf(localBaseModule) > -1
-                ? localBaseModule
-                : p.value.modules[0];
-
             if (p.value !== undefined) {
+              const pModule =
+                p.value.modules === undefined
+                  ? localModule
+                  : p.value.modules.length === 1
+                  ? p.value.modules[0]
+                  : p.value.modules.indexOf(localBaseModule) > -1
+                  ? localBaseModule
+                  : p.value.modules[0];
+
               if (p.name === 'states') {
                 // special case for states
                 if (p.isSet || p.isUserSet) {
