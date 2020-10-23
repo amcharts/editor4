@@ -205,7 +205,7 @@ function getSubTypes(
       if (t.type === 'indexedAccess') {
         result.push({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          name: `this[${(t as any).indexType.value}]`,
+          name: `this["${(t as any).indexType.value}"]`,
           kind: 'ref'
         });
       } else if (t.type !== 'unknown' || t.name.match(/this\["_[^\s]*"\]/g)) {
