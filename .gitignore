@@ -22,7 +22,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/scripts/docs-to-defaults/docs.json
+/scripts/docs-to-defaults/*.json
 /scripts/docs-to-defaults/chart_modules/**
 /deploy
 /scripts/zip-release/releases/**
