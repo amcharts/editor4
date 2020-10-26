@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "type": "chrome",
             "request": "launch",
@@ -24,6 +25,21 @@
             "name": "Launch Chrome against Vue demo",
             "url": "http://localhost:8088",
             "webRoot": "${workspaceFolder}/launcher"
-        }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch docs-to-defaults",
+            "cwd": "${workspaceFolder}/scripts/docs-to-defaults/",
+            "env": { 
+                "TS_NODE_PROJECT": "tsconfig.json"
+            },
+            "runtimeArgs": ["-r", "ts-node/register"],
+            "args": [
+                "${workspaceFolder}/scripts/docs-to-defaults/docs-to-defaults.ts"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "skipFiles": ["<node_internals>/**", "node_modules/**"]
+        }        
     ]
 }

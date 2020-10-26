@@ -57,6 +57,7 @@ interface IType {
     | 'stringLiteral'
     | 'typeParameter'
     | 'array'
+    | 'indexedAccess'
     | 'unknown';
   name?: string;
   value?: string;
@@ -117,6 +118,8 @@ fillClassModuleMap('charts');
 fillClassModuleMap('maps');
 
 const docs = JSON.parse(fs.readFileSync('./docs.json', 'utf8')) as IDocs;
+// eslint-disable-next-line prettier/prettier
+// const docs = JSON.parse(fs.readFileSync('./!old-0.15-docs.json', 'utf8')) as IDocs;
 const docsCopy = JSON.parse(JSON.stringify(docs));
 
 const typeAliasTypes = docs.children.filter(t => t.kindString === 'Type alias');
@@ -199,7 +202,13 @@ function getSubTypes(
   if (topType.typeArguments && topType.typeArguments.length > 0) {
     const result = new Array<IValueType>();
     topType.typeArguments.forEach(t => {
-      if (t.type !== 'unknown' || t.name.match(/this\["_[^\s]*"\]/g)) {
+      if (t.type === 'indexedAccess') {
+        result.push({
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          name: `this["${(t as any).indexType.value}"]`,
+          kind: 'ref'
+        });
+      } else if (t.type !== 'unknown' || t.name.match(/this\["_[^\s]*"\]/g)) {
         result.push({
           name: t.name !== undefined ? t.name : t.value,
           kind: getValueTypeKind(t, propName)
@@ -385,7 +394,10 @@ displayedObjectDocs.forEach(cls => {
       } else if (prop.name === 'states') {
         // special case for states
         const st = getSubTypes(typeProp, prop.name);
-        const statePropertiesType = typeProp.typeArguments[1].typeArguments[0];
+        const statePropertiesType = getSubTypes(
+          typeProp.typeArguments[1],
+          prop.name
+        )[0];
 
         if (statePropertiesType.name.match(/this\["_[^\s]*"\]/g)) {
           // special case for properties with type like this["_dataFields"]
@@ -482,12 +494,16 @@ displayedObjectDocs.forEach(cls => {
           ]
         });
       } else if (
-        typeProp.name !== undefined &&
-        typeProp.name.match(/this\["_[^\s]*"\]/g)
+        (typeProp.name !== undefined &&
+          typeProp.name.match(/this\["_[^\s]*"\]/g)) ||
+        typeProp.type === 'indexedAccess'
       ) {
         // special case for properties with type like this["_dataFields"]
         const specialClass = getSpecialClass(cls.name);
-        const thisPropName = getSpecialPropName(typeProp.name);
+        const thisPropName =
+          typeProp.type === 'indexedAccess'
+            ? typeProp.indexType.value
+            : getSpecialPropName(typeProp.name);
 
         if (specialClass && thisPropName) {
           const thisProp = getThisProp(specialClass, thisPropName);
