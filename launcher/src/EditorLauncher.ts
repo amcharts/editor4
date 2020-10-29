@@ -9,6 +9,42 @@ import IConfig from './../../src/classes/IConfig';
 
 /**
  * Main class to control amCharts 4 Editor in a bigger solution.
+ *
+ * There are 4 essential steps needed to use the Editor in your app
+ * (make sure you read [the setup guide](https://www.amcharts.com/docs/editor4/getting-started/basics/#Installation) too):
+ *
+ * 1. Create and instance of `EditorLauncher`;
+ * 2. Add event listeners for `save` and `close` events;
+ * 3. Set editor configuration;
+ * 4. Launch the editor.
+ *
+ * Here's how this would look in code:
+ * ```TypeScript
+ * // import Editor Launcher
+ * import * as am4editor from '@amcharts/editor4';
+ *
+ * // instantiate launcher
+ * let launcher = new am4editor.EditorLauncher();
+ *
+ * // add event listeners
+ * launcher.addEventListener('save', renderChart);
+ * launcher.addEventListener('close', () => {
+ *   if (this.launcher) {
+ *     this.launcher.close();
+ *   }
+ * });
+ *
+ * // set config
+ * launcher.editorConfig = editorConfig;
+ *
+ * // launch
+ * launcher.launch();
+ * ```
+ *
+ * @see [amCharts Editor 4 Architecture, Installation, and Usage](https://www.amcharts.com/docs/editor4/getting-started/basics/)
+ * @see {@link IConfig} - editor configuration
+ * @see {@link ILauncherConfig} - launcher configuration
+ * @see {@link LauncherEventHandler} - launcher event handler type
  * @important
  */
 export class EditorLauncher {
