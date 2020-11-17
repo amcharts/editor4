@@ -20,7 +20,7 @@ export interface ILauncherTarget {
 }
 
 /**
- * Support Launcher event types
+ * Supported Launcher event types
  */
 export type LauncherEventType = 'save' | 'close';
 
@@ -29,16 +29,22 @@ export type LauncherEventType = 'save' | 'close';
  */
 export interface ILauncherEventArguments {
   /**
-   * Chart created or edited in the Editor.
+   * Chart config (objec-style/JSON-style) created or edited in the Editor.
    */
   chartConfig: object;
 
   /**
    * Themes selected in the Editor.
+   *
+   * Use to apply themes in your chart display code.
    */
   appliedThemes?: string[];
 
-  /** License infromation entered in the Editor. */
+  /**
+   * License infromation entered in the Editor.
+   *
+   * Use in your chart display code to apply amCharts licenses.
+   */
   appliedLicenses?: string[];
 }
 
@@ -53,10 +59,19 @@ export type LauncherEventHandler = (event?: ILauncherEventArguments) => void;
 export interface ILauncherConfig {
   /**
    * Editor target settings specifying where to open the Editor.
+   *
+   * You can control whether the Editor opens in a new window/tab, inline "popup",
+   * or within your specific HTML element (usually a div).
    */
   target?: ILauncherTarget;
   /**
    * Location of the Editor app files.
+   *
+   * By default the Editor launcher expects the Editor files to be under the `/am4editor/` directory.
+   * In case you place these files in a different location, you should set this property to inform
+   * the Editor launcher of the new location.
+   *
+   * @see [Setting up copying of the Editor “app”](https://www.amcharts.com/docs/editor4/getting-started/basics/#Setting_up_copying_of_the_Editor_app_)
    * @default /am4editor/
    */
   editorUrl?: string;

@@ -83,8 +83,13 @@ class App extends Component {
       } else if (config.allowDefaultTemplates) {
         this.editorState.editorConfig.templates = ConfigManager.getDefaultTemplates();
       }
-      if (this.editorState.editorConfig.templates) {
+      if (
+        this.editorState.editorConfig.templates &&
+        this.editorState.editorConfig.templates.length > 0
+      ) {
         this.editorState.activeTemplateTabId = this.editorState.editorConfig.templates[0].name;
+      } else {
+        this.editorState.activeTemplateTabId = 'importCode';
       }
 
       if (config.enabledModules) {

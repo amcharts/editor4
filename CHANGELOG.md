@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0-rc.1] - 2020-11-17
+### Added
+- More content in class reference documentation.
+- In a common misconfiguration scenario, a helpful message is logged into console.
+
+### Fixed
+- `fillModifier` and `strokModifier` properties were showing up as unsupported in some areas.
+- not passing custom templates while disallowing the default ones resulted in a crash.
+
 ## [4.0.0-rc.0] - 2020-10-26
 ### Changed
 - Updated core internal and external dependencies to the newest versions
@@ -125,6 +134,7 @@ be fetched on the client for both compilation and runtime performance.
 ### Added
 - Initial public release.
 
+[4.0.0-rc.1]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-rc.1
 [4.0.0-rc.0]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-rc.0
 [4.0.0-beta.5]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-beta.5
 [4.0.0-beta.4]: https://github.com/amcharts/editor4/releases/tag/v4.0.0-beta.4

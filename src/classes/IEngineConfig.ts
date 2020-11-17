@@ -1,8 +1,14 @@
 /**
- * Basic information about chart theme (shown in Editor dropdowns)
+ * Basic information about a chart theme (shown in Editor dropdowns)
  */
 export interface IThemeInfo {
+  /**
+   * Theme name (eg. `am4themes_dark`).
+   */
   name: string;
+  /**
+   * Display name for the theme (eg. `Dark`).
+   */
   label: string;
 }
 /**
@@ -10,15 +16,17 @@ export interface IThemeInfo {
  */
 export interface IEngineConfig {
   /**
-   * Themes shown in the Editor's theme selector.
+   * Built-in amCharts themes shown in the Editor's theme selector.
+   *
+   * Array of name-label pairs (see [[IThemeInfo]]).
    */
   availableThemes?: IThemeInfo[];
   /**
-   * Themes applied to a specific edited chart.
+   * Names of themes to be applied to a specific chart being edited.
    */
   appliedThemes?: string[];
   /**
-   * License numbers applied.
+   * An array of amCharts 4 license numbers applied (if applicable)
    */
   licenseNumbers?: string[];
 }

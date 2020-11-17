@@ -1,15 +1,63 @@
 import en from './lang/en/en';
 
+/**
+ * Name:value pairs for translation (localization) strings in a string block.
+ *
+ * Translations are grouped into 3 blocks (see [[ITranslationPack]]).
+ *
+ * Eg.
+ * ```javascript
+ * {
+ *   'app.title': 'Chart Editor',
+ *   'app.save_button': 'save',
+ *   'app.close_button': 'close',
+ *   ...
+ * }
+ * ```
+ */
 export interface ITranslationBlock {
+  /**
+   * Single translation string. Eg.
+   * ```javascript
+   * 'app.title': 'Chart Editor'
+   * ```
+   */
   [key: string]: string;
 }
 
+/**
+ * Describes a set of localization (translation) strings for the Editor.
+ *
+ * The translations are grouped into 3 distinct blocks:
+ *
+ * * **ui** - user interface translations
+ *
+ * * **common** - chart element properties commonly found in multiple chart elements
+ *
+ * * **properties** - unique chart element properties for specific element types
+ *
+ * When localization engine looks for property name translations it first looks
+ * in `properties` for a class-specific translation and then, if not found,
+ * looks in `common`.
+ */
 export interface ITranslationPack {
+  /**
+   * User interface translations
+   */
   ui: ITranslationBlock;
+  /**
+   * Translations for chart element properties commonly found in multiple chart elements
+   */
   common: ITranslationBlock;
+  /**
+   * Translations for unique chart element properties for specific element types
+   */
   properties: ITranslationBlock;
 }
 
+/**
+ * @ignore
+ */
 export class Language {
   private fallbackTranslations: ITranslationPack = en;
   private _translations?: ITranslationPack;
