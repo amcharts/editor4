@@ -2,15 +2,15 @@
 # yarn lockfile v1
 
 
-"@amcharts/amcharts4-geodata@^4.1.17":
-  version "4.1.17"
-  resolved "https://registry.yarnpkg.com/@amcharts/amcharts4-geodata/-/amcharts4-geodata-4.1.17.tgz#4c2a3c46254763f8abce887375f4ba9185bff94f"
-  integrity sha512-ylzshiOq/aMRlVrRq8dOznZP7fp4xg/XkmhTjGm2dN6O1WqvoVBBOOnGyzrmb2gBlqN5zj59PQyOqSDyQUNe/Q==
+"@amcharts/amcharts4-geodata@^4.1.19":
+  version "4.1.19"
+  resolved "https://registry.yarnpkg.com/@amcharts/amcharts4-geodata/-/amcharts4-geodata-4.1.19.tgz#aa36f673ea3563e3f5549645db8ff85736b7f2ce"
+  integrity sha512-y100J6mp8H95qfHPPmeAat8oC+VXJrpt+rnwOt554sEW6cFCWY6BKgPKL2dVlVbnz0U3dqNsyENOqXmp3Pu7vg==
 
-"@amcharts/amcharts4@^4.10.8":
-  version "4.10.8"
-  resolved "https://registry.yarnpkg.com/@amcharts/amcharts4/-/amcharts4-4.10.8.tgz#9c70f466e29fe4e0c967ff46f7c80981105917a9"
-  integrity sha512-2xIPHkvuxhsN49btE+K0ThO0CxvEgHC+n2aFa05GLwIH2JKgSjFBmjSvELrEqlEYf2mEPjmKjuYe6d4TgHfGUA==
+"@amcharts/amcharts4@^4.10.15":
+  version "4.10.15"
+  resolved "https://registry.yarnpkg.com/@amcharts/amcharts4/-/amcharts4-4.10.15.tgz#1ec5134df7851c5a259320c23e2555642fbc5bd5"
+  integrity sha512-+jcjXKNp+mY1nMVE9Re0AKnTbGI+QQbVoYAtBBADGMkjG3cTo0RiDE4dfKiOb5eNRmXki1QfBDCXZ9Fwt27/ng==
   dependencies:
     "@babel/runtime" "^7.6.3"
     core-js "^3.0.0"

@@ -4,8 +4,8 @@
   "homepage": "./",
   "private": true,
   "dependencies": {
-    "@amcharts/amcharts4": "^4.10.8",
-    "@amcharts/amcharts4-geodata": "^4.1.17",
+    "@amcharts/amcharts4": "^4.10.15",
+    "@amcharts/amcharts4-geodata": "^4.1.19",
     "@blueprintjs/core": "^3.34.0",
     "@blueprintjs/select": "^3.14.3",
     "@blueprintjs/table": "^3.8.17",
