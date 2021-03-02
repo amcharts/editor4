@@ -1,11 +1,11 @@
 {
   "name": "editor4",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "homepage": "./",
   "private": true,
   "dependencies": {
-    "@amcharts/amcharts4": "^4.10.8",
-    "@amcharts/amcharts4-geodata": "^4.1.17",
+    "@amcharts/amcharts4": "^4.10.15",
+    "@amcharts/amcharts4-geodata": "^4.1.19",
     "@blueprintjs/core": "^3.34.0",
     "@blueprintjs/select": "^3.14.3",
     "@blueprintjs/table": "^3.8.17",
@@ -66,6 +66,6 @@
     "mobx-react-devtools": "^6.1.1",
     "prettier": "^1.17.0",
     "rimraf": "^3.0.2",
-    "ts-node": "^8.0.3"
+    "ts-node": "^9.1.1"
   }
 }
