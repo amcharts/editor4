@@ -224,6 +224,11 @@ export default class PropertyConfigManager {
                       p.omitValueType
                     )
                   );
+                  if (result[p.name].length > 0) {
+                    result[p.name] = (result[p.name] as Property[]).filter(
+                      p => p !== undefined
+                    );
+                  }
                 }
               } else if (
                 PropertyConfigManager.getPropertyTypeFamily(p) === 'scalar'
@@ -312,7 +317,8 @@ export default class PropertyConfigManager {
         });
     }
 
-    return result;
+    //return result;
+    return Object.keys(result).length > 0 ? result : undefined;
   }
 
   public static propertyToJs(
