@@ -871,7 +871,14 @@ Always include chart type in your JSON config you pass to the Editor.`
                           ? configPropValue[index]
                           : configPropValue && configPropValue['values']
                           ? configPropValue['values'][index]
-                          : {}
+                          : {},
+                        // try to get the default class name just in case subPart itself doesn't have .className
+                        p.valueTypes &&
+                          p.valueTypes[0].subTypes &&
+                          p.valueTypes[0].subTypes.length > 0 &&
+                          p.valueTypes[0].subTypes[0]
+                          ? p.valueTypes[0].subTypes[0].name
+                          : undefined
                       );
                       if (subProp !== undefined) {
                         p.value.push(subProp);
