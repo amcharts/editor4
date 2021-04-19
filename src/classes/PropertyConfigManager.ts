@@ -988,7 +988,11 @@ Always include chart type in your JSON config you pass to the Editor.`
                 p.autoValue = p.value;
               } else {
                 p.value = [];
-                (chartPropValue.values as []).forEach(el => {
+                const values =
+                  chartPropValue.values && chartPropValue.values.length > 0
+                    ? chartPropValue.values
+                    : chartPropValue;
+                (values as []).forEach(el => {
                   p.value.push(el['id'] !== undefined ? el['id'] : el['uid']);
                 });
                 p.autoValue = p.value;
