@@ -656,7 +656,8 @@ export default class PropertyConfigManager {
     if (chartProperty.properties !== undefined) {
       let lookupPropertyName: RegExp;
       switch (targetProperty.name) {
-        case 'series': {
+        case 'series':
+        case 'snapToSeries': {
           lookupPropertyName = /^series$/g;
           break;
         }
