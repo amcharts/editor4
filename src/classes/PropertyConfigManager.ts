@@ -224,6 +224,11 @@ export default class PropertyConfigManager {
                       p.omitValueType
                     )
                   );
+                  if (result[p.name].length > 0) {
+                    result[p.name] = (result[p.name] as Property[]).filter(
+                      p => p !== undefined
+                    );
+                  }
                 }
               } else if (
                 PropertyConfigManager.getPropertyTypeFamily(p) === 'scalar'
@@ -312,7 +317,8 @@ export default class PropertyConfigManager {
         });
     }
 
-    return result;
+    //return result;
+    return Object.keys(result).length > 0 ? result : undefined;
   }
 
   public static propertyToJs(
@@ -650,7 +656,8 @@ export default class PropertyConfigManager {
     if (chartProperty.properties !== undefined) {
       let lookupPropertyName: RegExp;
       switch (targetProperty.name) {
-        case 'series': {
+        case 'series':
+        case 'snapToSeries': {
           lookupPropertyName = /^series$/g;
           break;
         }
@@ -871,7 +878,14 @@ Always include chart type in your JSON config you pass to the Editor.`
                           ? configPropValue[index]
                           : configPropValue && configPropValue['values']
                           ? configPropValue['values'][index]
-                          : {}
+                          : {},
+                        // try to get the default class name just in case subPart itself doesn't have .className
+                        p.valueTypes &&
+                          p.valueTypes[0].subTypes &&
+                          p.valueTypes[0].subTypes.length > 0 &&
+                          p.valueTypes[0].subTypes[0]
+                          ? p.valueTypes[0].subTypes[0].name
+                          : undefined
                       );
                       if (subProp !== undefined) {
                         p.value.push(subProp);
@@ -975,7 +989,11 @@ Always include chart type in your JSON config you pass to the Editor.`
                 p.autoValue = p.value;
               } else {
                 p.value = [];
-                (chartPropValue.values as []).forEach(el => {
+                const values =
+                  chartPropValue.values && chartPropValue.values.length > 0
+                    ? chartPropValue.values
+                    : chartPropValue;
+                (values as []).forEach(el => {
                   p.value.push(el['id'] !== undefined ? el['id'] : el['uid']);
                 });
                 p.autoValue = p.value;

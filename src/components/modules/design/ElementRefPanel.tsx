@@ -25,14 +25,14 @@ const propertyEditorListLabelStyle = new StyleClass(css`
   flex-direction: row;
   align-items: center;
   border-bottom: 1px solid ${editorTheme.propertyPanelGridColor};
-  padding: 0.3em 0px;
+  padding: 10px 0.3em 10px 1em;
 `);
 
 const propertyEditorListItemListStyle = new StyleClass(css`
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 0.3em 0px;
+  padding: 10px 0.3em 10px 1em;
 `);
 
 // const propertyEditorListItemRowStyle = new StyleClass(css`
