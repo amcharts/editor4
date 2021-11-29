@@ -68,11 +68,6 @@ For practical applications, check out the included samples:
 - [Vue](https://github.com/amcharts/editor4/tree/master/samples/vue/)
 - [Angular](https://github.com/amcharts/editor4/tree/master/samples/angular/)
 
-## Status
-
-amCharts 4 Editor is is in the alpha stage and is not yet ready for use in productions. 
-You are welcome to explore it and provide feedback to shape the development.
-
 ## Support
 
 Commercial license holders should contact us directly at [contact@amcharts.com](mailto:contact@amcharts.com).
