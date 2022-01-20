@@ -182,7 +182,9 @@ import '@amcharts/amcharts4/maps';
         )
       );
     }
-    const encodedJson = window.btoa(JSON.stringify(this.jsonConfig));
+    const encodedJson = window.btoa(
+      unescape(encodeURIComponent(JSON.stringify(this.jsonConfig)))
+    );
     let encodedJsonSplit = '';
     for (let index = 0; index < encodedJson.length; index += 80) {
       encodedJsonSplit += `* ${encodedJson.substr(index, 80)}`;
